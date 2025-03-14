@@ -1,0 +1,12 @@
+
+GET http://localhost:3000/api/notion?query=World HTTP/1.1
+
+###
+POST http://localhost:3000/api/notion HTTP/1.1
+content-type: application/json
+
+{
+    "Title": "Hello World",
+    "Content": "Hello World Content",
+    "Tags": "Hello, World"
+}
