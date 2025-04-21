@@ -6,6 +6,6 @@ const posts = [
   { id: 3, title: "Post 3", content: "Content of Post 3" },
 ];
 
-export async function GET(request: Request) {
+export async function GET() {
   return NextResponse.json(posts);
 }
