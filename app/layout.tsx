@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   title: "Vinicius Souza - Fullstack Developer",
   description:
     "Portfolio of Vinicius Souza, a Fullstack Developer and Systems Analyst",
-  generator: "v0.dev",
 };
 
 export default function RootLayout({
