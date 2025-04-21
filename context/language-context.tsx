@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import { createContext, useContext, useState, type ReactNode } from "react";
 
-type Language = "en" | "pt-BR"
+type Language = "en" | "pt-BR";
 
 type LanguageContextType = {
-  language: Language
-  setLanguage: (lang: Language) => void
-  t: (key: string) => string
-}
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+};
 
 const translations = {
   en: {
     // Hero Section
     "hero.getInTouch": "Get in touch",
     "hero.viewProjects": "View projects",
-    "hero.subtitle": "Student Analyst of Systems on IFMS 💚",
+    "hero.subtitle": "Analist and Fullstack Developer",
     "hero.description":
       "A passionate and proactive Software Developer and Systems Analyst from Brazil, with hands-on experience in full-stack JavaScript development.",
 
@@ -39,7 +39,8 @@ const translations = {
       "Modernized the Alelo Platform data flow, automating real-time collection and validation, eliminating offline spreadsheet inconsistencies. Developed JavaScript scripts, streamlining processes and increasing information efficiency.",
 
     "experience.ifms.title": "IT Intern | Support",
-    "experience.ifms.company": "IFMS - Federal Institute of Education, Science and Technology",
+    "experience.ifms.company":
+      "IFMS - Federal Institute of Education, Science and Technology",
     "experience.ifms.period": "Jul 2024 - Oct 2024 (3 months)",
     "experience.ifms.description":
       "Provided technical support to teachers and students, including equipment maintenance and network access configuration, focusing on the Mulheres Mil project. Also configured and registered electronic doors, ensuring the functioning and security of the academic environment.",
@@ -72,7 +73,8 @@ const translations = {
     "education.degree.period": "Jul 2022 - Present",
 
     "education.certificate.title": "FIC - Computer Operator",
-    "education.certificate.institution": "Instituto Federal de Mato Grosso do Sul",
+    "education.certificate.institution":
+      "Instituto Federal de Mato Grosso do Sul",
     "education.certificate.period": "Completed in 2019",
 
     "education.languages.title": "Languages",
@@ -99,7 +101,7 @@ const translations = {
     // Hero Section
     "hero.getInTouch": "Entre em contato",
     "hero.viewProjects": "Ver projetos",
-    "hero.subtitle": "Estudante de Análise de Sistemas no IFMS 💚",
+    "hero.subtitle": "Programador e Analista Fullstack",
     "hero.description":
       "Um Desenvolvedor de Software e Analista de Sistemas apaixonado e proativo do Brasil, com experiência prática em desenvolvimento JavaScript full-stack.",
 
@@ -123,7 +125,8 @@ const translations = {
       "Modernizei o fluxo de dados da Plataforma Alelo, automatizando a coleta e validação em tempo real e eliminando inconsistências de planilhas off-line. Desenvolvi scripts em JavaScript, agilizando processos e aumentando a eficiência das informações.",
 
     "experience.ifms.title": "Estagiário de TI | Suporte",
-    "experience.ifms.company": "IFMS - Instituto Federal de Educação, Ciência e Tecnologia",
+    "experience.ifms.company":
+      "IFMS - Instituto Federal de Educação, Ciência e Tecnologia",
     "experience.ifms.period": "Jul 2024 - Out 2024 (3 meses)",
     "experience.ifms.description":
       "Prestei suporte técnico a docentes e discentes, incluindo manutenção de equipamentos e configuração de acesso à rede, com foco no projeto Mulheres Mil. Também configurei e cadastrei portas eletrônicas, assegurando o funcionamento e a segurança do ambiente acadêmico.",
@@ -156,7 +159,8 @@ const translations = {
     "education.degree.period": "Jul 2022 - Presente",
 
     "education.certificate.title": "FIC - Operador de Computadores",
-    "education.certificate.institution": "Instituto Federal de Mato Grosso do Sul",
+    "education.certificate.institution":
+      "Instituto Federal de Mato Grosso do Sul",
     "education.certificate.period": "Concluído em 2019",
 
     "education.languages.title": "Idiomas",
@@ -179,25 +183,34 @@ const translations = {
     // Footer
     "footer.copyright": "© 2025 Vinicius Souza",
   },
-}
+};
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined
+);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("en")
+  const [language, setLanguage] = useState<Language>("en");
 
   const t = (key: string): string => {
-    return translations[language][key as keyof (typeof translations)[typeof language]] || key
-  }
+    return (
+      translations[language][
+        key as keyof (typeof translations)[typeof language]
+      ] || key
+    );
+  };
 
-  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext)
+  const context = useContext(LanguageContext);
   if (context === undefined) {
-    throw new Error("useLanguage must be used within a LanguageProvider")
+    throw new Error("useLanguage must be used within a LanguageProvider");
   }
-  return context
+  return context;
 }
-

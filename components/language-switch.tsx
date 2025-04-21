@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Globe } from "lucide-react"
-import { useLanguage } from "@/context/language-context"
+import { useState } from "react";
+import { Globe } from "lucide-react";
+import { useLanguage } from "@/context/language-context";
 
 export function LanguageSwitch() {
-  const [isOpen, setIsOpen] = useState(false)
-  const { language, setLanguage } = useLanguage()
+  const [isOpen, setIsOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
 
-  const toggleDropdown = () => setIsOpen(!isOpen)
+  const toggleDropdown = () => setIsOpen(!isOpen);
 
   const switchLanguage = (lang: "en" | "pt-BR") => {
-    setLanguage(lang)
-    setIsOpen(false)
-  }
+    setLanguage(lang);
+    setIsOpen(false);
+  };
 
   return (
     <div className="relative">
@@ -50,6 +50,5 @@ export function LanguageSwitch() {
         </div>
       )}
     </div>
-  )
+  );
 }
-
