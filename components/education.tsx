@@ -1,7 +1,7 @@
 "use client";
 
-import { GraduationCap, Award } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
+import { Award, GraduationCap } from "lucide-react";
 
 export function Education() {
   const { t } = useLanguage();

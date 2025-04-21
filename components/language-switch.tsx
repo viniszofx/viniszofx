@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Globe } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
+import { Globe } from "lucide-react";
+import { useState } from "react";
 
 export function LanguageSwitch() {
   const [isOpen, setIsOpen] = useState(false);

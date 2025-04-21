@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Calendar } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
+import { Calendar } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function GitHubContributions() {
   const { t } = useLanguage();

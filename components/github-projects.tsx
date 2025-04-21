@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLanguage } from "@/context/language-context";
 import { ExternalLink, Github, Star } from "lucide-react";
 import Link from "next/link";
-import { useLanguage } from "@/context/language-context";
+import { useEffect, useState } from "react";
 
 type Repository = {
   name: string;

@@ -1,11 +1,11 @@
-import type React from "react";
 import "@/app/globals.css";
+import { LanguageSwitch } from "@/components/language-switch";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageSwitch } from "@/components/language-switch";
 import { LanguageProvider } from "@/context/language-context";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import type React from "react";
 
 const inter = Inter({
   subsets: ["latin"],

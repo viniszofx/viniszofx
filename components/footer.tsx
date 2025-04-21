@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useLanguage } from "@/context/language-context";
+import Link from "next/link";
 
 export function Footer() {
   const { t } = useLanguage();

@@ -1,7 +1,7 @@
 "use client";
 
-import { Code, Database, FileText } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
+import { Code, Database, FileText } from "lucide-react";
 
 export function Technologies() {
   const { t } = useLanguage();

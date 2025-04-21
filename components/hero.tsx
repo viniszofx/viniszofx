@@ -1,9 +1,9 @@
 "use client";
 
-import { ChevronDown, Github, Twitter, Linkedin, Mail } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
 import { useLanguage } from "@/context/language-context";
+import { ChevronDown, Github, Linkedin, Mail } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export function Hero() {
   const { t } = useLanguage();

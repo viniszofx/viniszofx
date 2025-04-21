@@ -1,7 +1,7 @@
 "use client";
 
-import { Mail, Phone, Send } from "lucide-react";
 import { useLanguage } from "@/context/language-context";
+import { Mail, Phone, Send } from "lucide-react";
 
 export function Contact() {
   const { t } = useLanguage();
