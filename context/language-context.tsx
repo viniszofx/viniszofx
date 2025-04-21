@@ -20,15 +20,15 @@ const translations = {
       "A passionate and proactive Software Developer and Systems Analyst from Brazil, with hands-on experience in full-stack JavaScript development.",
 
     // About Section
-    "about.title": "About Me",
+    "about.title": "Professional Profile",
     "about.p1":
-      "Hello! I'm Vinicius, a 21-year-old Systems Analysis student in my final semesters at the Federal Institute of Mato Grosso do Sul. Throughout my academic and professional journey, I've developed a strong foundation in software development and systems analysis.",
+      "As a final-year Systems Analysis student at the Federal Institute of Mato Grosso do Sul (IFMS), I have developed comprehensive expertise in software development and systems analysis. With a strong academic foundation and practical experience, I consistently deliver high-quality solutions that align with business objectives.",
     "about.p2":
-      "My professional experience includes working at Embrapa Pantanal, where I modernized data flows and developed automation scripts that significantly improved efficiency. At IFMS, I provided technical support and configured security systems, while at Educação Adventista, I managed academic records and developed strong communication skills through direct customer service.",
+      "At Embrapa Pantanal, I successfully led data flow modernization initiatives and implemented automation solutions that enhanced operational efficiency. My roles at IFMS and Educação Adventista further strengthened my capabilities in technical support, system security, and stakeholder communication.",
     "about.p3":
-      "I'm particularly skilled in JavaScript development, with experience in React, Tailwind CSS, and Node.js. I enjoy solving complex problems through innovative solutions and have a passion for creating efficient, user-friendly applications that make a real difference.",
+      "My technical proficiency centers on JavaScript ecosystem development, with specialized expertise in React, Tailwind CSS, and Node.js. I excel in architecting robust solutions for complex technical challenges and developing performance-optimized applications that deliver measurable business value.",
     "about.p4":
-      "Currently seeking new opportunities where I can apply my technical skills and continue growing as a developer, I'm eager to join dynamic teams where I can contribute to meaningful projects while expanding my knowledge in modern web technologies.",
+      "Currently seeking opportunities to leverage my technical expertise in an environment that values innovation and excellence. I am committed to contributing to significant projects while advancing my knowledge in modern web technologies and best practices.",
 
     // Experience Section
     "experience.title": "Experience",
@@ -106,15 +106,15 @@ const translations = {
       "Um Desenvolvedor de Software e Analista de Sistemas apaixonado e proativo do Brasil, com experiência prática em desenvolvimento JavaScript full-stack.",
 
     // About Section
-    "about.title": "Sobre Mim",
+    "about.title": "Perfil Profissional",
     "about.p1":
-      "Olá! Sou Vinicius, um estudante de 21 anos de Análise de Sistemas nos últimos semestres do Instituto Federal de Mato Grosso do Sul. Ao longo da minha jornada acadêmica e profissional, desenvolvi uma base sólida em desenvolvimento de software e análise de sistemas.",
+      "Como estudante concluinte de Análise de Sistemas no Instituto Federal de Mato Grosso do Sul (IFMS), desenvolvi ampla expertise em desenvolvimento de software e análise de sistemas. Com sólida base acadêmica e experiência prática, entrego consistentemente soluções de alta qualidade alinhadas aos objetivos organizacionais.",
     "about.p2":
-      "Minha experiência profissional inclui trabalho na Embrapa Pantanal, onde modernizei fluxos de dados e desenvolvi scripts de automação que melhoraram significativamente a eficiência. No IFMS, forneci suporte técnico e configurei sistemas de segurança, enquanto na Educação Adventista, gerenciei registros acadêmicos e desenvolvi fortes habilidades de comunicação através do atendimento direto ao cliente.",
+      "Na Embrapa Pantanal, liderei com sucesso iniciativas de modernização de fluxos de dados e implementei soluções de automação que aprimoraram a eficiência operacional. Minhas atuações no IFMS e na Educação Adventista fortaleceram ainda mais minhas competências em suporte técnico, segurança de sistemas e comunicação com stakeholders.",
     "about.p3":
-      "Sou particularmente habilidoso em desenvolvimento JavaScript, com experiência em React, Tailwind CSS e Node.js. Gosto de resolver problemas complexos através de soluções inovadoras e tenho paixão por criar aplicações eficientes e amigáveis que fazem diferença real.",
+      "Minha proficiência técnica concentra-se no desenvolvimento do ecossistema JavaScript, com expertise especializada em React, Tailwind CSS e Node.js. Destaco-me na arquitetura de soluções robustas para desafios técnicos complexos e no desenvolvimento de aplicações otimizadas que entregam valor mensurável.",
     "about.p4":
-      "Atualmente buscando novas oportunidades onde posso aplicar minhas habilidades técnicas e continuar crescendo como desenvolvedor, estou ansioso para me juntar a equipes dinâmicas onde posso contribuir para projetos significativos enquanto expando meu conhecimento em tecnologias web modernas.",
+      "Atualmente busco oportunidades para aplicar minha expertise técnica em um ambiente que valoriza inovação e excelência. Estou comprometido em contribuir com projetos significativos enquanto avanço meu conhecimento em tecnologias web modernas e melhores práticas.",
 
     // Experience Section
     "experience.title": "Experiência",
