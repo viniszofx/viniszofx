@@ -22,7 +22,7 @@ export function Hero() {
             />
           </div>
         </div>
-        <h1 className="text-4xl md:text-7xl font-bold tracking-tight mb-4">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
           Vinicius Souza
         </h1>
         <p className="text-md md:text-2xl text-neutral-500 dark:text-neutral-400 mb-4 max-w-xl mx-auto">
