@@ -1,27 +1,48 @@
-# Olá, mundo! ✨
+# 👋 Olá, Bem-Vindo(a)
 
-Bem-vindo ao meu perfil no GitHub! 
+Sou o Vinicius Souza
 
-Sou **Vinicius Souza**, Desenvolvedor de Software e Analista de Sistemas com experiência em projetos de desenvolvimento full-stack utilizando TypeScript, Node.js e React. Tenho atuado em soluções que integram backend eficiente, frontend intuitivo e uma arquitetura de dados bem definida.
+Sou desenvolvedor de software com foco em aplicações web modernas e soluções escaláveis. Tenho experiência prática em desenvolvimento full-stack com tecnologias como **TypeScript**, **Node.js**, **React** e **Tailwind CSS**, além de interesse por infraestrutura com **Docker** e ambientes em **cloud**.
 
-Minha atuação vai além do código — participo ativamente na **análise de requisitos**, modelagem de **fluxos de dados**, desenho de **interfaces centradas no usuário** e definição de estratégias para melhorar a experiência digital. Tenho facilidade em compreender demandas técnicas e de negócio, buscando sempre transformar ideias em soluções funcionais, escaláveis e fáceis de manter.
+Atualmente, curso Análise e Desenvolvimento de Sistemas no IFMS e atuo na Embrapa Pantanal como desenvolvedor, colaborando com projetos internos de automação e sistemas de informação.
 
-## 💻 Tecnologias
-- **Linguagens & Frameworks:** TypeScript, JavaScript, Java, Node.js, React, Tailwind CSS  
-- **Bancos de Dados:** MySQL, MongoDB  
-- **Ferramentas:** Word, Excel, PowerPoint  
+---
+
+## 🛠️ Tecnologias e Ferramentas
+
+- **Linguagens & Frameworks:**  
+  ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)![Node.js](https://img.shields.io/badge/-Node.js-339933?style=flat-square&logo=node.js&logoColor=white)![React](https://img.shields.io/badge/-React-20232A?style=flat-square&logo=react)
+
+- **Estilo & UI:**  
+  ![Tailwind CSS](https://img.shields.io/badge/-Tailwind-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)![Shadcn UI](https://img.shields.io/badge/-Shadcn_UI-black?style=flat-square)
+
+- **Banco de Dados:**  
+  ![MySQL](https://img.shields.io/badge/-MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white)![MongoDB](https://img.shields.io/badge/-MongoDB-47A248?style=flat-square&logo=mongodb&logoColor=white)
+
+- **Infraestrutura e Ferramentas:**  
+  ![Linux](https://img.shields.io/badge/-Linux-FCC624?style=flat-square&logo=linux&logoColor=black)![Docker](https://img.shields.io/badge/-Docker-2496ED?style=flat-square&logo=docker&logoColor=white)![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white)  
+   
+- **Outros conhecimentos:** Suporte técnico, modelagem de dados, UX/UI básico
+
+---
 
 ## 🎓 Formação
-- **Instituto Federal de Mato Grosso do Sul**  
-  *Graduação em Análise de Sistemas* — *Jul. 2022 até o momento*
 
-## 🏅 Cursos e Certificações
-- **FIC - Operador de Computadores** — *IFMS* — *Concluído em 2019*
+- **IFMS – Instituto Federal de Mato Grosso do Sul**  
+  *Tecnólogo em Análise e Desenvolvimento de Sistemas* — Em andamento
 
-## 📊 Estatísticas do GitHub
-<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=viniszofx&layout=compact&theme=github_dark" />
+---
 
-## 📫 Contato
-Sinta-se à vontade para entrar em contato comigo pelos seguintes canais:
+## 📈 GitHub Stats
 
-[![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=linkedin&logoColor=white&link=https://www.linkedin.com/in/viniszofc/)](https://www.linkedin.com/in/viniszofc/) [![Instagram](https://img.shields.io/badge/-Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white&link=https://instagram.com/viniszofx)](https://instagram.com/viniszofx) [![E-mail](https://img.shields.io/badge/-E--mail-D14836?style=flat-square&logo=gmail&logoColor=white&link=mailto:contato@viniccius.com.br)](mailto:contato@viniccius.com.br)
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=viniszofx&theme=github_dark)
+
+---
+
+## 📬 Onde me encontrar
+
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/viniszofc/)[![E-mail](https://img.shields.io/badge/-contato@viniccius.com.br-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:contato@viniccius.com.br)[![Instagram](https://img.shields.io/badge/-@viniszofx-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://instagram.com/viniszofx)
+
+---
+
+⭐ Obrigado por visitar meu perfil!
