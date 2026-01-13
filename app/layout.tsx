@@ -1,5 +1,4 @@
 import "@/app/globals.css";
-import { LanguageSwitch } from "@/components/language-switch";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageProvider } from "@/context/language-context";
@@ -34,7 +33,7 @@ export default function RootLayout({
         >
           <LanguageProvider>
             <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
-              <LanguageSwitch />
+              {/* <LanguageSwitch /> */}
               <ThemeToggle />
             </div>
             {children}
