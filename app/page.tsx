@@ -1,19 +1,9 @@
 "use client";
 
-import { About } from "@/components/about";
-import { Contact } from "@/components/contact";
-import { Education } from "@/components/education";
-import { Experience } from "@/components/experience";
-import { Footer } from "@/components/footer";
-import { GitHubContributions } from "@/components/github-contributions";
-import { GitHubProjects } from "@/components/github-projects";
-import { Hero } from "@/components/hero";
-import { Technologies } from "@/components/technologies";
-
 export default function Home() {
   return (
-    <main>
-      <Hero />
+    <main className="h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 dark:from-gray-900 dark:via-blue-950 dark:to-black">
+      {/* <Hero />
       <About />
       <Experience />
       <Technologies />
@@ -21,7 +11,13 @@ export default function Home() {
       <GitHubContributions />
       <Education />
       <Contact />
-      <Footer />
+      <Footer /> */}
+      <h1 className="text-gray-900 dark:text-white text-4xl font-bold mb-4">
+        Working in updates...
+      </h1>
+      <p className="text-gray-700 dark:text-blue-200 text-xl mb-6">
+        Thanks for your visit 💙
+      </p>
     </main>
   );
 }
