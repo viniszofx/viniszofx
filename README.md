@@ -36,8 +36,8 @@ Sou formado em **Análise e Desenvolvimento de Sistemas pelo IFMS** e possuo exp
 
 ## 📬 Contato
 
-- 💼 [LinkedIn](https://www.linkedin.com/in/viniszofc/)  
-- 📧 contato@viniccius.com.br  
-- 📸 [Instagram](https://instagram.com/viniszofx)
+- 💼 [LinkedIn](https://www.linkedin.com/in/viniszofx/)  
+- 📧 contato@viniccius.com.br
+- 🌐 [Site](https://viniccius.com.br)
 
 ⭐ Obrigado por visitar meu perfil!
