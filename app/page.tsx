@@ -12,12 +12,14 @@ export default function Home() {
           alt="Cover Image"
         />
         <div className="relative z-10 flex flex-col gap-4">
-          <header className="mx-auto bg-zinc-950/40 fixed top-0 left-0 right-0 mt-5 flex max-w-[800px] w-full items-center justify-between py-4 px-8">
+          <header className="mx-auto bg-zinc-950/40 fixed top-0 left-0 right-0  flex max-w-[800px] w-full items-center justify-between py-4 px-8">
             <TerminalSquareIcon size={24} />
+            <h2 className="font-mono text-zinc-50">Site em Desenvolvimento</h2>
             <Link className="text-sm" href="/">
               Login
             </Link>
           </header>
+
           <section className="mx-auto w-full max-w-[800px] mt-24 md:mt-36">
             <div
               className="p-8 md:py-8 md:px-16 flex justify-center items-center
@@ -52,6 +54,7 @@ export default function Home() {
           </section>
         </div>
       </div>
+
       <section className="mx-auto max-w-[800px] p-8 md:py-8 md:px-16 md:-mt-40 md:relative flex flex-col gap-4 bg-sky-900">
         <h2 className="font-mono text-zinc-50">SOBRE</h2>
         <div className="flex flex-col gap-4">
@@ -94,15 +97,15 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-2  bg-zinc-900 p-4">
             <div className="flex justify-between text-sm text-zinc-300 font-mono">
-              <p>ux designer | data analyst</p>
-              <p>2023/2025</p>
+              <p>ux research | analyst of system</p>
+              <p>2024</p>
             </div>
             <p className="font-semibold text-2xl text-zinc-100">
-              EMBRAPA PANTANAL
+              PANTANAL BOAT
             </p>
             <p className="text-lg">
-              Análise de usabilidade em sistema interno e mapeamento de trafego
-              de dados de pesquisas cientificas animal.
+              Análise de viabilidade de aplicativo de agendamento para viagem de
+              barcos no pantanal
             </p>
             <Link href="#" className="bg-sky-900 px-4 py-2 max-w-max">
               SAIBA MAIS
@@ -110,15 +113,15 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-2  bg-zinc-900 p-4">
             <div className="flex justify-between text-sm text-zinc-300 font-mono">
-              <p>ux designer | data analyst</p>
-              <p>2023/2025</p>
+              <p>ux designer | backend develper</p>
+              <p>2024/2025</p>
             </div>
             <p className="font-semibold text-2xl text-zinc-100">
-              EMBRAPA PANTANAL
+              INSTITUTO FEDERAL
             </p>
             <p className="text-lg">
-              Análise de usabilidade em sistema interno e mapeamento de trafego
-              de dados de pesquisas cientificas animal.
+              Desenvolvimento de sistema interno para gerenciamento de bens
+              patrimoniais de instituição de ensino público
             </p>
             <Link href="#" className="bg-sky-900 px-4 py-2 max-w-max">
               SAIBA MAIS
@@ -126,15 +129,15 @@ export default function Home() {
           </div>
           <div className="flex flex-col gap-2  bg-zinc-900 p-4">
             <div className="flex justify-between text-sm text-zinc-300 font-mono">
-              <p>ux designer | data analyst</p>
-              <p>2023/2025</p>
+              <p>ux designer | backend develper</p>
+              <p>2024/2025</p>
             </div>
             <p className="font-semibold text-2xl text-zinc-100">
-              EMBRAPA PANTANAL
+              INSTITUTO FEDERAL
             </p>
             <p className="text-lg">
-              Análise de usabilidade em sistema interno e mapeamento de trafego
-              de dados de pesquisas cientificas animal.
+              Desenvolvimento de sistema para gerenciamento de livros de
+              biblioteca
             </p>
             <Link href="#" className="bg-sky-900 px-4 py-2 max-w-max">
               SAIBA MAIS
@@ -154,7 +157,7 @@ export default function Home() {
               alimentar em aldeias indígenas.
             </p>
             <Link href="#" className="bg-sky-800 px-4 py-2 max-w-max">
-              LER ARTIGO
+              SAIBA MAIS
             </Link>
           </article>
           <article className="flex flex-col gap-2 bg-zinc-900 p-4">
@@ -162,11 +165,11 @@ export default function Home() {
               RESUMO CIENTIFICO
             </h3>
             <p className="text-zinc-100 text-lg">
-              Indicadores físicos de qualidade de ovos para inovação e segurança
-              alimentar em aldeias indígenas.
+              Melhorias no fluxo de dados e experiência do usuário (ux) na
+              plataforma do alelo animal (Embrapa Pantanal).
             </p>
             <Link href="#" className="bg-sky-800 px-4 py-2 max-w-max">
-              LER ARTIGO
+              SAIBA MAIS
             </Link>
           </article>
         </article>
@@ -175,17 +178,15 @@ export default function Home() {
         <h2 className="font-mono">FORMAÇÃO</h2>
         <article className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <p className="font-mono text-sm text-zinc-300">Graduação</p>
+            <p className="font-mono text-sm text-zinc-300">Formação Técnica</p>
             <span className="flex gap-2 text-sm font-mono text-sm text-zinc-300">
               <p>2025</p>
               <p>|</p>
-              <p>Concluído</p>
+              <p>Em Curso</p>
             </span>
           </div>
           <div>
-            <h3 className="text-2xl font-semibold">
-              Análise e Desenvolvimento de Sistemas
-            </h3>
+            <h3 className="text-2xl font-semibold">Tecnico de Admninstração</h3>
             <p>Instituto Federal de Mato Grosso do Sul</p>
           </div>
           <span className=" border bg-zinc-300 container flex self-auto" />
@@ -201,7 +202,7 @@ export default function Home() {
           </div>
           <div>
             <h3 className="text-2xl font-semibold">
-              Análise e Desenvolvimento de Sistemas
+              Analista e Desenvolvimento de Sistemas
             </h3>
             <p>Instituto Federal de Mato Grosso do Sul</p>
           </div>
@@ -209,17 +210,15 @@ export default function Home() {
         </article>
         <article className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <p className="font-mono text-sm text-zinc-300">Graduação</p>
+            <p className="font-mono text-sm text-zinc-300">Curso Livre</p>
             <span className="flex gap-2 text-sm font-mono text-sm text-zinc-300">
-              <p>2025</p>
+              <p>2019</p>
               <p>|</p>
               <p>Concluído</p>
             </span>
           </div>
           <div>
-            <h3 className="text-2xl font-semibold">
-              Análise e Desenvolvimento de Sistemas
-            </h3>
+            <h3 className="text-2xl font-semibold">Operador de Computador</h3>
             <p>Instituto Federal de Mato Grosso do Sul</p>
           </div>
           <span className=" border bg-zinc-300 container flex self-auto" />
