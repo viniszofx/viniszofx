@@ -11,6 +11,9 @@ export default function Home() {
       >
         Linkedin
       </Link>
+      <Link href="/notes" className="text-sm underline">
+        Create Notes
+      </Link>
     </div>
   );
 }

@@ -1,0 +1,413 @@
+:root {
+  --notes-bg: #0b0b0b00;
+}
+
+.root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 48px;
+  box-sizing: border-box;
+  background: var(--notes-bg, #ffffff00);
+  color: var(--notes-fg, #0f172a);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans";
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header {
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.cardHeaderInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.cardTitle {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.02;
+  color: inherit;
+  outline: none;
+}
+
+.cardTitle:focus,
+.cardTitle:focus-visible,
+.cardTitle:active {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  background: transparent !important;
+}
+
+.cardControls { display:flex; gap:8px; align-items:center; }
+
+.statusIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.statusIndicator svg {
+  filter: drop-shadow(0 0 6px rgba(34,197,94,0.14));
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.42);
+  color: rgba(255,255,255,0.84);
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease, opacity .15s ease, box-shadow .15s ease;
+}
+
+.iconButton:hover { background: rgba(17, 24, 39, 0.62); transform: translateY(-1px); }
+
+.iconButton svg { width: 15px; height: 15px; }
+
+.saveButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 44px;
+  height: 38px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.46);
+  color: rgba(255,255,255,0.88);
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+
+.saveButton:hover { background: rgba(17, 24, 39, 0.66); transform: translateY(-1px); }
+
+.trafficLights {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.saveButton {
+  background: #111827;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.card {
+  background: var(--card-bg, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(2, 6, 23, 0.35);
+  padding: 48px 64px;
+  min-height: 297mm;
+  color: inherit;
+  max-width: 210mm;
+  margin: 0 auto;
+}
+
+.card :global(.ProseMirror) {
+  min-height: 60vh;
+  outline: none;
+  caret-color: rgb(15 23 42);
+  color: inherit;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.prose :global(.ProseMirror) {
+  min-height: 60vh;
+  outline: none;
+  caret-color: rgb(15 23 42) !important;
+  color: inherit !important;
+}
+
+/* Heading and paragraph spacing: normalized for consistent rhythm */
+.prose :global(.ProseMirror) h1 {
+  font-size: 48px !important;
+  font-weight: 800 !important;
+  margin: 0 0 0.6rem 0 !important; /* smaller bottom margin for tighter rhythm */
+  line-height: 1.04 !important;
+}
+.prose :global(.ProseMirror) h2 {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  margin: 1.0rem 0 0.5rem 0 !important;
+  line-height: 1.08 !important;
+}
+.prose :global(.ProseMirror) h3 {
+  font-size: 22px !important;
+  font-weight: 600 !important;
+  margin: 0.9rem 0 0.4rem 0 !important;
+  line-height: 1.12 !important;
+}
+.prose :global(.ProseMirror) p {
+  margin: 0 0 0.75rem 0 !important; /* consistent paragraph spacing */
+  line-height: 1.7 !important;
+}
+
+/* Rich styling for Notion-like blocks */
+.prose :global(.ProseMirror),
+.prose :global(.ProseMirror) * {
+  color: inherit !important;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans" !important;
+}
+
+.prose :global(.ProseMirror) strong { font-weight: 700 !important; }
+.prose :global(.ProseMirror) em { font-style: italic !important; }
+.prose :global(.ProseMirror) a { color: #2563eb !important; text-decoration: underline !important; }
+
+.prose :global(.ProseMirror) ul { padding-left: 28px !important; margin: 0 0 0.75rem 0 !important; }
+.prose :global(.ProseMirror) ol { padding-left: 28px !important; margin: 0 0 0.75rem 0 !important; }
+.prose :global(.ProseMirror) li { margin: 0.35rem 0 !important; }
+
+/* Force visible list markers (override global resets) */
+.prose :global(.ProseMirror) ul { list-style-type: disc !important; }
+.prose :global(.ProseMirror) ol { list-style-type: decimal !important; }
+.prose :global(.ProseMirror) li::marker { color: inherit !important; font-size: 1em !important; }
+.prose :global(.ProseMirror) li { display: list-item !important; }
+
+.prose :global(.ProseMirror) blockquote {
+  border-left: 4px solid rgba(0,0,0,0.08) !important;
+  margin: 0 0 0.75rem 0 !important;
+  padding: 10px 14px !important;
+  background: rgba(0,0,0,0.02) !important;
+}
+
+.prose :global(.ProseMirror) pre,
+.prose :global(.ProseMirror) code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace !important;
+}
+.prose :global(.ProseMirror) pre {
+  background: rgba(0,0,0,0.04) !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+  overflow: auto !important;
+  margin: 0 0 0.75rem 0 !important;
+}
+.prose :global(.ProseMirror) code { background: rgba(0,0,0,0.03) !important; padding: 2px 6px !important; border-radius: 6px !important; }
+
+.prose :global(.ProseMirror) hr { border: none !important; border-top: 1px solid rgba(0,0,0,0.08) !important; margin: 16px 0 !important; }
+
+/* Printing styles: make content printer-friendly */
+@media print {
+  :root { color-scheme: light; }
+  @page { size: A4 portrait; margin: 20mm 20mm 16mm 20mm; }
+  body, .root, .card { background: #fff !important; color: #000 !important; }
+  body { margin: 0 !important; }
+  .root { padding: 0 !important; min-height: auto !important; }
+  .container { max-width: none !important; margin: 0 !important; }
+  .header { display: none !important; }
+  .editorArea { min-height: auto !important; }
+  .card { box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; min-height: auto !important; max-width: none !important; margin: 0 !important; width: 100% !important; }
+  .cardHeaderInner { margin-bottom: 3mm !important; }
+  .cardTitle { font-size: 20pt !important; line-height: 1.02 !important; }
+  .floatingToolbar, .slashMenu, .saveButton, .linkInputPopup, .toolButton, .activeItem { display: none !important; }
+  .statusIndicator, .iconButton { display: none !important; }
+  .cardControls { display: none !important; }
+  .card :global(.ProseMirror) { min-height: auto !important; }
+  .prose :global(.ProseMirror) { min-height: auto !important; }
+  .prose :global(.ProseMirror) h1 { font-size: 32pt !important; }
+  .prose :global(.ProseMirror) h2 { font-size: 20pt !important; }
+  .prose :global(.ProseMirror) h1 { margin-bottom: 2mm !important; }
+  .prose :global(.ProseMirror) h2 { margin-bottom: 1.5mm !important; }
+  .prose :global(.ProseMirror) h3 { font-size: 14pt !important; margin-bottom: 1.5mm !important; }
+  .prose :global(.ProseMirror) p, .prose :global(.ProseMirror) li { font-size: 11pt !important; line-height: 1.28 !important; margin-bottom: 2mm !important; }
+  .prose :global(.ProseMirror) ul, .prose :global(.ProseMirror) ol { margin-bottom: 2mm !important; padding-left: 18px !important; }
+  .prose :global(.ProseMirror) blockquote { margin-bottom: 2mm !important; padding: 5px 8px !important; }
+  .prose :global(.ProseMirror) pre { background: #f4f4f4 !important; color: #000 !important; }
+  .prose :global(.ProseMirror) img { page-break-inside: avoid !important; max-width: 100% !important; }
+  .prose :global(.ProseMirror) table { page-break-inside: avoid !important; }
+  /* Avoid breaking a block across pages */
+  .prose :global(.ProseMirror) p, .prose :global(.ProseMirror) h1, .prose :global(.ProseMirror) h2, .prose :global(.ProseMirror) pre { page-break-inside: avoid !important; }
+}
+
+/* Task / checkbox */
+.prose :global(.ProseMirror) .task {
+  display: flex !important; align-items: flex-start !important; gap: 8px !important; margin: 8px 0 !important;
+}
+.prose :global(.ProseMirror) .task input[type="checkbox"] { width: 18px !important; height: 18px !important; }
+
+/* Table basic styling */
+.prose :global(.ProseMirror) table { width: 100% !important; border-collapse: collapse !important; margin: 8px 0 12px 0 !important; }
+.prose :global(.ProseMirror) th,
+.prose :global(.ProseMirror) td { border: 1px solid rgba(0,0,0,0.08) !important; padding: 8px !important; }
+
+/* Images */
+.prose :global(.ProseMirror) img { max-width: 100% !important; border-radius: 8px !important; }
+
+/* Ensure caret visible in dark mode */
+@media (prefers-color-scheme: dark) {
+  .prose :global(.ProseMirror) { caret-color: #e6eef8 !important; }
+  .prose :global(.ProseMirror) pre { background: rgba(255,255,255,0.04) !important; }
+  .prose :global(.ProseMirror) blockquote { background: rgba(255,255,255,0.02) !important; border-left-color: rgba(255,255,255,0.06) !important; }
+}
+
+.editorArea {
+  min-height: 90vh;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+/* Document-like page background */
+.root { background: linear-gradient(180deg, rgba(10,10,10,0.95), rgba(7,7,7,0.95)); }
+.card { background: #fff; }
+.pageContainerCentered { display: flex; justify-content: center; }
+
+.slashMenu {
+  position: absolute;
+  z-index: 9999;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  background: #ffffff;
+  box-shadow: 0 12px 40px rgba(2, 6, 23, 0.18);
+  overflow: hidden;
+  width: 260px;
+}
+
+.slashItem {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.slashItem:hover {
+  background: #f3f4f6;
+}
+
+.slashHeader {
+  font-size: 12px;
+  padding: 8px 12px;
+  color: rgba(15,23,42,0.5);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.activeItem {
+  background: #111827;
+  color: #fff;
+}
+
+.floatingToolbar {
+  position: absolute;
+  z-index: 99999;
+  display: flex;
+  gap: 6px;
+  background: rgba(255,255,255,0.96);
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 8px 24px rgba(2,6,23,0.12);
+}
+.toolButton {
+  border: none;
+  background: transparent;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.toolButton:hover { background: rgba(0,0,0,0.04); }
+
+@media (prefers-color-scheme: dark) {
+  .floatingToolbar { background: rgba(7,7,7,0.9); }
+  .toolButton:hover { background: rgba(255,255,255,0.03); }
+}
+
+.linkInputPopup {
+  position: absolute;
+  z-index: 100000;
+  background: rgba(17, 17, 20, 0.96);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.34);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  min-width: 255px;
+  backdrop-filter: blur(14px);
+}
+
+.linkToolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0;
+}
+
+.linkToolbarButton {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255,255,255,0.82);
+  cursor: pointer;
+}
+
+.linkToolbarButton:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.linkInput {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 9px;
+  border: 2px solid #2b7fff;
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  outline: none;
+  font-size: 13px;
+}
+
+.linkInput::placeholder { color: rgba(255,255,255,0.45); font-size: 13px; }
+
+@media (prefers-color-scheme: dark) {
+  .linkInputPopup { background: rgba(10,10,10,0.96); }
+}
+
+/* Dark mode overrides */
+@media (prefers-color-scheme: dark) {
+  .root { color: #e6eef8; }
+  .subtitle { color: rgba(255,255,255,0.6); }
+  .card { background: #0b0b0b; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+  .slashMenu { background: #0b0b0b; border-color: rgba(255,255,255,0.06); }
+  .slashItem:hover { background: rgba(255,255,255,0.02); }
+  .activeItem { background: rgba(255,255,255,0.06); color: #fff; }
+}
