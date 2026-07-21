@@ -1,113 +1,70 @@
 "use client";
 
 import "@/app/index.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
+
+const lines = [
+  {
+    prompt: "$ whoami",
+    out: "Osiris Vinicius Mendes de Souza",
+  },
+  {
+    prompt: "$ cat stack.json",
+    out: '["Node.js","TypeScript","React","Next.js","Java/Spring"]',
+  },
+];
 
 export default function Home() {
-  const termRef = useRef<HTMLDivElement>(null);
+  const [history, setHistory] = useState<{ prompt: string; out: string }[]>([]);
+  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    const lines = [
-      {
-        prompt: "$ whoami",
-        out: "Osiris Vinicius Mendes de Souza",
-      },
-      {
-        prompt: "$ cat stack.json",
-        out: '["Node.js","TypeScript","React","Next.js","Java/Spring"]',
-      },
-    ];
-
-    const el = termRef.current;
-    if (!el) return;
-
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    function renderStatic() {
-      el.innerHTML = lines
-        .map(
-          (l) => `
-          <div class="line">
-            <span class="prompt">${l.prompt}</span>
-          </div>
-          <div class="out">${l.out}</div>
-        `,
-        )
-        .join("");
-    }
-
-    async function typeLine(
-      promptText: string,
-      outText: string,
-      container: HTMLDivElement,
-    ) {
-      const promptDiv = document.createElement("div");
-      promptDiv.className = "line";
-
-      const promptSpan = document.createElement("span");
-      promptSpan.className = "prompt";
-
-      promptDiv.appendChild(promptSpan);
-      container.appendChild(promptDiv);
-
-      for (let i = 0; i <= promptText.length; i++) {
-        promptSpan.textContent = promptText.slice(0, i);
-        await new Promise((r) => setTimeout(r, 22));
-      }
-
-      await new Promise((r) => setTimeout(r, 180));
-
-      const outDiv = document.createElement("div");
-      outDiv.className = "out";
-      outDiv.textContent = outText;
-
-      container.appendChild(outDiv);
-
-      await new Promise((r) => setTimeout(r, 260));
-    }
-
-    async function runTerminal() {
-      el.innerHTML = "";
-
-      for (const line of lines) {
-        await typeLine(line.prompt, line.out, el);
-      }
-
-      const cursor = document.createElement("div");
-      cursor.className = "line";
-      cursor.innerHTML =
-        '<span class="prompt">$</span><span class="cursor"></span>';
-
-      el.appendChild(cursor);
-    }
-
     if (reduced) {
-      renderStatic();
-    } else {
-      runTerminal();
+      setHistory(lines);
+      setFinished(true);
+      return;
     }
+
+    let cancelled = false;
+
+    async function run() {
+      for (const line of lines) {
+        if (cancelled) return;
+
+        await new Promise((r) => setTimeout(r, 450));
+
+        setHistory((prev) => [...prev, line]);
+      }
+
+      setFinished(true);
+    }
+
+    run();
 
     const revealEls = document.querySelectorAll(".reveal");
 
-    const io = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("in");
-            io.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.12,
+        threshold: 0.15,
       },
     );
 
-    revealEls.forEach((e) => io.observe(e));
+    revealEls.forEach((el) => observer.observe(el));
 
-    return () => io.disconnect();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -159,7 +116,24 @@ export default function Home() {
                 <span className="tb-title">~/vinicius — zsh</span>
               </div>
 
-              <div className="terminal-body" ref={termRef}></div>
+              <div className="terminal-body">
+                {history.map((line, index) => (
+                  <div key={index}>
+                    <div className="line">
+                      <span className="prompt">{line.prompt}</span>
+                    </div>
+
+                    <div className="out">{line.out}</div>
+                  </div>
+                ))}
+
+                {finished && (
+                  <div className="line">
+                    <span className="prompt">$</span>
+                    <span className="cursor"></span>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="hero-ctas">
