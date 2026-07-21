@@ -211,6 +211,28 @@ nav .wrap {
   margin-bottom: 32px;
   max-width: 520px;
 }
+
+@media (max-width: 768px) {
+  .terminal {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .terminal-body {
+    font-size: 0.82rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .line,
+  .out {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
 .terminal-bar {
   display: flex;
   align-items: center;
