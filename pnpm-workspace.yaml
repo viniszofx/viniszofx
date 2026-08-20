@@ -1,0 +1,9 @@
+packages:
+  - "apps/*"
+  - "package/*"
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
+
+catalog:
+  zod: "^4.4.3"
