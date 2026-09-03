@@ -1,50 +1,26 @@
-import "@/app/globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import type React from "react";
+import {  JetBrains_Mono, Public_Sans } from "next/font/google";
+import "./globals.css";
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist",
-  display: "swap",
-});
+const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-});
+
+const publicSansHeading = Public_Sans({subsets:['latin'],variable:'--font-heading'});
 
 export const metadata: Metadata = {
-  title: "Vinicius Souza - Developer",
-  description: "Portfolio of Vinicius Souza, a Developer and Systems Analyst",
+  title: "Vinicius Souza | Analista de Sistemas",
+  description:
+    "Analista de Sistemas, Desenvolvedor Web e Mobile, apaixonado por tecnologia e inovação. Com experiência em desenvolvimento de software, busco constantemente aprimorar minhas habilidades e contribuir para projetos desafiadores.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geist.variable} ${geistMono.variable} font-sans antialiased min-h-screen bg-zinc-900 text-zinc-100 flex flex-col`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
-            {/* <ThemeToggle /> */}
-          </div>
-          {children}
-        </ThemeProvider>
-      </body>
+    <html
+      lang="en"
+      className={cn("h-full", "antialiased", jetbrainsMono.variable, publicSansHeading.variable)}
+    >
+      <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
 }
-
-import "./globals.css";
