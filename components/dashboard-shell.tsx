@@ -16,6 +16,7 @@ const CLOSE_THRESHOLD = 96;
 const navigation = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "Clients", href: "/dashboard/clients", icon: Users },
+  { label: "Employees", href: "/dashboard/employees", icon: Users },
   { label: "Trip", href: "/dashboard/trip", icon: Suitcase },
   { label: "Reservations", href: "/dashboard/reservations", icon: Hotel },
   { label: "Fleet", href: "/dashboard/fleet", icon: Car },

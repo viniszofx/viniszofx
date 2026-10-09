@@ -130,3 +130,11 @@ New trip usa diálogo simplificado com cliente, board, transporte, veículo e de
 Informações da viagem é uma seção com cidade, estado/UF, rua, número, complemento, bairro, CEP e datas de ida/retorno. O retorno não pode anteceder a ida. O campo livre Informações foi removido da interface.
 
 Reservations fica abaixo de Trip no menu. Armazena nome do hotel, telefone, endereço, diária, datas de entrada/saída e observações, com total calculado pelas noites. Inclui CRUD, confirmação de exclusão, busca global e armazenamento local.
+
+## Employees
+
+Employees fica acima de Trip no menu principal. Permite cadastrar, consultar, editar e excluir empregados com nome obrigatório, departamento, cargo, e-mail, telefone, endereço e observações opcionais. Usa catálogo responsivo, diálogo em duas colunas, confirmação de exclusão, toasts e datas de criação/atualização. Os registros ficam no IndexedDB deste navegador e participam da busca global.
+
+Employees inclui código curto de 8 caracteres derivado do UUID, preservado nas edições, endereço separado por CEP, rua, número, complemento, bairro, cidade e UF, consulta ViaCEP e anexos de até 20 MB acima das observações. O rodapé apresenta o aviso de armazenamento local e as datas de criação/atualização com horário.
+
+Trip permite selecionar vários colaboradores de Employees, buscar por nome/cargo/código e manter os vínculos na criação e edição com autosave na página. Os participantes aparecem no catálogo e na busca global; empregados removidos são sinalizados sem excluir a viagem.
