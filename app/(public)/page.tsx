@@ -1,40 +1,30 @@
+import type { Metadata } from "next";
+import { ArrowDown, ArrowUpRight, Mail, MapPin, Terminal } from "lucide-react";
+import { RiGithubLine as Github, RiLinkedinBoxLine as Linkedin } from "@remixicon/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+import { PortfolioBackground } from "@/components/portfolio/portfolio-background";
+import { ProjectCard } from "@/components/portfolio/project-card";
+import { profile, projects, technologies } from "@/lib/portfolio/content";
+
+export const metadata: Metadata = {
+  title: "Vinicius Souza | Portfólio",
+  description: "Portfólio de Vinicius Souza, Analista de Sistemas. Projetos web, APIs e aplicações com React, Next.js, Laravel, Spring Boot e ASP.NET Core.",
+};
 
 export default function Page() {
-  return (
-    <main className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center bg-muted/30 px-4 py-12 sm:px-6">
-      <Card className="mx-auto w-full max-w-lg">
-        <CardHeader className="flex flex-col items-center justify-center gap-4 text-center">
-          <Avatar size="lg" className="size-16">
-            <AvatarImage
-              src="https://github.com/viniszofx.png"
-              alt="Vinicius Souza"
-            />
-            <AvatarFallback>VS</AvatarFallback>
-          </Avatar>
-          <CardTitle>Atualizações estão em andamento</CardTitle>
-          <CardDescription>
-            Estamos trabalhando para trazer novidades em breve.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center gap-4 text-center">
-          <Button
-            nativeButton={false}
-            render={<Link href="https://google.com" />}
-          >
-            Voltar a navegar
-          </Button>
-        </CardContent>
-      </Card>
+  return <div className="relative isolate">
+    <PortfolioBackground />
+    <main id="conteudo" className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+      <section aria-labelledby="apresentacao" className="grid gap-12 border-b py-16 sm:py-24 lg:grid-cols-[1.4fr_1fr] lg:items-center lg:gap-20">
+        <div><p className="mb-6 flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"><span className="size-2 bg-primary" />Desenvolvimento de software</p><h1 id="apresentacao" className="font-heading text-5xl font-semibold leading-[1.08] tracking-tight sm:text-7xl">Vinicius<span className="block text-primary dark:text-cyan-300">Souza<span className="text-foreground">.</span></span></h1><p className="mt-6 text-lg sm:text-xl">{profile.role} & desenvolvedor full stack.</p><p className="mt-4 max-w-lg text-sm leading-7 text-muted-foreground sm:text-base">Construo aplicações web, APIs e ferramentas para transformar processos em experiências simples de usar.</p><div className="mt-8 flex flex-wrap gap-3"><Button nativeButton={false} render={<a href="#projetos" />} size="lg">Conheça os projetos<ArrowDown /></Button><Button nativeButton={false} render={<a href={profile.github} target="_blank" rel="noopener noreferrer" />} variant="outline" size="lg"><Github />GitHub<ArrowUpRight /></Button></div><p className="mt-8 flex items-center gap-2 text-xs text-muted-foreground"><MapPin className="size-3.5" />{profile.location}</p></div>
+        <div className="relative border bg-muted/20 p-5 sm:p-8"><div className="mb-5 flex items-center justify-between border-b pb-3 text-xs text-muted-foreground"><span className="flex items-center gap-2"><Terminal className="size-4" />sobre-mim.ts</span><span>01 — perfil</span></div><Avatar className="aspect-square size-full max-h-72 rounded-none border sm:max-h-80"><AvatarImage src={profile.avatar} alt="Vinicius Souza" className="rounded-none object-cover" /><AvatarFallback className="rounded-none text-6xl">VS</AvatarFallback></Avatar><div className="mt-5 flex flex-wrap justify-between gap-2 text-xs"><span>@viniszofx</span><span className="text-muted-foreground">Código, ideias e soluções.</span></div></div>
+      </section>
+      <section id="sobre" aria-labelledby="sobre-titulo" className="grid scroll-mt-24 gap-8 border-b py-14 sm:py-20 md:grid-cols-[1fr_2fr]"><div><p className="mb-3 text-xs uppercase tracking-widest text-muted-foreground">01 / Sobre</p><h2 id="sobre-titulo" className="font-heading text-3xl font-semibold">Da ideia à aplicação.</h2></div><div className="space-y-5 text-sm leading-8 text-muted-foreground sm:text-base"><p>Sou Vinicius Souza, formado em Análise e Desenvolvimento de Sistemas pelo Instituto Federal de Mato Grosso do Sul (IFMS). Trabalho com desenvolvimento de sistemas web, APIs e automações.</p><p>Meu interesse está em conectar interface, regras de negócio e dados. Do levantamento de requisitos à entrega, busco construir ferramentas que ajudem pessoas a organizar e executar seu trabalho.</p><a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-foreground underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-ring"><Linkedin className="size-4" />Mais sobre minha trajetória<ArrowUpRight className="size-4" /></a></div></section>
+      <section id="tecnologias" aria-labelledby="tecnologias-titulo" className="scroll-mt-24 border-b py-14 sm:py-20"><p className="mb-3 text-xs uppercase tracking-widest text-muted-foreground">02 / Tecnologias</p><h2 id="tecnologias-titulo" className="font-heading text-3xl font-semibold">Ferramentas de trabalho.</h2><div className="mt-8 grid gap-6 md:grid-cols-3">{technologies.map((group, index) => <div key={group.title} className="border-t-2 border-primary/40 pt-5"><p className="mb-4 flex justify-between text-sm font-semibold">{group.title}<span className="font-mono text-xs text-muted-foreground">0{index + 1}</span></p><ul className="flex flex-wrap gap-2">{group.items.map(item => <li key={item} className="border bg-muted/20 px-3 py-2 text-xs text-muted-foreground">{item}</li>)}</ul></div>)}</div></section>
+      <section id="projetos" aria-labelledby="projetos-titulo" className="scroll-mt-24 py-14 sm:py-20"><div className="mb-8 flex flex-wrap items-end justify-between gap-5"><div><p className="mb-3 text-xs uppercase tracking-widest text-muted-foreground">03 / Projetos</p><h2 id="projetos-titulo" className="font-heading text-3xl font-semibold">Código em prática.</h2></div><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-ring">Todos os repositórios<ArrowUpRight className="size-4" /></a></div><div className="grid gap-5 md:grid-cols-2">{projects.map((project, index) => <ProjectCard key={project.name} project={project} index={index} />)}</div></section>
+      <section id="contato" aria-labelledby="contato-titulo" className="mb-14 scroll-mt-24 border bg-muted/30 p-6 sm:mb-20 sm:p-10"><p className="mb-3 text-xs uppercase tracking-widest text-muted-foreground">04 / Contato</p><div className="flex flex-wrap items-center justify-between gap-8"><div><h2 id="contato-titulo" className="font-heading text-3xl font-semibold sm:text-4xl">Vamos conversar?</h2><p className="mt-4 max-w-md text-sm leading-7 text-muted-foreground">Uma ideia, um projeto ou uma troca sobre tecnologia. Você pode me encontrar por aqui.</p></div><div className="flex flex-wrap gap-3"><Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />}><Mail />Enviar e-mail</Button><Button nativeButton={false} render={<a href={profile.linkedin} target="_blank" rel="noopener noreferrer" />} variant="outline"><Linkedin />LinkedIn</Button></div></div><a href={`mailto:${profile.email}`} className="mt-6 inline-block break-all text-sm text-muted-foreground underline underline-offset-4">{profile.email}</a></section>
     </main>
-  );
+    <footer className="border-t"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs text-muted-foreground sm:px-6"><p>Vinicius Souza · Portfólio</p><a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-foreground"><Github className="size-4" />@viniszofx<ArrowUpRight className="size-3" /></a></div></footer>
+  </div>;
 }

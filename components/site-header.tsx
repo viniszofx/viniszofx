@@ -10,15 +10,16 @@ export function SiteHeader() {
       >
         <Link
           href="/"
-          aria-label="Viniccius — página inicial"
+          aria-label="Vinicius Souza — página inicial"
           className="font-heading text-xl font-semibold tracking-wider text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <span className="hidden sm:inline">Viniccius</span>
+          <span className="hidden sm:inline">Vinicius Souza</span>
           <span className="sm:hidden">V</span>
         </Link>
+        <div className="flex items-center gap-4 sm:gap-6"><div className="hidden items-center gap-5 text-xs sm:flex"><Link href="/#sobre" className="hover:text-primary">Sobre</Link><Link href="/#projetos" className="hover:text-primary">Projetos</Link><Link href="/#contato" className="hover:text-primary">Contato</Link></div>
         <Button nativeButton={false} render={<Link href="/login" />} size="sm">
           Login
-        </Button>
+        </Button></div>
       </nav>
     </header>
   );

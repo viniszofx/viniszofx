@@ -78,3 +78,9 @@ Na capa das Notes, o botão de paleta agrupa Trocar capa, Reposicionar/Concluir 
 Capas de boards e cards oferecem **Reposicionar** no seletor de cor. A prévia aceita arraste e controles horizontal/vertical. Concluir ajuste salva a posição, que também aparece nas miniaturas e permanece ao recarregar. No dialog do card, Reposicionar capa ajusta o rascunho até Salvar.
 
 O dialog de cards segue a divisão do Nodus: descrição e título à esquerda, anexos à direita no desktop e abaixo no celular. A descrição reutiliza o editor de Notes, com blocos, comandos /, tarefas, tabelas e formatação preservada no documento estruturado. Imagens coladas e arquivos inseridos pelo editor ficam nos anexos do card, com referências locais persistentes.
+
+## Portfólio público
+
+A index (`/`) apresenta Vinicius Souza, sua formação, tecnologias, projetos e contato, com links para GitHub e LinkedIn. Os dados foram conferidos no perfil público e nos READMEs dos repositórios em 08/10/2026 e ficam em `lib/portfolio/content.ts`; a página não depende da API do GitHub para renderizar. Os projetos são Workspace, Areco, Ticket Management e E-ticket. As miniaturas são ilustrações da interface, não capturas dos aplicativos.
+
+A apresentação é responsiva e acompanha o tema do site. O header mantém Login e adiciona atalhos para Sobre, Projetos e Contato. O Workspace pode ser experimentado pelo link do projeto.
