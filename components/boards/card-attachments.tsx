@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RiAttachmentLine as Paperclip, RiDeleteBinLine as Trash2, RiDownloadLine as Download, RiImageAddLine as ImagePlus, RiMoreLine as MoreHorizontal } from "@remixicon/react";
 import { Menu } from "@base-ui/react/menu";
 import { DashboardMenuPopup, menuItemClass } from "@/components/dashboard/menu-popup";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import type { CardAttachment } from "@/lib/boards/store";
 function Attachment({ file, onRemove, onCover, isCover }: { file: CardAttachment; onRemove: () => void; onCover?: () => void; isCover?: boolean }) {
@@ -26,8 +27,9 @@ function Attachment({ file, onRemove, onCover, isCover }: { file: CardAttachment
     </Menu.Root>
   </article>;
 }
-export function CardAttachments({ files, onRemove, onCover, coverId }: { files: CardAttachment[]; onRemove: (id: string) => void; onCover?: (id: string | null) => void; coverId?: string | null }) {
+export function CardAttachments({ files, onRemove, onCover, coverId, removalContext = "o card" }: { removalContext?: string; files: CardAttachment[]; onRemove: (id: string) => void; onCover?: (id: string | null) => void; coverId?: string | null }) {
   const [all, setAll] = useState(false);
+  const [deleting, setDeleting] = useState<CardAttachment | null>(null);
   if (!files.length) return null;
-  return <section className="space-y-2"><h3 className="flex items-center gap-2 text-sm font-semibold"><Paperclip className="size-4" />Anexos ({files.length})</h3>{(all ? files : files.slice(0, 3)).map(file => <Attachment key={file.id} file={file} onRemove={() => onRemove(file.id)} isCover={coverId === file.id} onCover={onCover ? () => onCover(coverId === file.id ? null : file.id) : undefined} />)}{files.length > 3 && <Button type="button" variant="ghost" size="sm" onClick={() => setAll(!all)}>{all ? "Mostrar menos" : `Mostrar todos (${files.length})`}</Button>}</section>;
+  return <section className="space-y-2"><h3 className="flex items-center gap-2 text-sm font-semibold"><Paperclip className="size-4" />Anexos ({files.length})</h3>{(all ? files : files.slice(0, 3)).map(file => <Attachment key={file.id} file={file} onRemove={() => setDeleting(file)} isCover={coverId === file.id} onCover={onCover ? () => onCover(coverId === file.id ? null : file.id) : undefined} />)}{files.length > 3 && <Button type="button" variant="ghost" size="sm" onClick={() => setAll(!all)}>{all ? "Mostrar menos" : `Mostrar todos (${files.length})`}</Button>}{deleting && <ConfirmDialog title="Remover anexo?" description={`O anexo ${deleting.name} e suas referências serão removidos ao salvar ${removalContext}.`} confirmLabel="Remover anexo" onConfirm={() => onRemove(deleting.id)} onClose={() => setDeleting(null)} />}</section>;
 }

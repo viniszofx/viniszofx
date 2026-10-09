@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { RiImageAddLine as ImagePlus, RiLoader4Line as LoaderCircle, RiDeleteBinLine as Trash2, RiExpandUpDownLine as MoveVertical } from "@remixicon/react";
+import { notifyError } from "@/lib/ui/notifications";
 import { Button } from "@/components/ui/button";
 import { newId, type CardAttachment } from "@/lib/boards/store";
 export function ImageCoverControls({ cover, onChange, label = "Upload de cover", onReposition }: { cover?: CardAttachment; onChange: (cover?: CardAttachment) => void; label?: string; onReposition?: () => void }) {
@@ -9,11 +10,11 @@ export function ImageCoverControls({ cover, onChange, label = "Upload de cover",
   const [busy, setBusy] = useState(false);
   async function upload(file?: File) {
     if (!file) return;
-    if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type) || !file.size || file.size > 20 * 1024 * 1024) { setError("Escolha uma imagem PNG, JPG, WebP ou GIF de até 20 MB."); return; }
+    if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type) || !file.size || file.size > 20 * 1024 * 1024) { setError("Escolha uma imagem PNG, JPG, WebP ou GIF de até 20 MB."); notifyError("Imagem inválida", "Escolha uma imagem PNG, JPG, WebP ou GIF de até 20 MB."); return; }
     setBusy(true); setError("");
     const url = URL.createObjectURL(file);
     try { const image = new Image(); image.src = url; await image.decode(); onChange({ id: newId(), name: file.name, type: file.type, size: file.size, blob: file }); }
-    catch { setError("Não foi possível abrir esta imagem. Escolha outro arquivo."); }
+    catch { setError("Não foi possível abrir esta imagem. Escolha outro arquivo."); notifyError("Falha ao abrir imagem", "Escolha outro arquivo."); }
     finally { URL.revokeObjectURL(url); setBusy(false); }
   }
   return <div className="mt-3 space-y-2 border-t pt-3">

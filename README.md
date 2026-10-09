@@ -96,3 +96,37 @@ Validação: `bun run build` e `bun run test:clients` verificam cadastro, valida
 ## Tema visual
 
 O tema segue o preset shadcn `b1xTtTQQVu`: Sera, base Stone, acento Cyan, gráficos Blue, fontes Oxanium e Raleway, ícones Remix Icon e menus `default-translucent` com realce `subtle`. Botões e superfícies Sera usam cantos retos; avatares mantêm seu formato próprio. Os componentes compartilhados mantêm os ajustes de responsividade, limites de altura e acessibilidade necessários ao dashboard. As superfícies de menus/popovers são centralizadas em `components/ui/menu-styles.ts`.
+
+## Feedback e confirmação
+
+O dashboard utiliza toasts Base UI para criação, edição, exclusão e erros de armazenamento ou upload. A confirmação de sucesso só aparece após a gravação no IndexedDB; salvamento automático e movimentação por arraste não geram notificações repetitivas. Os avisos são acessíveis, dispensáveis e seguem o tema Sera.
+
+Exclusões de clientes, boards, listas, cards, notas e anexos pedem confirmação. O diálogo compartilhado bloqueia cliques repetidos durante uma ação assíncrona e mantém os erros visíveis. Anexos do card só são removidos definitivamente ao salvar o card.
+
+Na criação e edição dos Boards, informe uma descrição e escolha um cliente opcional de Clients. O vínculo e a descrição aparecem no catálogo e no cabeçalho do board, participam da busca e ficam salvos no IndexedDB. A remoção de um cliente preserva o board e sinaliza o vínculo como Cliente removido até escolher outro ou Sem cliente.
+
+Boards possuem status **Draft**, **Started**, **Paused**, **Pending**, **Completed** e **Cancelled**, selecionado no painel direito do diálogo e exibido no catálogo e no cabeçalho. Novos boards e registros antigos sem status usam Draft; o status é salvo no navegador e pode ser alterado na edição.
+
+Trip fica abaixo de Clients no menu principal. New trip permite cadastrar descrição, cliente opcional e transporte (Car, Motorcycle, Bus, Plane ou Ship). Viagens podem ser editadas, excluídas com confirmação e encontradas pela busca global. Os registros ficam salvos neste navegador.
+
+Fleet fica abaixo de Trip no menu principal. Permite cadastrar, editar e excluir veículos com identificação, placa, marca, modelo, ano, tipo e observações. Inclui pesquisa, confirmação de exclusão, datas no rodapé e armazenamento local no navegador.
+
+Em Fleet, a coluna direita inclui RENAVAM e chassi opcionais, com ajuda sobre onde encontrar os códigos, e anexos antes das observações. Os arquivos (até 20 MB cada) ficam no IndexedDB e podem ser abertos, baixados ou removidos ao salvar o veículo.
+
+A identificação em Fleet é gerada automaticamente por tipo, marca, modelo e cor. A seleção de cor oferece opções padrão e Nova cor; cores personalizadas de veículos salvos ficam disponíveis nos próximos cadastros.
+
+Marca e modelo em Fleet usam seleções com opções iniciais e botão Novo. Modelos são filtrados pela marca; opções personalizadas são reutilizadas a partir dos veículos salvos. Ao trocar a marca, a seleção de modelo é limpa.
+
+Ano em Fleet é uma seleção e também integra a identificação automática (tipo · marca · modelo · cor · ano).
+
+Cada veículo possui um código curto de 8 caracteres derivado do UUID, exibido na listagem e no diálogo. O código é mantido na edição e pode ser pesquisado. Novos cadastros verificam duplicidade do código no armazenamento local antes de salvar.
+
+Trip permite vincular um veículo de Fleet, selecionando pela identificação, placa e código. O vínculo é salvo na viagem e aparece na listagem e na busca. Veículos removidos são sinalizados e a viagem permanece preservada.
+
+Trip inclui KM inicial/final, informações e local da viagem. O check Precisa de hospedagem? libera nome, telefone, endereço e diária em reais. KM final não pode ser menor que o inicial; todos esses campos são opcionais.
+
+New trip usa diálogo simplificado com cliente, board, transporte, veículo e descrição opcional. Clicar na viagem abre /dashboard/trip/[tripId] ao lado do aside; nessa página ficam também quilometragem, local, informações e hospedagem. Salvar na página mantém a viagem aberta.
+
+Informações da viagem é uma seção com cidade, estado/UF, rua, número, complemento, bairro, CEP e datas de ida/retorno. O retorno não pode anteceder a ida. O campo livre Informações foi removido da interface.
+
+Reservations fica abaixo de Trip no menu. Armazena nome do hotel, telefone, endereço, diária, datas de entrada/saída e observações, com total calculado pelas noites. Inclui CRUD, confirmação de exclusão, busca global e armazenamento local.

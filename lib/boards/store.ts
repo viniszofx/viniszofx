@@ -1,12 +1,14 @@
 "use client";
 
+import type { BoardStatus } from "./status";
 import { useSyncExternalStore } from "react";
+import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 
 export type CardAttachment = { id: string; name: string; type: string; size: number; blob: Blob };
 export type CoverPosition = { x: number; y: number };
 export type BoardCard = { createdAt?: string; updatedAt?: string; id: string; title: string; description: string; descriptionDocument?: Record<string, unknown> | null; completed: boolean; color: string; coverAttachmentId?: string | null; coverPosition?: CoverPosition; attachments?: CardAttachment[] };
 export type BoardList = { id: string; title: string; color: string; cards: BoardCard[] };
-export type Board = { coverPosition?: CoverPosition; cover?: CardAttachment; id: string; title: string; color: string; lists: BoardList[]; createdAt: string; updatedAt: string };
+export type Board = { status?: BoardStatus; description?: string; clientId?: string | null; coverPosition?: CoverPosition; cover?: CardAttachment; id: string; title: string; color: string; lists: BoardList[]; createdAt: string; updatedAt: string };
 type Snapshot = { boards: Board[]; loaded: boolean; error: string; pending: number };
 const initial: Snapshot = { boards: [], loaded: false, error: "", pending: 0 };
 let snapshot = initial;
@@ -45,7 +47,7 @@ function subscribe(listener: () => void) {
   if (channel) channel.onmessage = refresh;
   return () => { listeners.delete(listener); window.removeEventListener("focus", refresh); channel?.close(); };
 }
-function persist(boards: Board[]) {
+function persist(boards: Board[], notice?: string) {
   unsaved = true;
   snapshot = { ...snapshot, boards, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
@@ -56,23 +58,24 @@ function persist(boards: Board[]) {
       tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
     });
     if (snapshot.boards === boards) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
+    if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-boards"); channel.postMessage("changed"); channel.close(); }
-  }).catch(() => { snapshot = { ...snapshot, error: "Não foi possível salvar. Mantenha esta página aberta e tente novamente." }; })
+  }).catch(() => { snapshot = { ...snapshot, error: "Não foi possível salvar. Mantenha esta página aberta e tente novamente." }; notifyError("Falha ao salvar", "Não foi possível salvar. Mantenha esta página aberta e tente novamente."); })
     .finally(() => { snapshot = { ...snapshot, pending: snapshot.pending - 1 }; emit(); });
 }
 export function useBoards() { return useSyncExternalStore(subscribe, () => snapshot, () => initial); }
-export function saveBoard(board: Board) {
+export function saveBoard(board: Board, notice?: string) {
   const now = new Date().toISOString();
   const previous = snapshot.boards.find(item => item.id === board.id);
   const previousCards = new Map(previous?.lists.flatMap(list => list.cards.map(card => [card.id, { card, listId: list.id }] as const)) ?? []);
-  const next = { ...board, updatedAt: now, lists: board.lists.map(list => ({ ...list, cards: list.cards.map(card => {
+  const next = { ...board, status: board.status ?? "draft", updatedAt: now, lists: board.lists.map(list => ({ ...list, cards: list.cards.map(card => {
     const old = previousCards.get(card.id);
     if (old?.card === card && old.listId === list.id) return card;
     return { ...card, createdAt: old ? old.card.createdAt : card.createdAt ?? now, updatedAt: now };
   }) })) };
-  persist(snapshot.boards.some(item => item.id === board.id) ? snapshot.boards.map(item => item.id === board.id ? next : item) : [...snapshot.boards, next]);
+  persist(snapshot.boards.some(item => item.id === board.id) ? snapshot.boards.map(item => item.id === board.id ? next : item) : [...snapshot.boards, next], notice);
 }
-export function deleteBoard(id: string) { persist(snapshot.boards.filter(board => board.id !== id)); }
+export function deleteBoard(id: string) { persist(snapshot.boards.filter(board => board.id !== id), "Board excluído"); }
 export function retryBoards() { if (unsaved) persist(snapshot.boards); else void load(); }
 export function newId() { return typeof crypto.randomUUID === "function" ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join(""); }
 export function reorder<T>(items: T[], from: number, to: number) { const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next; }

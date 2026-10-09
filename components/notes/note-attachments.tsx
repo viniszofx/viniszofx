@@ -37,8 +37,8 @@ export function NoteAttachments({ files, disabled, onEmbed }: { files: Attachmen
       {preview && <FilePreview file={preview} url={files.url(preview, true)} />}
     </DialogContent></Dialog>
     <Dialog open={!!deleting} onOpenChange={(open) => { if (!open && !files.busy) setDeleting(null); }}><DialogContent>
-      <DialogTitle>Excluir anexo?</DialogTitle><p className="break-words text-sm">{deleting?.name}. Links e imagens incorporadas deixarão de funcionar.</p>
-      <div className="flex flex-wrap justify-end gap-2"><Button variant="outline" disabled={files.busy} onClick={() => setDeleting(null)}>Cancelar</Button><Button variant="destructive" disabled={files.busy} onClick={async () => { if (deleting) { await files.remove(deleting); setDeleting(null); } }}>Excluir</Button></div>
+      <DialogTitle>Excluir anexo?</DialogTitle>{files.error && <p role="alert" className="text-sm text-destructive">{files.error}</p>}<p className="break-words text-sm">{deleting?.name}. Links e imagens incorporadas deixarão de funcionar.</p>
+      <div className="flex flex-wrap justify-end gap-2"><Button variant="outline" disabled={files.busy} onClick={() => setDeleting(null)}>Cancelar</Button><Button variant="destructive" disabled={files.busy} onClick={async () => { if (deleting) { if (await files.remove(deleting)) setDeleting(null); } }}>Excluir</Button></div>
     </DialogContent></Dialog>
   </section>;
 }

@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
+import { useClients } from "@/lib/clients/store";
 import { useRef, useState } from "react";
 import { RiArrowLeftLine as ArrowLeft, RiArrowRightLine as ArrowRight, RiArrowUpLine as ArrowUp, RiArrowDownLine as ArrowDown, RiDraggable as GripVertical, RiPencilLine as Pencil, RiAddLine as Plus, RiDeleteBinLine as Trash2, RiAttachmentLine as Paperclip } from "@remixicon/react";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Button } from "@/components/ui/button";
 import { useBoards, saveBoard, newId, reorder, descriptionText, type BoardList, type BoardCard } from "@/lib/boards/store";
+import { BoardStatusBadge } from "./board-status";
 import { BoardDialog, DeleteDialog, type BoardFields } from "./board-dialog";
 import { BoardAppearance, BoardCoverBackground } from "./board-appearance";
 import { CardAppearance, CardCover } from "./card-appearance";
@@ -14,6 +16,7 @@ type Edit = { kind: "board" | "list" | "card"; listId?: string; cardId?: string;
 type Removal = { title: string; listId: string; cardId?: string };
 export function BoardPage({ boardId, initialCardId = "" }: { boardId: string; initialCardId?: string }) {
   const { boards, loaded } = useBoards();
+  const { clients, loaded: clientsLoaded } = useClients();
   const board = boards.find(board => board.id === boardId);
   const [manualEditing, setEditing] = useState<Edit | null | undefined>(undefined);
   const requestedList = board?.lists.find(list => list.cards.some(card => card.id === initialCardId));
@@ -23,7 +26,7 @@ export function BoardPage({ boardId, initialCardId = "" }: { boardId: string; in
   const drag = useRef<{ listId: string; cardId?: string } | null>(null);
   if (!loaded) return <main className="p-6" aria-label="Carregando board"><div className="h-24 animate-pulse rounded-none bg-muted" /></main>;
   if (!board) return <main className="space-y-4 p-6"><h1 className="font-heading text-2xl">Board não encontrado</h1><Link href="/dashboard/boards" className="text-primary underline">Voltar a Boards</Link><BoardsStatus /></main>;
-  function update(lists: BoardList[]) { if (board) saveBoard({ ...board, lists }); }
+  function update(lists: BoardList[], notice?: string) { if (board) saveBoard({ ...board, lists }, notice); }
   function patchCard(listId: string, cardId: string, patch: Partial<BoardCard>) { update(board!.lists.map(list => list.id === listId ? { ...list, cards: list.cards.map(card => card.id === cardId ? { ...card, ...patch } : card) } : list)); }
   function moveCard(listId: string, cardId: string, targetId: string, targetCardId?: string) {
     const card = board!.lists.find(list => list.id === listId)?.cards.find(card => card.id === cardId);
@@ -42,15 +45,15 @@ export function BoardPage({ boardId, initialCardId = "" }: { boardId: string; in
   }
   function submit(value: BoardFields) {
     if (!editing) return;
-    if (editing.kind === "board") { saveBoard({ ...board!, title: value.title, color: value.color }); return; }
+    if (editing.kind === "board") { saveBoard({ ...board!, title: value.title, color: value.color, description: value.description?.trim() ?? "", clientId: value.clientId ?? null, status: value.status ?? "draft" }, "Board atualizado"); return; }
     if (editing.kind === "list") {
-      update(editing.listId ? board!.lists.map(list => list.id === editing.listId ? { ...list, title: value.title, color: value.color } : list) : [...board!.lists, { id: newId(), title: value.title, color: value.color, cards: [] }]); return;
+      update(editing.listId ? board!.lists.map(list => list.id === editing.listId ? { ...list, title: value.title, color: value.color } : list) : [...board!.lists, { id: newId(), title: value.title, color: value.color, cards: [] }], editing.listId ? "Lista atualizada" : "Lista criada"); return;
     }
-    update(board!.lists.map(list => list.id === editing.listId ? { ...list, cards: editing.cardId ? list.cards.map(card => card.id === editing.cardId ? { ...card, ...value, description: value.description ?? "" } : card) : [...list.cards, { id: newId(), ...value, description: value.description ?? "", completed: false }] } : list));
+    update(board!.lists.map(list => list.id === editing.listId ? { ...list, cards: editing.cardId ? list.cards.map(card => card.id === editing.cardId ? { ...card, ...value, description: value.description ?? "" } : card) : [...list.cards, { id: newId(), ...value, description: value.description ?? "", completed: false }] } : list), editing.cardId ? "Card atualizado" : "Card criado");
   }
   return <main className="relative isolate flex min-h-[calc(100svh-65px)] min-w-0 flex-col gap-6 px-4 py-6 sm:px-6" style={board.color ? { backgroundColor: `color-mix(in srgb, ${board.color} 28%, var(--background))` } : undefined}>
     {board.cover && <BoardCoverBackground key={board.cover.id} cover={board.cover} position={board.coverPosition} />}
-    <header className={`flex flex-wrap items-center justify-between gap-4 ${board.cover ? "rounded-none bg-background/85 p-3 backdrop-blur-sm" : ""}`}><div className="min-w-0"><Link href="/dashboard/boards" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="size-4" />Boards</Link><h1 className="mt-3 break-words font-heading text-3xl font-semibold">{board.title}</h1></div><div className="flex flex-wrap gap-2"><Button variant="ghost" size="icon-sm" aria-label="Editar board" onClick={() => setEditing({ kind: "board", initial: board })}><Pencil /></Button><BoardAppearance board={board} /><Button size="sm" onClick={() => setEditing({ kind: "list", initial: { title: "", color: "" } })}><Plus />Nova lista</Button></div></header>
+    <header className={`flex flex-wrap items-center justify-between gap-4 ${board.cover ? "rounded-none bg-background/85 p-3 backdrop-blur-sm" : ""}`}><div className="min-w-0"><Link href="/dashboard/boards" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="size-4" />Boards</Link><h1 className="mt-3 break-words font-heading text-3xl font-semibold">{board.title}</h1><div className="mt-2"><BoardStatusBadge status={board.status} /></div>{board.description && <p className="mt-3 max-w-2xl whitespace-pre-wrap break-words text-sm text-muted-foreground">{board.description}</p>}{board.clientId && <p className="mt-2 text-xs text-muted-foreground">Cliente: {clients.some(client => client.id === board.clientId) ? <Link href={`/dashboard/clients?client=${encodeURIComponent(board.clientId)}`} className="underline underline-offset-4">{clients.find(client => client.id === board.clientId)?.name}</Link> : clientsLoaded ? "Cliente removido" : "Carregando…"}</p>}</div><div className="flex flex-wrap items-center gap-2"><Button variant="ghost" size="icon-sm" aria-label="Editar board" onClick={() => setEditing({ kind: "board", initial: board })}><Pencil /></Button><BoardAppearance board={board} /><Button size="sm" onClick={() => setEditing({ kind: "list", initial: { title: "", color: "" } })}><Plus />Nova lista</Button></div></header>
     <div className="flex min-h-72 min-w-0 items-start gap-4 overflow-x-auto pb-4">
       {board.lists.map((list, listIndex) => <section key={list.id} aria-label={`Lista ${list.title}`} onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); drop(list.id); }} className="w-72 shrink-0 rounded-none border bg-card p-3" style={list.color ? { borderTop: `3px solid ${list.color}` } : undefined}>
         <div className="flex items-center gap-2"><button draggable onDragStart={event => { drag.current = { listId: list.id }; event.dataTransfer.effectAllowed = "move"; event.dataTransfer.setData("text/plain", list.id); }} onDragEnd={() => { drag.current = null; }} aria-label={`Arrastar lista ${list.title}`} className="cursor-grab p-1"><GripVertical className="size-4" /></button><h2 className="min-w-0 flex-1 break-words text-sm font-semibold">{list.title} <span className="text-xs text-muted-foreground">{list.cards.length}</span></h2><Button variant="ghost" size="icon-xs" aria-label={`Editar lista ${list.title}`} onClick={() => setEditing({ kind: "list", listId: list.id, initial: list })}><Pencil /></Button><ColorPicker compact label={`Cor da lista ${list.title}`} value={list.color} onChange={color => update(board.lists.map(item => item.id === list.id ? { ...item, color: color ?? "" } : item))} /><Button variant="ghost" size="icon-xs" aria-label={`Excluir lista ${list.title}`} onClick={() => setRemoving({ title: list.title, listId: list.id })}><Trash2 /></Button></div>
@@ -69,7 +72,7 @@ export function BoardPage({ boardId, initialCardId = "" }: { boardId: string; in
       </section>)}
       {!board.lists.length && <p className="py-8 text-sm text-muted-foreground">Adicione uma lista para começar.</p>}
     </div><div className="w-fit rounded-none bg-background/80 px-3 py-2"><BoardsStatus /></div>
-    {editing && <BoardDialog title={editing.kind === "card" ? editing.cardId ? "Editar card" : "Criar card" : editing.kind === "list" ? editing.listId ? "Editar lista" : "Criar lista" : "Editar board"} initial={editing.initial} description={editing.kind === "card"} onSave={submit} onClose={() => setEditing(null)} />}
-    {removing && <DeleteDialog title={removing.title} onClose={() => setRemoving(null)} onDelete={() => update(removing.cardId ? board.lists.map(list => list.id === removing.listId ? { ...list, cards: list.cards.filter(card => card.id !== removing.cardId) } : list) : board.lists.filter(list => list.id !== removing.listId))} />}
+    {editing && <BoardDialog title={editing.kind === "card" ? editing.cardId ? "Editar card" : "Criar card" : editing.kind === "list" ? editing.listId ? "Editar lista" : "Criar lista" : "Editar board"} initial={editing.initial} boardDetails={editing.kind === "board"} description={editing.kind === "card"} onSave={submit} onClose={() => setEditing(null)} />}
+    {removing && <DeleteDialog title={removing.title} onClose={() => setRemoving(null)} onDelete={() => update(removing.cardId ? board.lists.map(list => list.id === removing.listId ? { ...list, cards: list.cards.filter(card => card.id !== removing.cardId) } : list) : board.lists.filter(list => list.id !== removing.listId), removing.cardId ? "Card excluído" : "Lista excluída")} />}
   </main>;
 }

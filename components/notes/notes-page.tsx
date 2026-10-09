@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { RiFileTextLine as FileText, RiLoader4Line as LoaderCircle, RiAddLine as Plus, RiPencilLine as Pencil, RiDeleteBinLine as Trash2 } from "@remixicon/react";
+import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 import { Button } from "@/components/ui/button";
 import { CatalogLayout, CatalogSearch, CatalogTile, CatalogPreview, CatalogFooter, CatalogCreate, CatalogSkeleton, catalogGrid } from "@/components/listing/catalog";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -35,15 +36,15 @@ export function NotesPage({ initialSearch = "", initialNoteId = "" }: { initialS
   async function create() {
     if (busy) return;
     setBusy(true); setError("");
-    try { const note = await createNote(); setEditing(note); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : "Não foi possível criar a nota."); }
+    try { const note = await createNote(); setEditing(note); notifySuccess("Anotação criada"); }
+    catch (cause) { const message = cause instanceof Error ? cause.message : "Não foi possível criar a nota."; setError(message); notifyError("Falha ao criar anotação", message); }
     finally { setBusy(false); }
   }
   async function remove() {
     if (!deleting || busy) return;
     setBusy(true); setError("");
-    try { await deleteNote(deleting.id); setNotes((previous) => previous?.filter((note) => note.id !== deleting.id) ?? []); setDeleting(null); }
-    catch (cause) { setError(cause instanceof Error ? cause.message : "Não foi possível excluir."); }
+    try { await deleteNote(deleting.id); setNotes((previous) => previous?.filter((note) => note.id !== deleting.id) ?? []); setDeleting(null); notifySuccess("Anotação excluída"); }
+    catch (cause) { const message = cause instanceof Error ? cause.message : "Não foi possível excluir."; setError(message); notifyError("Falha ao excluir anotação", message); }
     finally { setBusy(false); }
   }
   if (editing) return <NoteEditor key={editing.id} initial={editing} onBack={() => { setEditing(null); if (initialNoteId) router.replace("/dashboard/notes"); refresh(); }} />;

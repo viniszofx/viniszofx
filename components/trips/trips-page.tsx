@@ -1,0 +1,29 @@
+"use client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { RiSuitcaseLine, RiAddLine, RiPencilLine, RiDeleteBinLine } from "@remixicon/react";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { CatalogLayout, CatalogSearch, CatalogTile, CatalogFooter, CatalogCreate, CatalogSkeleton, catalogGrid } from "@/components/listing/catalog";
+import { useReservations } from "@/lib/reservations/store";
+import { useBoards } from "@/lib/boards/store";
+import { useVehicles } from "@/lib/fleet/store";
+import { useClients } from "@/lib/clients/store";
+import { useTrips, deleteTrip, retryTrips, matchesTrip, transportModes, type Trip } from "@/lib/trips/store";
+import { TripDialog } from "./trip-dialog";
+export function TripsPage({ initialTripId = "" }: { initialTripId?: string }) {
+ const { reservations } = useReservations();
+ const router = useRouter();
+ const { boards, loaded: boardsLoaded } = useBoards();
+ const { vehicles, loaded: fleetLoaded } = useVehicles();
+ const { trips, loaded, pending, error } = useTrips(); const { clients } = useClients();
+ const [manualEditing, setEditing] = useState<Trip | "new" | null | undefined>();
+ const editing = manualEditing === undefined ? trips.find(trip => trip.id === initialTripId) ?? null : manualEditing;
+ const [deleting, setDeleting] = useState<Trip | null>(null); const [search, setSearch] = useState("");
+ const filtered = trips.filter(trip => matchesTrip({ ...trip, description: `${trip.description} ${[trip.city, trip.state, trip.street, trip.number, trip.neighborhood, trip.postalCode, trip.departureDate, trip.returnDate].filter(Boolean).join(" ")} ${boards.find(board => board.id === trip.boardId)?.title ?? ""} ${vehicles.filter(vehicle => vehicle.id === trip.vehicleId).map(vehicle => `${vehicle.name} ${vehicle.plate} ${vehicle.code}`).join(" ")} ${clients.find(client => client.id === trip.clientId)?.name ?? ""}` }, search));
+ return <CatalogLayout section="Meu painel" title="Trip" description="Organize viagens e seus meios de transporte." action={<Button disabled={!loaded} onClick={() => setEditing("new")}><RiAddLine />New trip</Button>}><CatalogSearch label="Buscar viagens" value={search} onChange={setSearch} />
+ {!loaded ? <CatalogSkeleton label="Carregando viagens" /> : <><div className={catalogGrid}>{filtered.map(trip => <CatalogTile key={trip.id}><button aria-label={`Abrir viagem ${trip.description || trip.code}`} onClick={() => router.push(`/dashboard/trip/${trip.id}`)} className="min-w-0 flex-1 space-y-3 p-5 text-left outline-none hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring"><RiSuitcaseLine className="size-6 text-primary" /><p className="font-mono text-sm font-semibold">{trip.code}</p>{trip.description && <p className="line-clamp-3 whitespace-pre-wrap break-words text-sm">{trip.description}</p>}<p className="text-xs text-muted-foreground">{vehicles.find(vehicle => vehicle.id === trip.vehicleId)?.type ?? transportModes.find(mode => mode.value === trip.transport)?.label ?? trip.transport}</p>{(trip.city || trip.location) && <p className="break-words text-xs text-muted-foreground">Local: {[trip.city || trip.location, trip.state].filter(Boolean).join(" · ")}</p>}{trip.needsLodging && <p className="break-words text-xs text-muted-foreground">Hospedagem: {reservations.find(item => item.id === trip.reservationId) ? reservations.filter(item => item.id === trip.reservationId).map(item => `${item.code} · ${item.name}`).join("") : trip.reservationId ? "Reserva removida" : "A definir"}</p>}{trip.boardId && <p className="break-words text-xs text-muted-foreground">Board: {boards.find(board => board.id === trip.boardId)?.title ?? (boardsLoaded ? "Board removido" : "Carregando…")}</p>}{trip.vehicleId && <p className="break-words text-xs text-muted-foreground">Veículo: {vehicles.find(vehicle => vehicle.id === trip.vehicleId) ? vehicles.filter(vehicle => vehicle.id === trip.vehicleId).map(vehicle => `${vehicle.name} · ${vehicle.plate || "Sem placa"} · ${vehicle.code}`).join("") : fleetLoaded ? "Veículo removido" : "Carregando…"}</p>}{trip.clientId && <p className="break-words text-xs text-muted-foreground">Cliente: {clients.find(client => client.id === trip.clientId)?.name ?? "Cliente removido"}</p>}</button><CatalogFooter><span className="text-xs text-muted-foreground">{new Intl.DateTimeFormat("pt-BR",{dateStyle:"short"}).format(new Date(trip.createdAt))}</span><div className="flex items-center"><Button variant="ghost" size="icon-sm" aria-label={`Editar viagem ${trip.description || trip.code}`} onClick={() => setEditing(trip)}><RiPencilLine /></Button><Button variant="ghost" size="icon-sm" aria-label={`Excluir viagem ${trip.description || trip.code}`} onClick={() => setDeleting(trip)}><RiDeleteBinLine /></Button></div></CatalogFooter></CatalogTile>)}{!search.trim() && <CatalogCreate label="New trip" onClick={() => setEditing("new")} />}</div>{!filtered.length && <p className="text-sm text-muted-foreground">{search ? "Nenhuma viagem encontrada." : "Crie sua primeira viagem."}</p>}</>}
+ <div aria-live="polite" className="text-xs text-muted-foreground">{error ? <div role="alert">{error}<Button variant="outline" size="sm" onClick={retryTrips}>Tentar novamente</Button></div> : pending ? "Salvando…" : loaded ? "Salvo no navegador" : "Carregando…"}</div>
+ {editing && <TripDialog key={editing === "new" ? "new" : editing.id} trip={editing === "new" ? undefined : editing} onClose={() => setEditing(null)} />}{deleting && <ConfirmDialog title="Excluir viagem?" description="Esta viagem será removida deste navegador." onConfirm={() => deleteTrip(deleting.id)} onClose={() => setDeleting(null)} />}
+ </CatalogLayout>;
+}

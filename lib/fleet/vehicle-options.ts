@@ -1,0 +1,3 @@
+export const defaultVehicleModels: Record<string, string[]> = {
+ Fiat: ["Strada", "Toro", "Uno", "Argo", "Mobi"], Volkswagen: ["Gol", "Polo", "Saveiro", "T-Cross"], Chevrolet: ["Onix", "S10", "Spin", "Tracker"], Ford: ["Ranger", "Ka", "Transit"], Toyota: ["Corolla", "Hilux", "Yaris"], Honda: ["Civic", "City", "CG 160", "Biz", "HR-V"], Hyundai: ["HB20", "Creta"], Renault: ["Kwid", "Duster", "Master"], Nissan: ["Kicks", "Frontier"], Jeep: ["Renegade", "Compass"], Yamaha: ["Factor", "Fazer", "Lander"], "Mercedes-Benz": ["Sprinter", "Accelo"], Scania: [], Volvo: [], Iveco: [], BMW: [], Suzuki: [], Peugeot: [], Citroën: [],
+};

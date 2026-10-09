@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 
 export type ClientFields = { name: string; company: string; email: string; phone: string; address: string; notes: string };
 export type Client = ClientFields & { id: string; createdAt: string; updatedAt: string };
@@ -48,7 +49,7 @@ function subscribe(listener: () => void) {
   }
   return () => { listeners.delete(listener); if (!listeners.size) { dispose?.(); dispose = undefined; } };
 }
-function persist(clients: Client[]) {
+function persist(clients: Client[], notice?: string) {
   revision++; unsaved = true;
   snapshot = { ...snapshot, clients, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
@@ -59,8 +60,9 @@ function persist(clients: Client[]) {
       tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
     });
     if (snapshot.clients === clients) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
+    if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-clients"); channel.postMessage("changed"); channel.close(); }
-  }).catch(() => { snapshot = { ...snapshot, error: "Não foi possível salvar os clientes. Tente novamente." }; })
+  }).catch(() => { snapshot = { ...snapshot, error: "Não foi possível salvar os clientes. Tente novamente." }; notifyError("Falha ao salvar", "Não foi possível salvar os clientes. Tente novamente."); })
     .finally(() => { snapshot = { ...snapshot, pending: snapshot.pending - 1 }; emit(); });
 }
 export function useClients() { return useSyncExternalStore(subscribe, () => snapshot, () => initial); }
@@ -69,9 +71,9 @@ export function saveClient(fields: ClientFields, id?: string) {
   const previous = snapshot.clients.find(client => client.id === id);
   const now = new Date().toISOString();
   const client: Client = { ...fields, id: previous?.id ?? (typeof crypto.randomUUID === "function" ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("")), createdAt: previous?.createdAt ?? now, updatedAt: now };
-  persist(previous ? snapshot.clients.map(item => item.id === previous.id ? client : item) : [...snapshot.clients, client]);
+  persist(previous ? snapshot.clients.map(item => item.id === previous.id ? client : item) : [...snapshot.clients, client], previous ? "Cliente atualizado" : "Cliente cadastrado");
 }
-export function deleteClient(id: string) { persist(snapshot.clients.filter(client => client.id !== id)); }
+export function deleteClient(id: string) { persist(snapshot.clients.filter(client => client.id !== id), "Cliente excluído"); }
 export function retryClients() { if (unsaved) persist(snapshot.clients); else void load(); }
 export function matchesClient(client: Client, query: string) {
   const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");

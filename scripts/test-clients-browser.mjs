@@ -39,6 +39,7 @@ try {
   await field('E-mail','joao@example.com');await field('Telefone','(67) 99999-1234');await field('Endereço','Rua principal, 10');await field('Observações','Cliente de teste');await click('Salvar cliente');
   await until(`document.querySelector('button[aria-label="Abrir cliente João Souza"]') && !document.querySelector('[role="dialog"]')`);
   await until(`Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);
+  await until(`Array.from(document.querySelectorAll('[data-notification-type="success"]')).some(x=>x.textContent.includes('Cliente cadastrado'))`);
   await call('Page.reload');await until(`document.querySelector('button[aria-label="Abrir cliente João Souza"]')`);
   await field('Buscar clientes','JOAO');assert.equal(await evaluate(`document.querySelectorAll('main article').length`),1);
   await field('Buscar clientes','não existe');assert.equal(await evaluate(`document.querySelectorAll('main article').length`),0);
@@ -54,7 +55,15 @@ try {
   assert.ok(await evaluate(`document.documentElement.scrollWidth<=innerWidth`),'No mobile overflow');
   await click('Cancelar');await evaluate(`document.querySelector('button[aria-label="Excluir cliente João Atualizado"]').click()`);await until(`document.querySelector('[role="dialog"]')`);await click('Cancelar');assert.equal(await evaluate(`document.querySelectorAll('main article').length`),1);
   await evaluate(`document.querySelector('button[aria-label="Excluir cliente João Atualizado"]').click()`);await click('Excluir');await until(`!document.querySelector('main article') && Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);
+  await until(`Array.from(document.querySelectorAll('[data-notification-type="success"]')).some(x=>x.textContent.includes('Cliente excluído'))`);
   await call('Page.navigate',{url:baseUrl+'/dashboard/clients'});await until(`document.querySelector('h1')?.textContent==='Clients' && Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);assert.equal(await evaluate(`document.querySelectorAll('main article').length`),0);
+  await evaluate(`document.querySelectorAll('button[aria-label="Fechar notificação"]').forEach(button=>button.click())`);
+  await click('Novo cliente');await field('Nome','Falha de gravação');
+  await evaluate(`window.__transaction=IDBDatabase.prototype.transaction;IDBDatabase.prototype.transaction=function(stores,mode,...args){if(this.name==='viniszofx-clients'&&mode==='readwrite')throw new DOMException('Quota exceeded','QuotaExceededError');return window.__transaction.call(this,stores,mode,...args)}`);
+  await click('Salvar cliente');await until(`document.querySelector('[data-notification-type="error"]')`);
+  assert.ok(await evaluate(`Array.from(document.querySelectorAll('[data-notification-type="error"]')).some(x=>x.textContent.includes('Falha ao salvar'))`));
+  assert.ok(await evaluate(`!Array.from(document.querySelectorAll('[data-notification-type="success"]')).some(x=>x.textContent.includes('Cliente cadastrado'))`),'Failed persistence must not announce success');
+  await evaluate(`IDBDatabase.prototype.transaction=window.__transaction`);await click('Tentar novamente');await until(`Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);
   assert.equal(exceptions.length,0,exceptions.join('\n'));
   console.log('PASS: Clients outside Workspace; validation, creation, editing, search, global search link, timestamps, reload, mobile and deletion.');
 } finally {socket?.close();browser.kill();server.kill();await sleep(300);rmSync(profile,{recursive:true,force:true});rmSync(downloads,{recursive:true,force:true});}

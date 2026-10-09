@@ -18,11 +18,12 @@ const colors = [
 ] as const;
 
 export function ColorPicker(
-  { label, value, onChange, compact = false, disabled = false, children }: {
+  { label, value, onChange, compact = false, compactSize = "icon-xs", disabled = false, children }: {
     label: string;
     value?: string | null;
     onChange: (value: string | null) => void;
     compact?: boolean;
+    compactSize?: "icon-xs" | "icon-sm";
     disabled?: boolean;
     children?: ReactNode;
   },
@@ -39,7 +40,7 @@ export function ColorPicker(
           <Button
             type="button"
             variant={compact ? "ghost" : "outline"}
-            size={compact ? "icon-xs" : "sm"}
+            size={compact ? compactSize : "sm"}
             disabled={disabled}
             aria-label={label}
           />

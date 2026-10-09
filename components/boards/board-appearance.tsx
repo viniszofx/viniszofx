@@ -9,7 +9,7 @@ import { saveBoard, type Board, type CoverPosition } from "@/lib/boards/store";
 
 export function BoardAppearance({ board }: { board: Board }) {
   const [adjusting, setAdjusting] = useState(false);
-  return <><ColorPicker compact label={`Cor do board ${board.title}`} value={board.color} onChange={color => saveBoard({ ...board, color: color ?? "", cover: undefined })}>
+  return <><ColorPicker compact compactSize="icon-sm" label={`Cor do board ${board.title}`} value={board.color} onChange={color => saveBoard({ ...board, color: color ?? "", cover: undefined })}>
     <ImageCoverControls cover={board.cover} onReposition={() => setAdjusting(true)} onChange={cover => saveBoard({ ...board, cover, coverPosition: { x: 50, y: 50 } })} />
   </ColorPicker>
     {adjusting && board.cover && <CoverRepositionDialog cover={board.cover} initial={board.coverPosition} onClose={() => setAdjusting(false)} onSave={coverPosition => saveBoard({ ...board, coverPosition })} />}

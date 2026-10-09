@@ -1,0 +1,36 @@
+import { spawn } from 'node:child_process';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert/strict';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const appPort = 30000 + Math.floor(Math.random() * 10000);
+const baseUrl = `http://127.0.0.1:${appPort}`;
+const server = spawn(process.execPath, ['node_modules/next/dist/bin/next','start','--hostname','127.0.0.1','--port',String(appPort)], {cwd:root,stdio:'ignore'});
+const debugPort = 15000 + Math.floor(Math.random() * 10000);
+const profile = mkdtempSync(join(tmpdir(), 'viniszofx-browser-'));
+const downloads = mkdtempSync(join(tmpdir(), 'viniszofx-downloads-'));
+const browser = spawn(process.env.VINISZOFX_TEST_BROWSER || '/usr/bin/microsoft-edge', ['--headless=new','--no-sandbox','--disable-gpu',`--remote-debugging-port=${debugPort}`,`--user-data-dir=${profile}`,'about:blank'], {stdio:'ignore'});
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+let socket;
+try {
+  for(let n=0;n<100;n++) { try { if((await fetch(baseUrl+'/dashboard/clients')).ok) break; } catch {} await sleep(100); }
+  let targets;
+  for(let n=0;n<100;n++) { try { targets = await fetch(`http://127.0.0.1:${debugPort}/json`).then(r=>r.json()); if(targets.some(x=>x.type==='page')) break; } catch {} await sleep(100); }
+  assert.ok(targets, 'Browser did not start');
+  socket = new WebSocket(targets.find(x=>x.type==='page').webSocketDebuggerUrl);
+  await new Promise(resolve=>socket.addEventListener('open',resolve,{once:true}));
+  let step = "starting"; const pending = new Map(); let sequence = 0; const exceptions=[]; const invalidRequests=[];
+  socket.addEventListener('message',event=>{const message=JSON.parse(event.data); if(message.method==='Runtime.exceptionThrown') exceptions.push(message.params.exceptionDetails.text); if(message.method==='Network.requestWillBeSent' && /notes\.viniszofx\.invalid|\/api\//.test(message.params.request.url)) { invalidRequests.push(message.params.request.url); console.error('Local asset request:', step, message.params.type, message.params.documentURL, JSON.stringify(message.params.initiator)); } if(!message.id)return;const handler=pending.get(message.id);pending.delete(message.id);if(message.error) handler.reject(message.error); else handler.resolve(message.result);});
+  const call=(method,params={})=>new Promise((resolve,reject)=>{const id=++sequence;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}));});
+  const evaluate=async(expression)=>{const response=await call('Runtime.evaluate',{expression,awaitPromise:true,returnByValue:true});if(response.exceptionDetails) throw new Error(response.exceptionDetails.exception?.description??response.exceptionDetails.text);return response.result.value;};
+  const until=async(expression)=>{for(let n=0;n<150;n++){if(await evaluate(`Boolean(${expression})`))return;await sleep(100);}throw new Error('Timed out: '+expression);};
+  const click=async(text)=>{await until(`Array.from(document.querySelectorAll('button,[role="menuitem"]')).some(x=>x.textContent.trim()===${JSON.stringify(text)})`); await evaluate(`Array.from(document.querySelectorAll('button,[role="menuitem"]')).find(x=>x.textContent.trim()===${JSON.stringify(text)}).click()`);};
+  await call('Runtime.enable');await call('Page.enable');await call('Network.enable');
+  await call('Emulation.setDeviceMetricsOverride',{width:1400,height:900,deviceScaleFactor:1,mobile:false});
+  const field=async(label,value)=>evaluate(`(()=>{const el=document.querySelector('[aria-label='+${JSON.stringify(JSON.stringify(label))}+']');const descriptor=Object.getOwnPropertyDescriptor(el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype,'value');descriptor.set.call(el,${JSON.stringify(value)});el.dispatchEvent(new Event('input',{bubbles:true}));})()`);
+  await call('Page.navigate',{url:baseUrl+'/dashboard/reservations'});await until(`document.querySelector('h1')?.textContent==='Reservations' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='New reservation')?.disabled`);await click('New reservation');await until(`document.querySelector('[aria-label="Nome do hotel"]')`);await field('Nome do hotel','Hotel Central');await field('Telefone do hotel','67999990000');await field('Rua','Rua Central');await field('Número','10');await field('Cidade','Corumbá');await field('Estado / UF','MS');await field('Bairro','Centro');await field('Data de entrada','2026-10-09');await field('Data de saída','2026-10-11');await field('Diária (R$)','18000');assert.equal(await evaluate(`document.querySelector('[aria-label="Total da reserva"]').textContent.replace(/\u00a0/g,' ')`),'R$ 360,00');await evaluate(`(()=>{const input=document.querySelector('input[type="file"]');const transfer=new DataTransfer();transfer.items.add(new File(['Comprovante da reserva'],'reserva.txt',{type:'text/plain'}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));})()`);await until(`Array.from(document.querySelectorAll('a')).some(x=>x.textContent==='reserva.txt')`);await click('Salvar reserva');await until(`document.querySelector('main article')?.textContent.includes('Hotel Central') && Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);
+  await call('Page.reload');await until(`document.querySelector('button[aria-label="Abrir reserva Hotel Central"]')`);await evaluate(`document.querySelector('button[aria-label="Abrir reserva Hotel Central"]').click()`);await until(`document.querySelector('[aria-label="Nome do hotel"]')`);assert.equal(await evaluate(`document.querySelector('[aria-label="Telefone do hotel"]').value`),'67999990000');await until(`Array.from(document.querySelectorAll('a')).some(x=>x.textContent==='reserva.txt')`);assert.equal(await evaluate(`fetch(Array.from(document.querySelectorAll('a')).find(x=>x.textContent==='reserva.txt').href).then(r=>r.text())`),'Comprovante da reserva');assert.equal(await evaluate(`document.querySelector('[aria-label="Cidade"]').value`),'Corumbá');await field('Nome do hotel','Hotel Atualizado');await click('Salvar reserva');await until(`document.querySelector('button[aria-label="Abrir reserva Hotel Atualizado"]')`);
+  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});assert.ok(await evaluate(`document.documentElement.scrollWidth<=innerWidth`));await evaluate(`document.querySelector('button[aria-label="Excluir reserva Hotel Atualizado"]').click()`);await click('Cancelar');assert.equal(await evaluate(`document.querySelectorAll('main article').length`),1);await evaluate(`document.querySelector('button[aria-label="Excluir reserva Hotel Atualizado"]').click()`);await click('Excluir');await until(`!document.querySelector('main article')`);assert.equal(exceptions.length,0,exceptions.join('\n'));console.log('PASS: Reservations creation, calculated total, edit, persistence, responsive layout and confirmed deletion.');
+} finally {socket?.close();browser.kill();server.kill();await sleep(300);rmSync(profile,{recursive:true,force:true});rmSync(downloads,{recursive:true,force:true});}

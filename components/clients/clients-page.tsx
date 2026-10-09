@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { RiBuildingLine as Building2, RiMailLine as Mail, RiPhoneLine as Phone, RiGroupLine as Users, RiAddLine as Plus, RiPencilLine as Pencil, RiDeleteBinLine as Trash2 } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { CatalogLayout, CatalogSearch, CatalogTile, CatalogFooter, CatalogCreate, CatalogSkeleton, catalogGrid } from "@/components/listing/catalog";
 import { useClients, deleteClient, retryClients, matchesClient, type Client } from "@/lib/clients/store";
 import { ClientDialog } from "./client-dialog";
@@ -22,6 +22,6 @@ export function ClientsPage({ initialClientId = "" }: { initialClientId?: string
     </CatalogTile>)}{!search.trim() && <CatalogCreate label="Criar cliente" onClick={() => setEditing("new")} />}</div>{!filtered.length && <p className="text-sm text-muted-foreground">{search.trim() ? "Nenhum cliente encontrado. Tente outro termo." : "Cadastre seu primeiro cliente para começar."}</p>}</>}
     <div aria-live="polite" className="text-xs text-muted-foreground">{error ? <div role="alert" className="flex flex-wrap items-center gap-3 text-destructive">{error}<Button variant="outline" size="sm" onClick={retryClients}>Tentar novamente</Button></div> : pending ? "Salvando…" : loaded ? "Salvo no navegador" : "Carregando…"}</div>
     {editing && <ClientDialog key={editing === "new" ? "new" : editing.id} client={editing === "new" ? undefined : editing} onClose={() => setEditing(null)} />}
-    {deleting && <Dialog open onOpenChange={open => { if (!open) setDeleting(null); }}><DialogContent><DialogTitle>Excluir cliente?</DialogTitle><DialogDescription>O cadastro de {deleting.name} será removido deste navegador. Esta ação não pode ser desfeita.</DialogDescription><div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setDeleting(null)}>Cancelar</Button><Button variant="destructive" onClick={() => { deleteClient(deleting.id); setDeleting(null); }}>Excluir</Button></div></DialogContent></Dialog>}
+    {deleting && <ConfirmDialog title="Excluir cliente?" description={`O cadastro de ${deleting.name} será removido deste navegador. Esta ação não pode ser desfeita.`} onConfirm={() => deleteClient(deleting.id)} onClose={() => setDeleting(null)} />}
   </CatalogLayout>;
 }

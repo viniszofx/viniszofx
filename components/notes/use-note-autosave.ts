@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { hasPendingDraft, saveNote, writeDraft } from "@/lib/notes/storage";
+import { notifyError } from "@/lib/ui/notifications";
 import type { Note } from "@/lib/notes/types";
 
 export function useNoteAutosave(initial: Note) {
@@ -26,6 +27,7 @@ export function useNoteAutosave(initial: Note) {
         }
         if (mounted.current) setStatus("saved");
       } catch (cause) {
+        notifyError("Falha ao salvar anotação", cause instanceof Error ? cause.message : "Não foi possível salvar.");
         if (mounted.current) { setStatus("error"); setError(cause instanceof Error ? cause.message : "Não foi possível salvar."); }
         throw cause;
       }

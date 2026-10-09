@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
 import { usePathname } from "next/navigation";
 import { useId, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
-import { RiHomeLine as Home, RiLayoutGridLine as LayoutGrid, RiFileTextLine as FileText, RiSettings3Line as Settings, RiGroupLine as Users, RiArrowDownSLine as ChevronDown, RiSidebarFoldLine as PanelLeftClose, RiSidebarUnfoldLine as PanelLeftOpen, RiMenuLine as Menu, RiCloseLine as X } from "@remixicon/react";
+import { RiHotelLine as Hotel, RiCarLine as Car, RiSuitcaseLine as Suitcase, RiHomeLine as Home, RiLayoutGridLine as LayoutGrid, RiFileTextLine as FileText, RiSettings3Line as Settings, RiGroupLine as Users, RiArrowDownSLine as ChevronDown, RiSidebarFoldLine as PanelLeftClose, RiSidebarUnfoldLine as PanelLeftOpen, RiMenuLine as Menu, RiCloseLine as X } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { ThemeSelector } from "@/components/dashboard/theme-selector";
@@ -16,6 +16,9 @@ const CLOSE_THRESHOLD = 96;
 const navigation = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "Clients", href: "/dashboard/clients", icon: Users },
+  { label: "Trip", href: "/dashboard/trip", icon: Suitcase },
+  { label: "Reservations", href: "/dashboard/reservations", icon: Hotel },
+  { label: "Fleet", href: "/dashboard/fleet", icon: Car },
   { label: "Workspace", href: "/dashboard/workspace", icon: LayoutGrid },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
@@ -24,16 +27,17 @@ function DashboardNavigation({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const [workspaceOpen, setWorkspaceOpen] = useState(true);
   const workspaceId = useId();
+  const workspaceActive = pathname === "/dashboard/workspace";
   function navigationLink(label: string, href: string, Icon: typeof Home) {
     const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href);
-    return <Link href={href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cn("flex min-w-0 flex-1 items-center gap-3 px-3 py-3 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
+    return <Link href={href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cn("flex min-w-0 flex-1 items-center gap-3 px-3 py-3 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", href === "/dashboard/workspace" ? "text-inherit" : active ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
       <Icon className="size-4 shrink-0" aria-hidden="true" /><span className="truncate">{label}</span>
     </Link>;
   }
   return <nav aria-label="Seções do dashboard" className="flex flex-1 flex-col gap-2">
     {navigation.map(({ label, href, icon }) => <div key={href}>
       {href === "/dashboard/workspace" ? <>
-        <div className="flex items-center">{navigationLink(label, href, icon)}<Button type="button" variant="ghost" size="icon-sm" aria-label={workspaceOpen ? "Recolher Workspace" : "Expandir Workspace"} aria-expanded={workspaceOpen} aria-controls={workspaceId} onClick={() => setWorkspaceOpen(!workspaceOpen)}><ChevronDown className={cn("transition-transform motion-reduce:transition-none", !workspaceOpen && "-rotate-90")} /></Button></div>
+        <div className={cn("flex items-center transition-colors", workspaceActive ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>{navigationLink(label, href, icon)}<Button type="button" variant="ghost" size="icon-sm" className="self-stretch h-auto bg-transparent text-inherit hover:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent dark:aria-expanded:bg-transparent" aria-label={workspaceOpen ? "Recolher Workspace" : "Expandir Workspace"} aria-expanded={workspaceOpen} aria-controls={workspaceId} onClick={() => setWorkspaceOpen(!workspaceOpen)}><ChevronDown className={cn("transition-transform motion-reduce:transition-none", !workspaceOpen && "-rotate-90")} /></Button></div>
         <div id={workspaceId} hidden={!workspaceOpen} className="ml-5 border-l border-sidebar-border pl-2">{navigationLink("Notes", "/dashboard/notes", FileText)}{navigationLink("Boards", "/dashboard/boards", LayoutGrid)}</div>
       </> : navigationLink(label, href, icon)}
     </div>)}
@@ -72,9 +76,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <Dialog.Root open={mobileOpen} onOpenChange={setMobileOpen}>
         <DashboardHeader menuButton={<>
           <Dialog.Trigger render={<Button variant="ghost" size="icon" className="md:hidden" aria-label="Abrir menu" />}><Menu aria-hidden="true" /></Dialog.Trigger>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex" aria-label={desktopOpen ? "Ocultar menu lateral" : "Mostrar menu lateral"} aria-expanded={desktopOpen} aria-controls="dashboard-sidebar" onClick={() => setDesktopOpen(!desktopOpen)}>
-            {desktopOpen ? <PanelLeftClose aria-hidden="true" /> : <PanelLeftOpen aria-hidden="true" />}
-          </Button>
+          {!desktopOpen && <Button variant="ghost" size="icon" className="hidden md:inline-flex" aria-label="Mostrar menu lateral" aria-expanded={false} aria-controls="dashboard-sidebar" onClick={() => setDesktopOpen(true)}><PanelLeftOpen aria-hidden="true" /></Button>}
         </>} />
         <Dialog.Portal>
           <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/40 transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0" />
@@ -91,7 +93,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       <div className="flex min-w-0 flex-1">
       <aside id="dashboard-sidebar" aria-label="Menu do dashboard" className={cn("relative hidden shrink-0 bg-sidebar text-sidebar-foreground md:sticky md:top-[65px] md:h-[calc(100svh-65px)] md:w-(--sidebar-width)", desktopOpen ? "md:block" : "md:hidden")}>
         <div className="flex h-full flex-col gap-6 p-5">
-          <p className="px-3 pt-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Meu painel</p>
+          <div className="flex items-center justify-between gap-2 pl-3"><p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Meu painel</p><Button variant="ghost" size="icon-sm" aria-label="Ocultar menu lateral" aria-expanded={desktopOpen} aria-controls="dashboard-sidebar" onClick={() => setDesktopOpen(false)}><PanelLeftClose aria-hidden="true" /></Button></div>
           <DashboardNavigation />
           <footer className="mt-auto border-t pt-3"><ThemeSelector /></footer>
         </div>
