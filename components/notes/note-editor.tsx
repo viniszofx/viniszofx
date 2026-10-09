@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useRef, useState } from "react";
 import { Popover } from "@base-ui/react/popover";
-import { ArrowLeft, Download, LoaderCircle, Paperclip } from "lucide-react";
+import { RiArrowLeftLine as ArrowLeft, RiDownloadLine as Download, RiLoader4Line as LoaderCircle, RiAttachmentLine as Paperclip } from "@remixicon/react";
 import type { Editor, JSONContent } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

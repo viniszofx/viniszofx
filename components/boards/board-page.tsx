@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, GripVertical, Pencil, Plus, Trash2, Paperclip } from "lucide-react";
+import { RiArrowLeftLine as ArrowLeft, RiArrowRightLine as ArrowRight, RiArrowUpLine as ArrowUp, RiArrowDownLine as ArrowDown, RiDraggable as GripVertical, RiPencilLine as Pencil, RiAddLine as Plus, RiDeleteBinLine as Trash2, RiAttachmentLine as Paperclip } from "@remixicon/react";
 import { ColorPicker } from "@/components/ui/color-picker";
 import { Button } from "@/components/ui/button";
 import { useBoards, saveBoard, newId, reorder, descriptionText, type BoardList, type BoardCard } from "@/lib/boards/store";

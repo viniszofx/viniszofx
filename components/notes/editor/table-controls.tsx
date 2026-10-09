@@ -1,3 +1,4 @@
+import { menuSurfaceClass } from "@/components/ui/menu-styles";
 import { useState, type RefObject, Children, isValidElement, type ReactNode, type ComponentProps } from "react";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { CellSelection, TableMap } from "@tiptap/pm/tables";
@@ -19,7 +20,7 @@ function Menu({ label, style, children, prepare, open, onOpenChange, dragHandler
   const normalize = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const matches = Children.toArray(children).filter((child) => normalize(actionText(child)).includes(normalize(search)));
   return <Popover.Root open={open} onOpenChange={(open) => { if (open) setSearch(""); onOpenChange(open); }}><Popover.Trigger render={<Button variant="secondary" size="icon-xs" className={`absolute z-30 size-5! tracking-normal ${dragHandlers ? "touch-none cursor-grab active:cursor-grabbing select-none" : ""}`} {...dragHandlers} style={style} data-table-control aria-label={label} onMouseDown={(event) => { event.preventDefault(); prepare(); }} onClick={prepare} />}>⋮⋮</Popover.Trigger>
-    <Popover.Portal><Popover.Positioner side="bottom" sideOffset={4} className="z-90"><Popover.Popup className="grid max-h-[70dvh] w-64 max-w-[calc(100vw-2rem)] gap-1 overflow-y-auto border border-border bg-popover p-2 text-popover-foreground shadow-lg">
+    <Popover.Portal><Popover.Positioner side="bottom" sideOffset={4} className="z-90"><Popover.Popup className={`grid max-h-[70dvh] w-64 max-w-[calc(100vw-2rem)] gap-1 overflow-y-auto border border-border p-2 ${menuSurfaceClass}`}>
       <Popover.Title className="px-2 py-2 text-xs text-muted-foreground">{label}</Popover.Title>
       <Input autoFocus aria-label={`Pesquisar ${label.toLowerCase()}`} placeholder="Pesquisar ações…" value={search} onChange={(event) => setSearch(event.target.value)} className="mb-1" />
       {matches.length ? matches : <p className="px-2 py-2 text-xs text-muted-foreground">Nenhuma ação encontrada.</p>}

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Menu } from "@base-ui/react/menu";
 import { RiPaletteLine } from "@remixicon/react";
-import { ImagePlus, MoveVertical, Trash2, Check } from "lucide-react";
+import { RiImageAddLine as ImagePlus, RiExpandUpDownLine as MoveVertical, RiDeleteBinLine as Trash2, RiCheckLine as Check } from "@remixicon/react";
 import { DashboardMenuPopup, menuItemClass } from "@/components/dashboard/menu-popup";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { LayoutGrid, Plus, Pencil, Trash2 } from "lucide-react";
+import { RiLayoutGridLine as LayoutGrid, RiAddLine as Plus, RiPencilLine as Pencil, RiDeleteBinLine as Trash2 } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { BoardAppearance, BoardCoverThumbnail } from "./board-appearance";
 import { CatalogLayout, CatalogSearch, CatalogTile, CatalogPreview, CatalogFooter, CatalogCreate, CatalogSkeleton, catalogGrid } from "@/components/listing/catalog";

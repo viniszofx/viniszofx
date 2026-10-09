@@ -1,7 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { Monitor, Moon, Sun, Check } from "lucide-react";
+import { RiComputerLine as Monitor, RiMoonLine as Moon, RiSunLine as Sun, RiCheckLine as Check } from "@remixicon/react";
 import { Menu } from "@base-ui/react/menu";
 import { Button } from "@/components/ui/button";
 import { DashboardMenuPopup, menuItemClass } from "./menu-popup";

@@ -1,10 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Plus, Search } from "lucide-react";
+import { RiAddLine as Plus, RiSearchLine as Search } from "@remixicon/react";
 import { Input } from "@/components/ui/input";
 
 export const catalogGrid = "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3";
-export function CatalogLayout({ title, description, action, children }: { title: string; description: string; action?: ReactNode; children: ReactNode }) {
-  return <main className="mx-auto flex w-full max-w-6xl flex-col gap-7 px-4 py-8 sm:px-6 sm:py-12"><header className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs uppercase tracking-widest text-primary">Workspace</p><h1 className="mt-2 font-heading text-3xl font-semibold">{title}</h1><p className="mt-2 text-sm text-muted-foreground">{description}</p></div>{action}</header>{children}</main>;
+export function CatalogLayout({ title, description, action, children, section = "Workspace" }: { section?: string; title: string; description: string; action?: ReactNode; children: ReactNode }) {
+  return <main className="mx-auto flex w-full max-w-6xl flex-col gap-7 px-4 py-8 sm:px-6 sm:py-12"><header className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs uppercase tracking-widest text-primary">{section}</p><h1 className="mt-2 font-heading text-3xl font-semibold">{title}</h1><p className="mt-2 text-sm text-muted-foreground">{description}</p></div>{action}</header>{children}</main>;
 }
 export function CatalogSearch({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return <label className="flex max-w-md items-center gap-2"><Search className="size-4 shrink-0" /><Input aria-label={label} placeholder={`${label}…`} value={value} onChange={event => onChange(event.target.value)} /></label>;

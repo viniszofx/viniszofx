@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowDown, ArrowUpRight, Mail, MapPin, Terminal } from "lucide-react";
+import { RiArrowDownLine as ArrowDown, RiArrowRightUpLine as ArrowUpRight, RiMailLine as Mail, RiMapPinLine as MapPin, RiTerminalLine as Terminal } from "@remixicon/react";
 import { RiGithubLine as Github, RiLinkedinBoxLine as Linkedin } from "@remixicon/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

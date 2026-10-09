@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useClients } from "@/lib/clients/store";
 import { useBoards } from "@/lib/boards/store";
 import { listNotes } from "@/lib/notes/storage";
 import type { Note } from "@/lib/notes/types";
-export type SearchEntry = { id: string; title: string; context: string; text: string; href: string; kind: "Notes" | "Boards" | "Listas" | "Cards" | "Páginas" };
+export type SearchEntry = { id: string; title: string; context: string; text: string; href: string; kind: "Notes" | "Boards" | "Listas" | "Cards" | "Clients" | "Páginas" };
 const normalize = (text: string) => text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");
 export function useLocalSearch(query: string) {
   const { boards, loaded, error: boardError } = useBoards();
+  const { clients, loaded: clientsLoaded, error: clientsError } = useClients();
   const [notes, setNotes] = useState<Note[] | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
@@ -18,6 +20,7 @@ export function useLocalSearch(query: string) {
     return () => { active = false;window.removeEventListener("focus", refresh);window.removeEventListener("viniszofx:notes-changed", refresh);channel?.close(); };
   }, []);
   const entries: SearchEntry[] = (notes ?? []).map(note => ({ id: note.id, title: note.title || "Sem título", context: "Nota pessoal", text: `${note.title} ${note.content}`, href: `/dashboard/notes?note=${encodeURIComponent(note.id)}`, kind: "Notes" }));
+  clients.forEach(client => entries.push({ id: client.id, title: client.name, context: client.company || client.email || "Cliente", text: [client.name, client.company, client.email, client.phone, client.address, client.notes].join(" "), href: `/dashboard/clients?client=${encodeURIComponent(client.id)}`, kind: "Clients" }));
   boards.forEach(board => {
     entries.push({ id: board.id, title: board.title, context: `${board.lists.length} listas`, text: board.title, href: `/dashboard/boards/${board.id}`, kind: "Boards" });
     board.lists.forEach(list => {
@@ -25,7 +28,7 @@ export function useLocalSearch(query: string) {
       list.cards.forEach(card => entries.push({ id: card.id, title: card.title, context: `${board.title} · ${list.title}`, text: `${card.title} ${card.description} ${board.title} ${list.title} ${card.attachments?.map(file => file.name).join(" ") ?? ""}`, href: `/dashboard/boards/${board.id}?card=${encodeURIComponent(card.id)}`, kind: "Cards" }));
     });
   });
-  for (const [title, href, text] of [["Home", "/dashboard", "início painel"], ["Workspace", "/dashboard/workspace", "área de trabalho"], ["Notes", "/dashboard/notes", "notas anotações documentos"], ["Boards", "/dashboard/boards", "quadros tarefas"], ["Settings", "/dashboard/settings", "configurações preferências"]]) entries.push({ id: href, title, href, text: `${title} ${text}`, context: "Navegação", kind: "Páginas" });
+  for (const [title, href, text] of [["Home", "/dashboard", "início painel"], ["Workspace", "/dashboard/workspace", "área de trabalho"], ["Notes", "/dashboard/notes", "notas anotações documentos"], ["Boards", "/dashboard/boards", "quadros tarefas"], ["Clients", "/dashboard/clients", "clientes contatos empresas"], ["Settings", "/dashboard/settings", "configurações preferências"]]) entries.push({ id: href, title, href, text: `${title} ${text}`, context: "Navegação", kind: "Páginas" });
   const terms = normalize(query.trim()).split(/\s+/).filter(Boolean);
-  return { results: terms.length ? entries.filter(entry => terms.every(term => normalize(entry.text).includes(term))) : [], loaded: loaded && (notes !== null || !!error), error: error || boardError };
+  return { results: terms.length ? entries.filter(entry => terms.every(term => normalize(entry.text).includes(term))) : [], loaded: loaded && clientsLoaded && (notes !== null || !!error), error: error || boardError || clientsError };
 }

@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
 import { usePathname } from "next/navigation";
-import { useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
-import { Home, LayoutGrid, FileText, Settings, PanelLeftClose, PanelLeftOpen, Menu, X } from "lucide-react";
+import { useId, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
+import { RiHomeLine as Home, RiLayoutGridLine as LayoutGrid, RiFileTextLine as FileText, RiSettings3Line as Settings, RiGroupLine as Users, RiArrowDownSLine as ChevronDown, RiSidebarFoldLine as PanelLeftClose, RiSidebarUnfoldLine as PanelLeftOpen, RiMenuLine as Menu, RiCloseLine as X } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { ThemeSelector } from "@/components/dashboard/theme-selector";
@@ -15,22 +15,27 @@ const MAX_WIDTH = 360;
 const CLOSE_THRESHOLD = 96;
 const navigation = [
   { label: "Home", href: "/dashboard", icon: Home },
+  { label: "Clients", href: "/dashboard/clients", icon: Users },
   { label: "Workspace", href: "/dashboard/workspace", icon: LayoutGrid },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 function DashboardNavigation({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  const [workspaceOpen, setWorkspaceOpen] = useState(true);
+  const workspaceId = useId();
   function navigationLink(label: string, href: string, Icon: typeof Home) {
     const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href);
-    return <Link href={href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cn("flex min-w-0 items-center gap-3 px-3 py-3 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
+    return <Link href={href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cn("flex min-w-0 flex-1 items-center gap-3 px-3 py-3 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "bg-sidebar-primary/10 text-sidebar-primary" : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
       <Icon className="size-4 shrink-0" aria-hidden="true" /><span className="truncate">{label}</span>
     </Link>;
   }
   return <nav aria-label="Seções do dashboard" className="flex flex-1 flex-col gap-2">
     {navigation.map(({ label, href, icon }) => <div key={href}>
-      {navigationLink(label, href, icon)}
-      {href === "/dashboard/workspace" && <div className="ml-5 border-l border-sidebar-border pl-2">{navigationLink("Notes", "/dashboard/notes", FileText)}{navigationLink("Boards", "/dashboard/boards", LayoutGrid)}</div>}
+      {href === "/dashboard/workspace" ? <>
+        <div className="flex items-center">{navigationLink(label, href, icon)}<Button type="button" variant="ghost" size="icon-sm" aria-label={workspaceOpen ? "Recolher Workspace" : "Expandir Workspace"} aria-expanded={workspaceOpen} aria-controls={workspaceId} onClick={() => setWorkspaceOpen(!workspaceOpen)}><ChevronDown className={cn("transition-transform motion-reduce:transition-none", !workspaceOpen && "-rotate-90")} /></Button></div>
+        <div id={workspaceId} hidden={!workspaceOpen} className="ml-5 border-l border-sidebar-border pl-2">{navigationLink("Notes", "/dashboard/notes", FileText)}{navigationLink("Boards", "/dashboard/boards", LayoutGrid)}</div>
+      </> : navigationLink(label, href, icon)}
     </div>)}
   </nav>;
 }

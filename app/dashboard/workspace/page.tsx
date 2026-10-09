@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { FileText, LayoutGrid } from "lucide-react";
+import { RiFileTextLine as FileText, RiLayoutGridLine as LayoutGrid } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = { title: "Workspace | Viniccius" };

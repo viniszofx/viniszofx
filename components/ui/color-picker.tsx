@@ -1,4 +1,5 @@
 "use client";
+import { menuSurfaceClass } from "@/components/ui/menu-styles";
 
 import { useState, type ReactNode } from "react";
 import { Popover } from "@base-ui/react/popover";
@@ -49,7 +50,7 @@ export function ColorPicker(
       </Popover.Trigger>
       <Popover.Portal>
         <Popover.Positioner sideOffset={8} className="z-100">
-          <Popover.Popup className="w-56 max-w-[calc(100vw-2rem)] border border-border bg-popover p-3 text-popover-foreground shadow-lg">
+          <Popover.Popup className={`w-56 max-w-[calc(100vw-2rem)] border border-border p-3 ${menuSurfaceClass}`}>
             <Popover.Title className="mb-3 text-sm font-semibold">
               {label}
             </Popover.Title>

@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useRef, useState, type FormEvent } from "react";
 import type { Editor } from "@tiptap/react";
-import { Check, Paperclip } from "lucide-react";
+import { RiCheckLine as Check, RiAttachmentLine as Paperclip } from "@remixicon/react";
 import { attachmentId, attachmentUrl } from "@/lib/notes/types";
 import { newId, type CoverPosition, type CardAttachment } from "@/lib/boards/store";
 import { CardCover, CardAppearance } from "./card-appearance";

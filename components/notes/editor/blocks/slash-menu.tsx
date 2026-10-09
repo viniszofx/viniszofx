@@ -1,3 +1,4 @@
+import { menuSurfaceClass } from "@/components/ui/menu-styles";
 import type { Editor } from "@tiptap/react";
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { BlockCommand } from "./commands";
@@ -26,7 +27,7 @@ export const SlashMenu = forwardRef<SlashMenuHandle, SlashMenuProps>(function Sl
     if (event.key === "Enter" || event.key === "Tab") { command(items[selected] ?? items[0]); return true; }
     return false;
   } }));
-  return <div className="overflow-hidden border border-border bg-popover text-popover-foreground shadow-lg">
+  return <div className={`overflow-hidden border border-border ${menuSurfaceClass}`}>
     <p className="border-b border-border px-3 py-2 text-xs font-medium text-muted-foreground">Blocos e ações</p>
     <div ref={list} id={menuId} role="listbox" aria-label="Comandos de bloco" className="max-h-[min(18rem,40dvh)] overflow-y-auto overscroll-contain p-1">
       {items.length ? items.map((item, index) => <button key={item.id} id={`${menuId}-${index}`} type="button" role="option" aria-selected={index === selected} tabIndex={-1} className={`flex w-full items-center gap-3 p-2 text-left ${index === selected ? "bg-accent text-accent-foreground" : "hover:bg-accent"}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSelected(index)} onClick={() => command(item)}>

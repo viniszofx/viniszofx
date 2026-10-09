@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Code2, ExternalLink, Layers3 } from "lucide-react";
+import { RiArrowRightUpLine as ArrowUpRight, RiCodeSSlashLine as Code2, RiExternalLinkLine as ExternalLink, RiStackLine as Layers3 } from "@remixicon/react";
 import { projects } from "@/lib/portfolio/content";
 
 type Project = (typeof projects)[number];

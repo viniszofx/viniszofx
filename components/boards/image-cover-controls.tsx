@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import { ImagePlus, LoaderCircle, Trash2, MoveVertical } from "lucide-react";
+import { RiImageAddLine as ImagePlus, RiLoader4Line as LoaderCircle, RiDeleteBinLine as Trash2, RiExpandUpDownLine as MoveVertical } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { newId, type CardAttachment } from "@/lib/boards/store";
 export function ImageCoverControls({ cover, onChange, label = "Upload de cover", onReposition }: { cover?: CardAttachment; onChange: (cover?: CardAttachment) => void; label?: string; onReposition?: () => void }) {

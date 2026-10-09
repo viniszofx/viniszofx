@@ -84,3 +84,15 @@ O dialog de cards segue a divisão do Nodus: descrição e título à esquerda, 
 A index (`/`) apresenta Vinicius Souza, sua formação, tecnologias, projetos e contato, com links para GitHub e LinkedIn. Os dados foram conferidos no perfil público e nos READMEs dos repositórios em 08/10/2026 e ficam em `lib/portfolio/content.ts`; a página não depende da API do GitHub para renderizar. Os projetos são Workspace, Areco, Ticket Management e E-ticket. As miniaturas são ilustrações da interface, não capturas dos aplicativos.
 
 A apresentação é responsiva e acompanha o tema do site. O header mantém Login e adiciona atalhos para Sobre, Projetos e Contato. O Workspace pode ser experimentado pelo link do projeto.
+
+## Clients locais
+
+Clients é uma seção do menu principal, fora de Workspace, em `/dashboard/clients`. O cadastro oferece nome obrigatório e empresa, e-mail, telefone, endereço e observações opcionais. A listagem usa o mesmo catálogo responsivo de Notes e Boards, com criação e edição em diálogo, busca por dados do cliente e exclusão com confirmação.
+
+Os registros são salvos em IndexedDB (`viniszofx-clients`), com fila de gravação, datas de criação/atualização e atualização entre abas. A busca global inclui clientes e abre diretamente o cadastro selecionado. Não há envio para servidor ou sincronização entre dispositivos; os dados permanecem neste navegador.
+
+Validação: `bun run build` e `bun run test:clients` verificam cadastro, validação, edição, busca global, datas, persistência, responsividade e exclusão no navegador.
+
+## Tema visual
+
+O tema segue o preset shadcn `b1xTtTQQVu`: Sera, base Stone, acento Cyan, gráficos Blue, fontes Oxanium e Raleway, ícones Remix Icon e menus `default-translucent` com realce `subtle`. Botões e superfícies Sera usam cantos retos; avatares mantêm seu formato próprio. Os componentes compartilhados mantêm os ajustes de responsividade, limites de altura e acessibilidade necessários ao dashboard. As superfícies de menus/popovers são centralizadas em `components/ui/menu-styles.ts`.

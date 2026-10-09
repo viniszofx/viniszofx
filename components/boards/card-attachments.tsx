@@ -1,7 +1,7 @@
 "use client";
 import { useObjectUrl } from "@/lib/browser/use-object-url";
 import { useState } from "react";
-import { Paperclip, Trash2, Download, ImagePlus, MoreHorizontal } from "lucide-react";
+import { RiAttachmentLine as Paperclip, RiDeleteBinLine as Trash2, RiDownloadLine as Download, RiImageAddLine as ImagePlus, RiMoreLine as MoreHorizontal } from "@remixicon/react";
 import { Menu } from "@base-ui/react/menu";
 import { DashboardMenuPopup, menuItemClass } from "@/components/dashboard/menu-popup";
 import { Button } from "@/components/ui/button";

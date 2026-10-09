@@ -1,3 +1,4 @@
+import { menuSurfaceClass } from "@/components/ui/menu-styles";
 import { useEffect, useRef, useState, type RefObject } from "react";
 import { Popover } from "@base-ui/react/popover";
 import { NodeSelection } from "@tiptap/pm/state";
@@ -93,7 +94,7 @@ export function BlockControls({ editor, container }: { editor: Editor; container
           editor.view.dispatch(editor.state.tr.setSelection(NodeSelection.create(editor.state.doc, active.pos)));
           setOpen(false);
         }} onDragEnd={() => { drag.current = null; setMarker(undefined); }} />}>⠿</Popover.Trigger>
-        <Popover.Portal><Popover.Positioner side="right" sideOffset={6} className="z-90"><Popover.Popup className="max-h-[70dvh] w-64 max-w-[calc(100vw-2rem)] overflow-y-auto border border-border bg-popover p-2 text-popover-foreground shadow-lg">
+        <Popover.Portal><Popover.Positioner side="right" sideOffset={6} className="z-90"><Popover.Popup className={`max-h-[70dvh] w-64 max-w-[calc(100vw-2rem)] overflow-y-auto border border-border p-2 ${menuSurfaceClass}`}>
           <Popover.Title className="px-2 py-2 text-xs font-medium text-muted-foreground">Ações do bloco</Popover.Title>
           <Button variant="ghost" size="sm" className="w-full justify-start" onClick={() => act(() => { duplicateBlock(editor, active.pos); })}>Duplicar bloco</Button>
           <Button variant="ghost" size="sm" className="w-full justify-start" disabled={block.index === 0} onClick={() => act(() => { moveBlockBy(editor, active.pos, -1); })}>Mover para cima</Button>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode, type FormEvent } from "react";
 import { Menu } from "@base-ui/react/menu";
-import { Search, UserRound, Settings, LogOut, House, LayoutGrid } from "lucide-react";
+import { RiSearchLine as Search, RiUserLine as UserRound, RiSettings3Line as Settings, RiLogoutBoxRLine as LogOut, RiHomeLine as House, RiLayoutGridLine as LayoutGrid } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { DashboardMenuPopup, menuItemClass } from "./menu-popup";
 

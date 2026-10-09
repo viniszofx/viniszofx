@@ -1,3 +1,4 @@
+import { menuSurfaceClass } from "@/components/ui/menu-styles";
 import { BubbleMenu } from "@tiptap/react/menus";
 import type { Editor } from "@tiptap/react";
 import { TextSelection } from "@tiptap/pm/state";
@@ -18,7 +19,7 @@ export function SelectionToolbar({ editor }: { editor: Editor }) {
   ] as const;
   return <>
     <BubbleMenu editor={editor} options={{ placement: "top", offset: 8 }} shouldShow={({ state }) => editor.isEditable && state.selection instanceof TextSelection && !state.selection.empty && !editor.isActive("codeBlock")}>
-      <div role="toolbar" aria-label="Formatação da seleção" className="flex max-w-[calc(100vw-2rem)] flex-wrap gap-1 border border-border bg-popover p-1 text-popover-foreground shadow-lg">
+      <div role="toolbar" aria-label="Formatação da seleção" className={`flex max-w-[calc(100vw-2rem)] flex-wrap gap-1 border border-border p-1 ${menuSurfaceClass}`}>
         {actions.map(([label, text, run]) => <Button key={label} aria-label={label} variant="ghost" size="icon-sm" onMouseDown={(event) => event.preventDefault()} onClick={run}>{text}</Button>)}
         <Button aria-label="Link" variant="ghost" size="icon-sm" onMouseDown={(event) => event.preventDefault()} onClick={() => { setUrl(editor.getAttributes("link").href ?? ""); setError(""); setLink(true); }}>↗</Button>
       </div>
