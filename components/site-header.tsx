@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ThemeSelector } from "@/components/dashboard/theme-selector";
 import { Button } from "@/components/ui/button";
 
 export function SiteHeader() {
@@ -17,6 +18,7 @@ export function SiteHeader() {
           <span className="sm:hidden">V</span>
         </Link>
         <div className="flex items-center gap-4 sm:gap-6"><div className="hidden items-center gap-5 text-xs sm:flex"><Link href="/#sobre" className="hover:text-primary">Sobre</Link><Link href="/#projetos" className="hover:text-primary">Projetos</Link><Link href="/#contato" className="hover:text-primary">Contato</Link></div>
+        <ThemeSelector compact />
         <Button nativeButton={false} render={<Link href="/login" />} size="sm">
           Login
         </Button></div>

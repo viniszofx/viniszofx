@@ -28,11 +28,12 @@ function subscribe(listener: () => void) {
   return () => { window.removeEventListener("storage", update); window.removeEventListener("viniszofx:theme-changed", update); media.removeEventListener("change", update); };
 }
 const options = [{ value: "light", label: "Light", icon: Sun }, { value: "dark", label: "Dark", icon: Moon }, { value: "system", label: "System", icon: Monitor }] as const;
-export function ThemeSelector() {
+export function ThemeSelector({ compact = false }: { compact?: boolean }) {
   const theme = useSyncExternalStore(subscribe, readTheme, () => "system" as Theme);
+  const Icon = options.find(option => option.value === theme)?.icon ?? Monitor;
   return <Menu.Root>
-    <Menu.Trigger render={<Button variant="ghost" className="w-full justify-start" aria-label="Selecionar tema" />}><Monitor />Tema<span className="ml-auto text-xs text-muted-foreground">{options.find(option => option.value === theme)?.label}</span></Menu.Trigger>
-    <DashboardMenuPopup side="top">
+    <Menu.Trigger render={<Button variant="ghost" size={compact ? "icon-sm" : "default"} className={compact ? undefined : "w-full justify-start"} aria-label="Selecionar tema" />}><Icon />{!compact && <>Tema<span className="ml-auto text-xs text-muted-foreground">{options.find(option => option.value === theme)?.label}</span></>}</Menu.Trigger>
+    <DashboardMenuPopup side={compact ? "bottom" : "top"}>
       {options.map(({ value, label, icon: Icon }) => <Menu.Item key={value} className={menuItemClass} onClick={() => {
         try { localStorage.setItem(key, value); } catch { return; }
         window.dispatchEvent(new Event("viniszofx:theme-changed"));
