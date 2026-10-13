@@ -4,6 +4,7 @@ import type { CardAttachment } from "@/lib/boards/store";
 import { addressText, type AddressFieldsValue } from "@/lib/format/address";
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
+import { readCollection, writeCollection } from "@/lib/storage/collections";
 
 export type EmployeeFields = AddressFieldsValue & { status?: "active" | "terminated"; attachments?: CardAttachment[]; name: string; department: string; role: string; email: string; phone: string; address: string; notes: string };
 export type Employee = EmployeeFields & { id: string; code: string; createdAt: string; updatedAt: string };
@@ -29,11 +30,13 @@ function db() {
 async function load() {
   const version = revision;
   try {
-    const database = await db();
-    const employees = await new Promise<Employee[]>((resolve, reject) => {
+    const employees = await readCollection("employees", async () => {
+      const database = await db();
+      return new Promise<Employee[]>((resolve, reject) => {
       const request = database.transaction("employees").objectStore("employees").getAll();
       request.onsuccess = () => resolve(request.result.map((employee: Employee) => ({ ...employee, code: employee.code ?? employee.id.replace(/-/g, "").slice(0, 8).toUpperCase() })));
       request.onerror = () => reject(request.error);
+      });
     });
     if (version === revision && !snapshot.pending && !unsaved) snapshot = { ...snapshot, employees, loaded: true, error: "" };
   } catch { snapshot = { ...snapshot, loaded: true, error: "Não foi possível carregar os empregados neste navegador." }; }
@@ -55,12 +58,7 @@ function persist(employees: Employee[], notice?: string) {
   revision++; unsaved = true;
   snapshot = { ...snapshot, employees, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
-    const database = await db();
-    await new Promise<void>((resolve, reject) => {
-      const tx = database.transaction("employees", "readwrite");
-      const store = tx.objectStore("employees"); store.clear(); employees.forEach(employee => store.put(employee));
-      tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
-    });
+    await writeCollection("employees", employees);
     if (snapshot.employees === employees) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
     if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-employees"); channel.postMessage("changed"); channel.close(); }

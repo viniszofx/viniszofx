@@ -1,32 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { RiFileTextLine as FileText, RiLayoutGridLine as LayoutGrid } from "@remixicon/react";
+import { redirect } from "next/navigation";
+import { RiFileTextLine as FileText, RiLayoutGridLine as LayoutGrid, RiSettings3Line as Settings, RiArrowRightSLine as ArrowRight } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth/server";
+import { getWorkplaceSettings } from "@/lib/workplace/settings";
 
 export const metadata: Metadata = { title: "Workspace | Viniccius" };
 
-export default function WorkspacePage() {
+export default async function WorkspacePage() {
+  const { data } = await auth.getSession();
+  if (!data?.user) redirect("/login");
+  const settings = await getWorkplaceSettings(data.user.id);
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
-      <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">Área de trabalho</p>
-        <h1 className="font-heading text-3xl font-semibold sm:text-4xl">Workspace</h1>
-        <p className="text-sm text-muted-foreground">Suas funcionalidades e ferramentas reunidas em um só lugar.</p>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2">
-      <section aria-label="Notes" className="flex flex-col items-center gap-3 bg-card px-6 py-16 text-center">
-        <FileText aria-hidden="true" className="mb-2 size-8 text-primary" />
-        <h2 className="font-heading text-xl font-semibold">Notes</h2>
-        <p className="max-w-md text-sm text-muted-foreground">Crie documentos por blocos, organize suas ideias e mantenha arquivos salvos no navegador.</p>
-        <Button nativeButton={false} render={<Link href="/dashboard/notes" />} className="mt-3">Abrir Notes</Button>
-      </section>
-      <section aria-label="Boards" className="flex flex-col items-center gap-3 bg-card px-6 py-16 text-center">
-        <LayoutGrid aria-hidden="true" className="mb-2 size-8 text-primary" />
-        <h2 className="font-heading text-xl font-semibold">Boards</h2>
-        <p className="max-w-md text-sm text-muted-foreground">Organize tarefas em listas e cards, com cores e movimentação por arraste.</p>
-        <Button nativeButton={false} render={<Link href="/dashboard/boards" />} className="mt-3">Abrir Boards</Button>
-      </section>
-      </div>
+    <main className="w-full px-4 pb-12 pt-6 sm:px-7">
+      <div className="flex flex-wrap items-end justify-between gap-4 border-b pb-5"><div><p className="mb-2 text-xs text-muted-foreground">Console / Workplace</p><h1 className="text-2xl font-semibold">{settings.name}</h1><p className="mt-1 text-sm text-muted-foreground">{settings.description}</p></div><Button nativeButton={false} render={<Link href="/dashboard/settings/workplace" />} variant="outline" size="sm"><Settings />Configurar</Button></div>
+      <section className="max-w-3xl pt-7" aria-label="Ferramentas do Workplace"><h2 className="mb-3 text-sm font-semibold">Ferramentas</h2><div className="border border-b-0 bg-card">
+        <Link href="/dashboard/notes" className="group flex items-center gap-3 border-b px-4 py-4 hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"><FileText aria-hidden="true" className="size-4 text-muted-foreground group-hover:text-primary" /><span className="flex-1"><strong className="block text-sm font-medium">Notas</strong><span className="text-xs text-muted-foreground">Documentos, ideias e arquivos</span></span><ArrowRight className="size-4 text-muted-foreground" /></Link>
+        <Link href="/dashboard/boards" className="group flex items-center gap-3 border-b px-4 py-4 hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"><LayoutGrid aria-hidden="true" className="size-4 text-muted-foreground group-hover:text-primary" /><span className="flex-1"><strong className="block text-sm font-medium">Quadros</strong><span className="text-xs text-muted-foreground">Listas, cards e tarefas</span></span><ArrowRight className="size-4 text-muted-foreground" /></Link>
+      </div></section>
     </main>
   );
 }

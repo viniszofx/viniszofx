@@ -9,7 +9,7 @@ import { NotesSkeleton as LoadingSkeleton } from "./notes-skeleton";
 import type { NoteAttachment, useNoteAttachments } from "./use-note-attachments";
 
 type Attachments = ReturnType<typeof useNoteAttachments>;
-export function NoteAttachments({ files, disabled, onEmbed }: { files: Attachments; disabled: boolean; onEmbed: (markdown: string) => void }) {
+export function NoteAttachments({ files, disabled, onEmbed, ownerLabel = "anotação" }: { files: Attachments; disabled: boolean; onEmbed: (markdown: string) => void; ownerLabel?: string }) {
   const input = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<NoteAttachment | null>(null);
   const [deleting, setDeleting] = useState<NoteAttachment | null>(null);
@@ -18,7 +18,7 @@ export function NoteAttachments({ files, disabled, onEmbed }: { files: Attachmen
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><h2 className="text-sm font-semibold">Anexos</h2><p className="mt-1 text-xs text-muted-foreground">Até 20 MB por arquivo. Cole imagens com Ctrl+V.</p></div>
       <Button variant="outline" size="sm" disabled={disabled || files.busy} onClick={() => input.current?.click()}><RiAttachment2 />{files.busy ? "Enviando…" : "Anexar arquivos"}</Button>
-      <input ref={input} type="file" multiple className="hidden" aria-label="Arquivos da anotação" onChange={(event) => { void files.upload(Array.from(event.target.files ?? [])); event.target.value = ""; }} />
+      <input ref={input} type="file" multiple className="hidden" aria-label={`Arquivos da ${ownerLabel}`} onChange={(event) => { void files.upload(Array.from(event.target.files ?? [])); event.target.value = ""; }} />
     </div>
     {files.loading && <LoadingSkeleton label="Carregando anexos…" />}
     {files.error && <p role="alert" className="text-sm text-destructive">{files.error}</p>}

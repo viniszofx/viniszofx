@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
+import { readCollection, writeCollection } from "@/lib/storage/collections";
 
 export const transportModes = [{ value: "car", label: "Car" }, { value: "motorcycle", label: "Motorcycle" }, { value: "bus", label: "Bus" }, { value: "plane", label: "Plane" }, { value: "ship", label: "Ship" }] as const;
 export type TransportMode = (typeof transportModes)[number]["value"] | "truck" | "van" | "other";
@@ -31,11 +32,13 @@ function db() {
 async function load() {
   const version = revision;
   try {
-    const database = await db();
-    const trips = await new Promise<Trip[]>((resolve, reject) => {
+    const trips = await readCollection("trips", async () => {
+      const database = await db();
+      return new Promise<Trip[]>((resolve, reject) => {
       const request = database.transaction("trips").objectStore("trips").getAll();
       request.onsuccess = () => resolve(request.result.map((trip: Trip & { name?: string }) => ({ ...trip, code: trip.code ?? trip.id.replace(/-/g, "").slice(0, 8).toUpperCase(), description: trip.description ?? trip.name ?? "" })));
       request.onerror = () => reject(request.error);
+      });
     });
     if (version === revision && !snapshot.pending && !unsaved) snapshot = { ...snapshot, trips, loaded: true, error: "" };
   } catch { snapshot = { ...snapshot, loaded: true, error: "Não foi possível carregar as viagens neste navegador." }; }
@@ -57,12 +60,7 @@ function persist(trips: Trip[], notice?: string) {
   revision++; unsaved = true;
   snapshot = { ...snapshot, trips, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
-    const database = await db();
-    await new Promise<void>((resolve, reject) => {
-      const tx = database.transaction("trips", "readwrite");
-      const store = tx.objectStore("trips"); store.clear(); trips.forEach(trip => store.put(trip));
-      tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
-    });
+    await writeCollection("trips", trips);
     if (snapshot.trips === trips) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
     if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-trips"); channel.postMessage("changed"); channel.close(); }

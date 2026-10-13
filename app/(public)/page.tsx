@@ -10,6 +10,7 @@ import { profile, projects, technologies } from "@/lib/portfolio/content";
 export const metadata: Metadata = {
   title: "Vinicius Souza | Portfólio",
   description: "Portfólio de Vinicius Souza, Analista de Sistemas. Projetos web, APIs e aplicações com React, Next.js, Laravel, Spring Boot e ASP.NET Core.",
+  alternates: { canonical: "/" },
 };
 
 export default function Page() {

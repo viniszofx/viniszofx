@@ -4,6 +4,7 @@ import { vehicleIdentification } from "./identity";
 import type { CardAttachment } from "@/lib/boards/store";
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
+import { readCollection, writeCollection } from "@/lib/storage/collections";
 
 export type VehicleFields = { renavam?: string; chassis?: string; attachments?: CardAttachment[]; color?: string; purchaseValue?: string; appraisalValue?: string; costPerLiter?: string; name: string; plate: string; brand: string; model: string; year: string; type: string; notes: string };
 export type Vehicle = VehicleFields & { id: string; code: string; createdAt: string; updatedAt: string };
@@ -29,11 +30,13 @@ function db() {
 async function load() {
   const version = revision;
   try {
-    const database = await db();
-    const vehicles = await new Promise<Vehicle[]>((resolve, reject) => {
+    const vehicles = await readCollection("vehicles", async () => {
+      const database = await db();
+      return new Promise<Vehicle[]>((resolve, reject) => {
       const request = database.transaction("vehicles").objectStore("vehicles").getAll();
       request.onsuccess = () => resolve(request.result.map((vehicle: Vehicle) => ({ ...vehicle, code: vehicle.code ?? shortCode(vehicle.id), name: vehicleIdentification(vehicle) })));
       request.onerror = () => reject(request.error);
+      });
     });
     if (version === revision && !snapshot.pending && !unsaved) snapshot = { ...snapshot, vehicles, loaded: true, error: "" };
   } catch { snapshot = { ...snapshot, loaded: true, error: "Não foi possível carregar os veículos neste navegador." }; }
@@ -55,12 +58,7 @@ function persist(vehicles: Vehicle[], notice?: string) {
   revision++; unsaved = true;
   snapshot = { ...snapshot, vehicles, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
-    const database = await db();
-    await new Promise<void>((resolve, reject) => {
-      const tx = database.transaction("vehicles", "readwrite");
-      const store = tx.objectStore("vehicles"); store.clear(); vehicles.forEach(vehicle => store.put(vehicle));
-      tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
-    });
+    await writeCollection("vehicles", vehicles);
     if (snapshot.vehicles === vehicles) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
     if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-fleet"); channel.postMessage("changed"); channel.close(); }

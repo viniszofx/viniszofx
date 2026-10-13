@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { ThemeSelector } from "@/components/dashboard/theme-selector";
+import { Button } from "@/components/ui/button";
 
-export function SiteHeader() {
+export function SiteHeader({ authenticated }: { authenticated: boolean }) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 isolate bg-background/30 bg-linear-to-b from-white/20 to-white/5 shadow-[0_8px_32px_-12px_rgb(0_0_0/0.18)] backdrop-blur-2xl backdrop-saturate-150 dark:from-white/10 dark:to-white/0">
       <nav
@@ -17,7 +18,9 @@ export function SiteHeader() {
           <span className="sm:hidden">V</span>
         </Link>
         <div className="flex items-center gap-4 sm:gap-6"><div className="hidden items-center gap-5 text-xs sm:flex"><Link href="/#sobre" className="hover:text-primary">Sobre</Link><Link href="/#projetos" className="hover:text-primary">Projetos</Link><Link href="/#contato" className="hover:text-primary">Contato</Link></div>
+        <Link href="/blog" className="text-xs font-medium hover:text-primary">Blog</Link>
         <ThemeSelector compact />
+        <Button nativeButton={false} render={<Link href={authenticated ? "/dashboard" : "/login"} />} variant="outline" size="sm">{authenticated ? "Ir ao app" : "Login"}</Button>
         </div>
       </nav>
     </header>

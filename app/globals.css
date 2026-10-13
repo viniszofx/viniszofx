@@ -128,3 +128,22 @@
     @apply font-sans;
   }
 }
+
+/* The console is denser than the public portfolio while sharing its theme tokens. */
+.dashboard-shell [data-slot="button"] {
+  font-family: var(--font-oxanium);
+  letter-spacing: normal;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.dashboard-shell [data-slot="card"] {
+  box-shadow: none;
+  border: 1px solid var(--border);
+  --card-spacing: 1.25rem;
+}
+
+.dashboard-shell [data-slot="card-title"] {
+  letter-spacing: normal;
+  text-transform: none;
+}

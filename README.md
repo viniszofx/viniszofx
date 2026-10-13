@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Blog, busca e publicidade
+
+Configure `SITE_URL` com a origem pública definitiva (por exemplo, `https://exemplo.com`) para gerar URLs canônicas, metadados sociais, `robots.txt` e `sitemap.xml` corretos. Na Vercel, `VERCEL_PROJECT_PRODUCTION_URL` é usado quando `SITE_URL` não está definido.
+
+No editor de posts, a coluna direita permite definir título e descrição de busca, retirar um artigo do índice e selecionar publicidade após a capa, no meio e ao final do texto. Em **Painel → Publicidade**, configure uma campanha para cada posição: anunciante, título, texto, link, imagem opcional e estado ativo. As imagens ficam no bucket Neon `post`. Uma campanha só aparece quando está ativa e a posição foi habilitada no post; posições sem campanha não ocupam espaço na página.
+
 ## Getting Started
 
 First, run the development server:
@@ -35,15 +41,25 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
-## Notes locais
+## Autenticação e storage
 
-Notes fica no sublink de Workspace. No celular, o menu abre pela esquerda, sobre a página, e fecha ao escolher um link, tocar fora ou pressionar Esc.
+O portfólio em `/` e os posts publicados em `/blog` são públicos. `/login` e `/api/auth/*` são acessíveis para permitir a entrada; todas as páginas em `/dashboard/*` exigem uma sessão válida do Neon Auth. Configure as variáveis de `.env.example` no ambiente de execução. Enquanto `neon_auth.user` estiver vazia, `/login` apresenta o formulário de criação da primeira conta. Depois disso, apresenta o login e a rota de cadastro por e-mail recusa novos registros. Configure os domínios permitidos no console do Neon para o domínio local e o de produção.
+
+`DATABASE_URL` é uma credencial exclusiva do servidor. Nunca use `NEXT_PUBLIC_` no nome dessa variável. `JWKS_URL` pode ser mantida para integrações futuras, mas a autenticação atual usa o endpoint `AUTH_NEON_URL` e não lê a JWKS diretamente.
+
+O bucket do Neon Object Storage é `workplace`, configurado em `NEON_STORAGE_BUCKET`. Upload, leitura por URL assinada e exclusão foram verificados com um objeto temporário. Execute `bun run test:storage` para repetir o teste. Capas e anexos são enviados ao bucket por rotas autenticadas.
+
+Os dados do painel usam Drizzle ORM e Postgres no Neon. Cada funcionalidade possui uma tabela com uma linha por registro: `app_clients`, `app_employees`, `app_vehicles`, `app_reservations`, `app_trips`, `app_boards`, `app_notes` e `app_note_attachments`. `app_migration_state` marca a importação inicial para que registros excluídos não voltem do IndexedDB. Ao abrir cada funcionalidade pela primeira vez após a atualização, os registros antigos daquele navegador são importados para a conta autenticada. O IndexedDB antigo é preservado como cópia local, mas novas alterações são gravadas no Postgres. Execute `bun run db:generate` após mudanças no esquema e `bun run db:migrate` para aplicar migrações.
+
+## Notes
+
+Notes fica no grupo Workspace do menu. No celular, o menu abre pela esquerda, sobre a página, e fecha ao escolher um link, tocar fora ou pressionar Esc.
 
 O dashboard inclui Anotações em `/dashboard/notes`, com catálogo pesquisável, criação, edição e exclusão. O editor oferece comandos `/`, formatação contextual, tarefas, tabelas, blocos lado a lado e incorporações por URL. O título aceita Enter para focar o corpo.
 
-Documentos são salvos automaticamente em IndexedDB (`viniszofx-notes`), com um pequeno rascunho de recuperação em localStorage para os últimos caracteres antes de recarregar. Capas e anexos de até 20 MB ficam no mesmo navegador; imagens podem ser coladas com Ctrl+V. Exportação em Markdown e JSON inclui os arquivos; PDF usa impressão A4 com margens de 25,4 mm.
+Documentos são salvos automaticamente no Postgres, com um pequeno rascunho de recuperação em localStorage para os últimos caracteres antes de recarregar. Capas e anexos de até 20 MB ficam no Neon Object Storage; imagens podem ser coladas com Ctrl+V. Exportação em Markdown e JSON inclui os arquivos; PDF usa impressão A4 com margens de 25,4 mm.
 
-Este modo é local: não usa API, conta ou sincronização entre dispositivos. Limpar os dados do site também remove as notas. Widgets externos continuam dependendo da conexão e das permissões do site incorporado.
+As notas exigem uma sessão e conexão com o servidor. Widgets externos continuam dependendo da conexão e das permissões do site incorporado.
 
 ### Validar as anotações
 
@@ -51,21 +67,29 @@ Execute `bun run build` e depois `bun run test:notes`. O teste abre um perfil te
 
 ## Navegação e aparência do painel
 
-O header reúne o controle do menu lateral, a busca global por Notes, boards, listas, cards e páginas e o menu do usuário com atalhos para Workspace, Configurações, página inicial e saída para a tela de login. O acesso atual continua demonstrativo.
+O menu lateral organiza as áreas em Visão geral, Pessoas, Operações, Workspace e Configurações. O header reúne o controle do menu, a busca global por Notes, boards, listas, cards e páginas e o menu do usuário com atalhos para Workspace, Perfil, configurações do Workplace, página inicial e saída da sessão.
+
+Em `/dashboard/settings/profile`, o usuário pode alterar o nome e a senha pelo Neon Auth. O e-mail é exibido apenas para consulta. Em `/dashboard/settings/workplace`, pode definir nome e descrição da área de trabalho, salvos na tabela `app_workplace_settings`, e escolher o tema. O nome e a descrição aparecem em `/dashboard/workspace`.
+
+## Blog
+
+O blog público está em `/blog`. A gestão de posts fica em `/dashboard/blog`: criação, edição, rascunhos, publicação, retorno a rascunho e exclusão. Apenas posts publicados e seus arquivos podem ser acessados por visitantes. O editor de posts reutiliza o editor de Notes, com formatação, blocos, tabelas, links, imagens, anexos, capa e colagem de imagens.
+
+Os posts e metadados dos arquivos ficam nas tabelas `app_blog_posts` e `app_blog_assets`. Os arquivos são enviados para o bucket **`post`** do Neon Object Storage, configurável por `NEON_POST_BUCKET` (padrão `post`), separado do bucket `workplace`. A API entrega os arquivos de posts publicados publicamente e exige sessão do autor para rascunhos. O limite é de 20 MB por arquivo.
 
 No rodapé do menu lateral, o botão de monitor oferece **Light**, **Dark** e **System**. A preferência é salva no navegador; System acompanha mudanças do tema do dispositivo. O menu e a busca também funcionam no celular.
 
-## Boards locais
+## Boards
 
-Boards fica abaixo de Notes no submenu Workspace. Crie, renomeie e exclua quadros; adicione listas e cards com título, descrição, cor e conclusão. Arraste listas e cards para reorganizar, inclusive entre listas. Os botões de direção permitem reorganizar os cards dentro da lista; a movimentação entre listas é feita por arraste. Exclusões pedem confirmação.
+Boards fica abaixo de Notes no grupo Workspace. Crie, renomeie e exclua quadros; adicione listas e cards com título, descrição, cor e conclusão. Arraste listas e cards para reorganizar, inclusive entre listas. Os botões de direção permitem reorganizar os cards dentro da lista; a movimentação entre listas é feita por arraste. Exclusões pedem confirmação.
 
-Os dados ficam no IndexedDB deste navegador, separados das Notes. A interface atualiza imediatamente e uma fila grava as alterações em sequência. Erros de armazenamento exibem uma opção de tentar novamente. Não há sincronização com servidor ou entre dispositivos.
+Os dados ficam na tabela `app_boards`. A interface atualiza imediatamente e uma fila grava as alterações em sequência. Erros de armazenamento exibem uma opção de tentar novamente.
 
-Novos Boards começam com **Stage**, **Progress** e **Done**. A paleta de cores fica entre o lápis e a lixeira em quadros, listas e cards. Cards aceitam anexos locais de até 20 MB por arquivo, imagens coladas com Ctrl+V, prévia e download. Os arquivos são armazenados com o card no IndexedDB e removidos ao excluir o conteúdo correspondente. O dialog exibe três anexos e oferece Mostrar todos.
+Novos Boards começam com **Stage**, **Progress** e **Done**. A paleta de cores fica entre o lápis e a lixeira em quadros, listas e cards. Cards aceitam anexos de até 20 MB por arquivo, imagens coladas com Ctrl+V, prévia e download. Os arquivos são armazenados no bucket `workplace` e removidos ao excluir o conteúdo correspondente. O dialog exibe três anexos e oferece Mostrar todos.
 
-A cor do Board preenche o fundo inteiro em um tom suave, adaptado ao tema. O seletor também oferece **Cover** para escolher uma imagem de fundo de até 20 MB e remover a capa. O catálogo exibe a imagem de capa na miniatura, quando definida, e mantém a cor suave no restante do cartão. Capas continuam armazenadas localmente no navegador.
+A cor do Board preenche o fundo inteiro em um tom suave, adaptado ao tema. O seletor também oferece **Cover** para escolher uma imagem de fundo de até 20 MB e remover a capa. O catálogo exibe a imagem de capa na miniatura, quando definida, e mantém a cor suave no restante do cartão.
 
-Cards também podem ter capa: envie pelo botão Cover no seletor de cor ou marque uma imagem anexada como capa no dialog. A imagem aparece no card e no dialog, fica salva no navegador e pode ser removida sem excluir o anexo.
+Cards também podem ter capa: envie pelo botão Cover no seletor de cor ou marque uma imagem anexada como capa no dialog. A imagem aparece no card e no dialog e pode ser removida sem excluir o anexo.
 
 Boards e Notes usam cantos retos e listagens com uma coluna no celular, duas a partir de 640 px e três a partir de 1024 px.
 
@@ -83,13 +107,13 @@ O dialog de cards segue a divisão do Nodus: descrição e título à esquerda, 
 
 A index (`/`) apresenta Vinicius Souza, sua formação, tecnologias, projetos e contato, com links para GitHub e LinkedIn. Os dados foram conferidos no perfil público e nos READMEs dos repositórios em 08/10/2026 e ficam em `lib/portfolio/content.ts`; a página não depende da API do GitHub para renderizar. Os projetos são Workspace, Areco, Ticket Management e E-ticket. As miniaturas são ilustrações da interface, não capturas dos aplicativos.
 
-A apresentação é responsiva e acompanha o tema do site. O header mantém Login e adiciona atalhos para Sobre, Projetos e Contato. O Workspace pode ser experimentado pelo link do projeto.
+A apresentação é responsiva e acompanha o tema do site. O header mantém Login e adiciona atalhos para Sobre, Projetos e Contato.
 
-## Clients locais
+## Clients
 
 Clients é uma seção do menu principal, fora de Workspace, em `/dashboard/clients`. O cadastro oferece nome obrigatório e empresa, e-mail, telefone, endereço e observações opcionais. A listagem usa o mesmo catálogo responsivo de Notes e Boards, com criação e edição em diálogo, busca por dados do cliente e exclusão com confirmação.
 
-Os registros são salvos em IndexedDB (`viniszofx-clients`), com fila de gravação, datas de criação/atualização e atualização entre abas. A busca global inclui clientes e abre diretamente o cadastro selecionado. Não há envio para servidor ou sincronização entre dispositivos; os dados permanecem neste navegador.
+Os registros são salvos na tabela `app_clients`, com fila de gravação, datas de criação/atualização e atualização entre abas. A busca global inclui clientes e abre diretamente o cadastro selecionado.
 
 Validação: `bun run build` e `bun run test:clients` verificam cadastro, validação, edição, busca global, datas, persistência, responsividade e exclusão no navegador.
 
@@ -99,19 +123,19 @@ O tema segue o preset shadcn `b1xTtTQQVu`: Sera, base Stone, acento Cyan, gráfi
 
 ## Feedback e confirmação
 
-O dashboard utiliza toasts Base UI para criação, edição, exclusão e erros de armazenamento ou upload. A confirmação de sucesso só aparece após a gravação no IndexedDB; salvamento automático e movimentação por arraste não geram notificações repetitivas. Os avisos são acessíveis, dispensáveis e seguem o tema Sera.
+O dashboard utiliza toasts Base UI para criação, edição, exclusão e erros de armazenamento ou upload. A confirmação de sucesso só aparece após a gravação no servidor; salvamento automático e movimentação por arraste não geram notificações repetitivas. Os avisos são acessíveis, dispensáveis e seguem o tema Sera.
 
 Exclusões de clientes, boards, listas, cards, notas e anexos pedem confirmação. O diálogo compartilhado bloqueia cliques repetidos durante uma ação assíncrona e mantém os erros visíveis. Anexos do card só são removidos definitivamente ao salvar o card.
 
-Na criação e edição dos Boards, informe uma descrição e escolha um cliente opcional de Clients. O vínculo e a descrição aparecem no catálogo e no cabeçalho do board, participam da busca e ficam salvos no IndexedDB. A remoção de um cliente preserva o board e sinaliza o vínculo como Cliente removido até escolher outro ou Sem cliente.
+Na criação e edição dos Boards, informe uma descrição e escolha um cliente opcional de Clients. O vínculo e a descrição aparecem no catálogo e no cabeçalho do board, participam da busca e ficam salvos no Postgres. A remoção de um cliente preserva o board e sinaliza o vínculo como Cliente removido até escolher outro ou Sem cliente.
 
-Boards possuem status **Draft**, **Started**, **Paused**, **Pending**, **Completed** e **Cancelled**, selecionado no painel direito do diálogo e exibido no catálogo e no cabeçalho. Novos boards e registros antigos sem status usam Draft; o status é salvo no navegador e pode ser alterado na edição.
+Boards possuem status **Draft**, **Started**, **Paused**, **Pending**, **Completed** e **Cancelled**, selecionado no painel direito do diálogo e exibido no catálogo e no cabeçalho. Novos boards e registros antigos sem status usam Draft; o status pode ser alterado na edição.
 
-Trip fica abaixo de Clients no menu principal. New trip permite cadastrar descrição, cliente opcional e transporte (Car, Motorcycle, Bus, Plane ou Ship). Viagens podem ser editadas, excluídas com confirmação e encontradas pela busca global. Os registros ficam salvos neste navegador.
+Trip fica abaixo de Clients no menu principal. New trip permite cadastrar descrição, cliente opcional e transporte (Car, Motorcycle, Bus, Plane ou Ship). Viagens podem ser editadas, excluídas com confirmação e encontradas pela busca global. Os registros ficam na tabela `app_trips`.
 
-Fleet fica abaixo de Trip no menu principal. Permite cadastrar, editar e excluir veículos com identificação, placa, marca, modelo, ano, tipo e observações. Inclui pesquisa, confirmação de exclusão, datas no rodapé e armazenamento local no navegador.
+Fleet fica abaixo de Trip no menu principal. Permite cadastrar, editar e excluir veículos com identificação, placa, marca, modelo, ano, tipo e observações. Inclui pesquisa, confirmação de exclusão e datas no rodapé. Os registros ficam na tabela `app_vehicles`.
 
-Em Fleet, a coluna direita inclui RENAVAM e chassi opcionais, com ajuda sobre onde encontrar os códigos, e anexos antes das observações. Os arquivos (até 20 MB cada) ficam no IndexedDB e podem ser abertos, baixados ou removidos ao salvar o veículo.
+Em Fleet, a coluna direita inclui RENAVAM e chassi opcionais, com ajuda sobre onde encontrar os códigos, e anexos antes das observações. Os arquivos (até 20 MB cada) ficam no bucket `workplace` e podem ser abertos, baixados ou removidos ao salvar o veículo.
 
 A identificação em Fleet é gerada automaticamente por tipo, marca, modelo e cor. A seleção de cor oferece opções padrão e Nova cor; cores personalizadas de veículos salvos ficam disponíveis nos próximos cadastros.
 
@@ -119,7 +143,7 @@ Marca e modelo em Fleet usam seleções com opções iniciais e botão Novo. Mod
 
 Ano em Fleet é uma seleção e também integra a identificação automática (tipo · marca · modelo · cor · ano).
 
-Cada veículo possui um código curto de 8 caracteres derivado do UUID, exibido na listagem e no diálogo. O código é mantido na edição e pode ser pesquisado. Novos cadastros verificam duplicidade do código no armazenamento local antes de salvar.
+Cada veículo possui um código curto de 8 caracteres derivado do UUID, exibido na listagem e no diálogo. O código é mantido na edição e pode ser pesquisado. Novos cadastros verificam duplicidade do código entre os registros carregados antes de salvar.
 
 Trip permite vincular um veículo de Fleet, selecionando pela identificação, placa e código. O vínculo é salvo na viagem e aparece na listagem e na busca. Veículos removidos são sinalizados e a viagem permanece preservada.
 
@@ -129,12 +153,12 @@ New trip usa diálogo simplificado com cliente, board, transporte, veículo e de
 
 Informações da viagem é uma seção com cidade, estado/UF, rua, número, complemento, bairro, CEP e datas de ida/retorno. O retorno não pode anteceder a ida. O campo livre Informações foi removido da interface.
 
-Reservations fica abaixo de Trip no menu. Armazena nome do hotel, telefone, endereço, diária, datas de entrada/saída e observações, com total calculado pelas noites. Inclui CRUD, confirmação de exclusão, busca global e armazenamento local.
+Reservations fica abaixo de Trip no menu. Armazena nome do hotel, telefone, endereço, diária, datas de entrada/saída e observações, com total calculado pelas noites. Inclui CRUD, confirmação de exclusão e busca global. Os registros ficam na tabela `app_reservations`.
 
 ## Employees
 
-Employees fica acima de Trip no menu principal. Permite cadastrar, consultar, editar e excluir empregados com nome obrigatório, departamento, cargo, e-mail, telefone, endereço e observações opcionais. Usa catálogo responsivo, diálogo em duas colunas, confirmação de exclusão, toasts e datas de criação/atualização. Os registros ficam no IndexedDB deste navegador e participam da busca global.
+Employees fica acima de Trip no menu principal. Permite cadastrar, consultar, editar e excluir empregados com nome obrigatório, departamento, cargo, e-mail, telefone, endereço e observações opcionais. Usa catálogo responsivo, diálogo em duas colunas, confirmação de exclusão, toasts e datas de criação/atualização. Os registros ficam na tabela `app_employees` e participam da busca global.
 
-Employees inclui código curto de 8 caracteres derivado do UUID, preservado nas edições, endereço separado por CEP, rua, número, complemento, bairro, cidade e UF, consulta ViaCEP e anexos de até 20 MB acima das observações. O rodapé apresenta o aviso de armazenamento local e as datas de criação/atualização com horário.
+Employees inclui código curto de 8 caracteres derivado do UUID, preservado nas edições, endereço separado por CEP, rua, número, complemento, bairro, cidade e UF, consulta ViaCEP e anexos de até 20 MB acima das observações. O rodapé apresenta as datas de criação/atualização com horário.
 
 Trip permite selecionar vários colaboradores de Employees, buscar por nome/cargo/código e manter os vínculos na criação e edição com autosave na página. Os participantes aparecem no catálogo e na busca global; empregados removidos são sinalizados sem excluir a viagem.

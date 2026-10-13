@@ -23,7 +23,6 @@ export const projects = [
     description: "Um espaço para organizar ideias e tarefas. Notes com editor por blocos e Boards com listas, cards e anexos, salvos no navegador.",
     tags: ["Next.js", "React", "Tiptap", "IndexedDB"],
     href: "https://github.com/viniszofx/viniszofx",
-    demo: "/dashboard/workspace",
     preview: "workspace",
   },
   {

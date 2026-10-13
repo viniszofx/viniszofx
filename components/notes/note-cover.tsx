@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { LocalImage as MediaImage } from "./local-image";
 import type { useNoteAttachments } from "./use-note-attachments";
-export function NoteCover({ files, id, position, disabled, onSelect, onPosition, onUpload }: {
+export function NoteCover({ files, id, position, disabled, onSelect, onPosition, onUpload, ownerLabel = "anotação" }: {
   files: ReturnType<typeof useNoteAttachments>; id?: string | null; position: number; disabled: boolean;
+  ownerLabel?: string;
   onSelect: (id: string | null) => void; onPosition: (position: number) => void; onUpload: (file: File) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -26,7 +27,7 @@ export function NoteCover({ files, id, position, disabled, onSelect, onPosition,
       onPointerDown={(event) => { if (!adjusting || disabled || event.button !== 0 || (event.target as HTMLElement).closest("button,input,label,[role=menu],[role=menuitem]")) return; event.preventDefault(); event.currentTarget.focus(); drag.current = { y: event.clientY, position }; event.currentTarget.setPointerCapture(event.pointerId); }}
       onPointerMove={(event) => { if (drag.current && adjusting && !disabled) onPosition(Math.max(0, Math.min(100, Math.round(drag.current.position - (event.clientY - drag.current.y) / event.currentTarget.getBoundingClientRect().height * 100)))); }}
       onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }} onLostPointerCapture={() => { drag.current = null; }}>
-      <MediaImage src={files.url(image, true)} alt="Capa da anotação" draggable={false} className="h-full w-full object-cover" style={{ objectPosition: `center ${position}%` }} />
+      <MediaImage src={files.url(image, true)} alt={`Capa da ${ownerLabel}`} draggable={false} className="h-full w-full object-cover" style={{ objectPosition: `center ${position}%` }} />
       <div className="absolute bottom-3 right-3 flex items-center gap-2">
         {adjusting && <Button type="button" size="sm" variant="secondary" onClick={() => { drag.current = null; setAdjusting(false); }}><Check />Concluir ajuste</Button>}
         <Menu.Root>
@@ -43,7 +44,7 @@ export function NoteCover({ files, id, position, disabled, onSelect, onPosition,
     </div> : <div className="mx-auto w-full max-w-4xl px-4 pt-6 sm:px-10"><Button size="sm" variant="ghost" disabled={disabled} onClick={() => setOpen(true)}>Adicionar capa</Button></div>}
     <Dialog open={open} onOpenChange={setOpen}><DialogContent className="max-h-[80dvh] overflow-y-auto">
       <DialogTitle>{image ? "Trocar capa" : "Adicionar capa"}</DialogTitle>
-      <DialogDescription>Envie uma imagem de até 20 MB ou escolha uma imagem desta nota.</DialogDescription>
+      <DialogDescription>Envie uma imagem de até 20 MB ou escolha uma imagem dos arquivos.</DialogDescription>
       <Button disabled={disabled} onClick={() => input.current?.click()}>Enviar imagem de capa</Button>
       <input ref={input} aria-label="Imagem de capa" className="hidden" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" onChange={(event) => { const file = event.target.files?.[0]; if (file) { onUpload(file); setAdjusting(false); setOpen(false); } event.target.value = ""; }} />
       <div className="grid grid-cols-2 gap-3">{images.map((file) => <button key={file.id} disabled={disabled} className="overflow-hidden border border-border text-left focus-visible:outline-2 focus-visible:outline-ring" onClick={() => { onSelect(file.id); setAdjusting(false); setOpen(false); }}>

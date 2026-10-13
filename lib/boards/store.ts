@@ -3,6 +3,7 @@
 import type { BoardStatus } from "./status";
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
+import { readCollection, writeCollection } from "@/lib/storage/collections";
 
 export type CardAttachment = { id: string; name: string; type: string; size: number; blob: Blob };
 export type CoverPosition = { x: number; y: number };
@@ -28,11 +29,13 @@ function db() {
 }
 async function load() {
   try {
-    const database = await db();
-    const boards = await new Promise<Board[]>((resolve, reject) => {
+    const boards = await readCollection("boards", async () => {
+      const database = await db();
+      return new Promise<Board[]>((resolve, reject) => {
       const request = database.transaction("boards").objectStore("boards").getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
+      });
     });
     if (!snapshot.pending) snapshot = { ...snapshot, boards, loaded: true, error: "" };
   } catch { snapshot = { ...snapshot, loaded: true, error: "Não foi possível carregar Boards neste navegador." }; }
@@ -51,12 +54,7 @@ function persist(boards: Board[], notice?: string) {
   unsaved = true;
   snapshot = { ...snapshot, boards, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
-    const database = await db();
-    await new Promise<void>((resolve, reject) => {
-      const tx = database.transaction("boards", "readwrite");
-      const store = tx.objectStore("boards"); store.clear(); boards.forEach(board => store.put(board));
-      tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
-    });
+    await writeCollection("boards", boards);
     if (snapshot.boards === boards) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
     if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-boards"); channel.postMessage("changed"); channel.close(); }

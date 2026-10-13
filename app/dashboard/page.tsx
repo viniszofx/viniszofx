@@ -1,36 +1,35 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import { RiArrowRightSLine as ArrowRight, RiArticleLine as Article, RiAdvertisementLine as Advertisement, RiCarLine as Car, RiFileTextLine as FileText, RiGroupLine as Users, RiHotelLine as Hotel, RiLayoutGridLine as Grid, RiSettings3Line as Settings, RiSuitcaseLine as Suitcase } from "@remixicon/react";
 
 export const metadata: Metadata = { title: "Dashboard | Viniccius" };
 
+const groups = [
+  { title: "Operações", items: [
+    { label: "Clientes", description: "Cadastro e informações", href: "/dashboard/clients", icon: Users },
+    { label: "Viagens", description: "Planejamento e registros", href: "/dashboard/trip", icon: Suitcase },
+    { label: "Reservas", description: "Hospedagens e controle", href: "/dashboard/reservations", icon: Hotel },
+    { label: "Frota", description: "Veículos e disponibilidade", href: "/dashboard/fleet", icon: Car },
+  ] },
+  { title: "Workplace", items: [
+    { label: "Notas", description: "Documentos e arquivos", href: "/dashboard/notes", icon: FileText },
+    { label: "Quadros", description: "Listas e tarefas", href: "/dashboard/boards", icon: Grid },
+  ] },
+  { title: "Publicação e conta", items: [
+    { label: "Blog", description: "Posts e mídias", href: "/dashboard/blog", icon: Article },
+    { label: "Publicidade", description: "Campanhas nos artigos", href: "/dashboard/ads", icon: Advertisement },
+    { label: "Configurações", description: "Perfil e Workplace", href: "/dashboard/settings", icon: Settings },
+  ] },
+] as const;
+
 export default function DashboardPage() {
-  return (
-    <main className="px-4 py-10 sm:px-6 sm:py-14">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-widest text-primary">Área pessoal</p>
-            <h1 className="font-heading text-3xl font-semibold sm:text-4xl">Home</h1>
-            <p className="text-sm text-muted-foreground">Bem-vindo ao seu espaço, onde tudo começa.</p>
-          </div>
-          <Button nativeButton={false} render={<Link href="/login" />} variant="secondary">Voltar ao login</Button>
-        </div>
-        <Card className="ring-0">
-          <CardHeader className="gap-3">
-            <h2 className="font-heading text-xl font-semibold">Seu painel está pronto</h2>
-            <CardDescription>Seus projetos e atividades poderão ser acompanhados por aqui.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-muted/60 px-6 py-10 text-center">
-              <p className="font-medium">Nenhuma atividade por enquanto</p>
-              <p className="mt-2 text-sm text-muted-foreground">As próximas atualizações aparecerão neste espaço.</p>
-            </div>
-          </CardContent>
-        </Card>
-        <p className="text-xs text-muted-foreground">Prévia demonstrativa do dashboard, sem autenticação ativa.</p>
-      </div>
-    </main>
-  );
+  return <main className="w-full px-4 pb-12 pt-6 sm:px-7">
+    <div className="border-b pb-5"><p className="mb-2 text-xs text-muted-foreground">Console / Visão geral</p><h1 className="text-2xl font-semibold">Visão geral</h1><p className="mt-1 text-sm text-muted-foreground">Acesse as áreas do seu painel.</p></div>
+    <div className="grid gap-x-12 gap-y-9 pt-7 xl:grid-cols-2">{groups.map((group, index) => <section key={group.title} aria-labelledby={`section-${index}`} className="min-w-0">
+      <h2 id={`section-${index}`} className="mb-3 text-sm font-semibold">{group.title}</h2>
+      <div className="border border-b-0 bg-card">{group.items.map(({ label, description, href, icon: Icon }) => <Link key={href} href={href} className="group flex items-center gap-3 border-b px-4 py-3 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+        <Icon className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" /><span className="min-w-0 flex-1"><strong className="block text-sm font-medium">{label}</strong><span className="block text-xs text-muted-foreground">{description}</span></span><ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+      </Link>)}</div>
+    </section>)}</div>
+  </main>;
 }

@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
+import { readCollection, writeCollection } from "@/lib/storage/collections";
 
 export type ClientFields = { name: string; company: string; email: string; phone: string; address: string; notes: string };
 export type Client = ClientFields & { id: string; createdAt: string; updatedAt: string };
@@ -27,11 +28,13 @@ function db() {
 async function load() {
   const version = revision;
   try {
-    const database = await db();
-    const clients = await new Promise<Client[]>((resolve, reject) => {
+    const clients = await readCollection("clients", async () => {
+      const database = await db();
+      return new Promise<Client[]>((resolve, reject) => {
       const request = database.transaction("clients").objectStore("clients").getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
+      });
     });
     if (version === revision && !snapshot.pending && !unsaved) snapshot = { ...snapshot, clients, loaded: true, error: "" };
   } catch { snapshot = { ...snapshot, loaded: true, error: "Não foi possível carregar os clientes neste navegador." }; }
@@ -53,12 +56,7 @@ function persist(clients: Client[], notice?: string) {
   revision++; unsaved = true;
   snapshot = { ...snapshot, clients, pending: snapshot.pending + 1, error: "" }; emit();
   queue = queue.then(async () => {
-    const database = await db();
-    await new Promise<void>((resolve, reject) => {
-      const tx = database.transaction("clients", "readwrite");
-      const store = tx.objectStore("clients"); store.clear(); clients.forEach(client => store.put(client));
-      tx.oncomplete = () => resolve(); tx.onerror = tx.onabort = () => reject(tx.error);
-    });
+    await writeCollection("clients", clients);
     if (snapshot.clients === clients) { unsaved = false; snapshot = { ...snapshot, error: "" }; }
     if (notice) notifySuccess(notice);
     if (typeof BroadcastChannel !== "undefined") { const channel = new BroadcastChannel("viniszofx-clients"); channel.postMessage("changed"); channel.close(); }

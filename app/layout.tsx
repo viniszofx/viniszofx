@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Oxanium, Raleway } from "next/font/google";
 import "./globals.css";
+import { siteUrl } from "@/lib/seo/site-url";
 
 const oxanium = Oxanium({
   subsets: ["latin"],
@@ -19,12 +20,13 @@ const ralewayHeading = Raleway({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: "Vinicius Souza | Analista de Sistemas",
   description:
     "Analista de Sistemas, Desenvolvedor Web e Mobile, apaixonado por tecnologia e inovação. Com experiência em desenvolvimento de software, busco constantemente aprimorar minhas habilidades e contribuir para projetos desafiadores.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="pt-BR"
