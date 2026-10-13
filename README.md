@@ -37,15 +37,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Na Vercel, configure `DATABASE_URL` e `NEON_AUTH_COOKIE_SECRET` (mínimo de 32 caracteres) em **Production**; inclua **Preview** se usar deploys de prévia. Com a integração Neon Auth habilitada, a Vercel recebe `NEON_AUTH_BASE_URL` automaticamente. Sem a integração, configure `AUTH_NEON_URL` manualmente com o endpoint da **mesma branch** do banco, terminado em `/auth`. O código prioriza `NEON_AUTH_BASE_URL` quando ambas existem. Configure também as variáveis de storage descritas em `.env.example` e `SITE_URL` com o domínio público.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Em **Neon Console → projeto → branch usada pela Vercel → Auth → Configuration → Domains**, adicione a origem exata do site em produção, incluindo o protocolo e sem barra final. Para este deploy: `https://www.viniccius.com.br`. O domínio sem `www` redireciona para esse endereço. Um `403 INVALID_ORIGIN` em `/api/auth/sign-in/email` indica que essa origem não está autorizada na branch de Auth usada pelo deploy. Depois de alterar variáveis na Vercel, faça um novo deploy; variáveis novas não entram em deploys existentes.
 
 ## Autenticação e storage
 
-O portfólio em `/` e os posts publicados em `/blog` são públicos. `/login` e `/api/auth/*` são acessíveis para permitir a entrada; todas as páginas em `/dashboard/*` exigem uma sessão válida do Neon Auth. Configure as variáveis de `.env.example` no ambiente de execução. Enquanto `neon_auth.user` estiver vazia, `/login` apresenta o formulário de criação da primeira conta. Depois disso, apresenta o login e a rota de cadastro por e-mail recusa novos registros. Configure os domínios permitidos no console do Neon para o domínio local e o de produção.
+O portfólio em `/` e os posts publicados em `/blog` são públicos. `/login` e `/api/auth/*` são acessíveis para permitir a entrada; todas as páginas em `/dashboard/*` exigem uma sessão válida do Neon Auth. Configure as variáveis de `.env.example` no ambiente de execução. Enquanto `neon_auth.user` estiver vazia, `/login` apresenta o formulário de criação da primeira conta. Depois disso, apresenta o login e a rota de cadastro por e-mail recusa novos registros.
 
-`DATABASE_URL` é uma credencial exclusiva do servidor. Nunca use `NEXT_PUBLIC_` no nome dessa variável. `JWKS_URL` pode ser mantida para integrações futuras, mas a autenticação atual usa o endpoint `AUTH_NEON_URL` e não lê a JWKS diretamente.
+`DATABASE_URL` é uma credencial exclusiva do servidor. Nunca use `NEXT_PUBLIC_` no nome dessa variável. `JWKS_URL` pode ser mantida para integrações futuras, mas a autenticação atual usa `NEON_AUTH_BASE_URL` ou `AUTH_NEON_URL` e não lê a JWKS diretamente.
 
 O bucket do Neon Object Storage é `workplace`, configurado em `NEON_STORAGE_BUCKET`. Upload, leitura por URL assinada e exclusão foram verificados com um objeto temporário. Execute `bun run test:storage` para repetir o teste. Capas e anexos são enviados ao bucket por rotas autenticadas.
 
