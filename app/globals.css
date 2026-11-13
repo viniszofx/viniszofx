@@ -129,6 +129,12 @@
   }
 }
 
+/* O preflight do Tailwind troca o content-box esperado pelo PDF.js por border-box e
+   desloca as áreas selecionáveis em relação ao texto desenhado. */
+:where(.pdfViewer, .pdfViewer *) {
+  box-sizing: content-box;
+}
+
 /* The console is denser than the public portfolio while sharing its theme tokens. */
 .dashboard-shell [data-slot="button"] {
   font-family: var(--font-oxanium);

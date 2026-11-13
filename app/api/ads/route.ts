@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth/server";
 import { adPositions, listAdSlots, type AdPosition } from "@/lib/blog/ads";
 import { db } from "@/lib/db";
 import { blogAdSlots } from "@/lib/db/schema/app";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 export async function GET() {
   const { data: session } = await auth.getSession();
@@ -18,6 +19,7 @@ function validUrl(value: string) {
 export async function PUT(request: Request) {
   const { data: session } = await auth.getSession();
   if (!session?.user) return new Response(null, { status: 401 });
+  if (!await canWriteOrganizationData(session.user.id)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   if (Number(request.headers.get("content-length") ?? 0) > 10_000) return new Response("Dados muito grandes.", { status: 413 });
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return new Response("JSON inválido.", { status: 400 }); }

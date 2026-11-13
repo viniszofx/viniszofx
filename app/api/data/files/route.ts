@@ -2,12 +2,14 @@ import { randomUUID } from "node:crypto";
 import { auth } from "@/lib/auth/server";
 import { fileLimit } from "@/lib/storage/file-refs";
 import { putFile } from "@/lib/storage/server";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const { data: session } = await auth.getSession();
   if (!session?.user) return new Response(null, { status: 401 });
+  if (!await canWriteOrganizationData(session.user.id)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   const form = await request.formData();
   const file = form.get("file");
   if (!(file instanceof File) || !file.size || file.size > fileLimit) {

@@ -6,7 +6,7 @@ import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 import { readCollection, writeCollection } from "@/lib/storage/collections";
 
-export type VehicleFields = { renavam?: string; chassis?: string; attachments?: CardAttachment[]; color?: string; purchaseValue?: string; appraisalValue?: string; costPerLiter?: string; name: string; plate: string; brand: string; model: string; year: string; type: string; notes: string };
+export type VehicleFields = import("./ownership").VehicleOwnership & { renavam?: string; chassis?: string; attachments?: CardAttachment[]; color?: string; purchaseValue?: string; appraisalValue?: string; costPerLiter?: string; name: string; plate: string; brand: string; model: string; year: string; type: string; notes: string };
 export type Vehicle = VehicleFields & { id: string; code: string; createdAt: string; updatedAt: string };
 type Snapshot = { vehicles: Vehicle[]; loaded: boolean; pending: number; error: string };
 const initial: Snapshot = { vehicles: [], loaded: false, pending: 0, error: "" };

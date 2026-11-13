@@ -27,7 +27,7 @@ function subscribe(listener: () => void) {
   applyTheme();
   return () => { window.removeEventListener("storage", update); window.removeEventListener("viniszofx:theme-changed", update); media.removeEventListener("change", update); };
 }
-const options = [{ value: "light", label: "Light", icon: Sun }, { value: "dark", label: "Dark", icon: Moon }, { value: "system", label: "System", icon: Monitor }] as const;
+const options = [{ value: "light", label: "Claro", icon: Sun }, { value: "dark", label: "Escuro", icon: Moon }, { value: "system", label: "Sistema", icon: Monitor }] as const;
 export function ThemeSelector({ compact = false }: { compact?: boolean }) {
   const theme = useSyncExternalStore(subscribe, readTheme, () => "system" as Theme);
   const Icon = options.find(option => option.value === theme)?.icon ?? Monitor;

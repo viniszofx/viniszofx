@@ -4,7 +4,8 @@ import type { Editor } from "@tiptap/react";
 import { RiCheckLine as Check, RiAttachmentLine as Paperclip } from "@remixicon/react";
 import { attachmentId, attachmentUrl } from "@/lib/notes/types";
 import type { BoardStatus } from "@/lib/boards/status";
-import { newId, type CoverPosition, type CardAttachment } from "@/lib/boards/store";
+import { newId, type CoverPosition, type CardAttachment, type CardExtras } from "@/lib/boards/store";
+import { CardExtrasFields } from "./card-extras";
 import { BoardDetailsFields, BoardDescriptionField } from "./board-details-fields";
 import { CardCover, CardAppearance } from "./card-appearance";
 import { CardAttachments } from "./card-attachments";
@@ -14,7 +15,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-export type BoardFields = { status?: BoardStatus; clientId?: string | null; createdAt?: string; updatedAt?: string; title: string; description?: string; descriptionDocument?: Record<string, unknown> | null; color: string; attachments?: CardAttachment[]; coverAttachmentId?: string | null; coverPosition?: CoverPosition };
+export type BoardFields = CardExtras & { status?: BoardStatus; clientId?: string | null; createdAt?: string; updatedAt?: string; title: string; description?: string; descriptionDocument?: Record<string, unknown> | null; color: string; attachments?: CardAttachment[]; coverAttachmentId?: string | null; coverPosition?: CoverPosition };
 function formatTimestamp(value?: string) {
   if (!value || Number.isNaN(Date.parse(value))) return "Não registrado";
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
@@ -65,6 +66,7 @@ export function BoardDialog({ title, initial, description = false, boardDetails 
               onChange={content => setValue(previous => ({ ...previous, description: content }))} onDocumentChange={document => setValue(previous => ({ ...previous, descriptionDocument: document }))}
               onInsertFile={kind => { embedUpload.current = true;if (input.current) { input.current.accept = kind === "image" ? "image/*" : "";input.current.click(); } }} />
           </section>}
+          {description && <CardExtrasFields value={value} onChange={patch => setValue(previous => ({ ...previous, ...patch }))} />}
         </div>
         {boardDetails && <aside aria-label="Detalhes do board" className="min-w-0 space-y-4 border-t bg-muted/30 p-4 md:border-l md:border-t-0"><BoardDetailsFields clientId={value.clientId} status={value.status} onChange={patch => setValue(previous => ({ ...previous, ...patch }))} /></aside>}
         {description && <aside aria-label="Anexos do card" className="min-w-0 space-y-4 border-t bg-muted/30 p-4 md:border-l md:border-t-0">

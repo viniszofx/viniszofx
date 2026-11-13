@@ -6,6 +6,11 @@ Configure `SITE_URL` com a origem pública definitiva (por exemplo, `https://exe
 
 No editor de posts, a coluna direita permite definir título e descrição de busca, retirar um artigo do índice e selecionar publicidade após a capa, no meio e ao final do texto. Em **Painel → Publicidade**, configure uma campanha para cada posição: anunciante, título, texto, link, imagem opcional e estado ativo. As imagens ficam no bucket Neon `post`. Uma campanha só aparece quando está ativa e a posição foi habilitada no post; posições sem campanha não ocupam espaço na página.
 
+## Documentação
+
+- [Módulos do painel](docs/modulos.md): ordens, tarefas, calendário, jornadas, KM, hotéis, inventário, mural, agenda, solicitações, diagramas e financeiro; estrutura comum e como criar um cadastro.
+- [Drive](docs/drive.md): uso, editores de DOCX/XLSX/PDF, impressão e PDF sem servidor, dados e código.
+
 ## Getting Started
 
 First, run the development server:
@@ -21,6 +26,31 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Desenvolvimento (infra no Docker, app no host)
+
+O `compose.yaml` sobe só Postgres e RustFS. A aplicação roda direto na máquina, com hot reload:
+
+```bash
+cp .env.example .env   # uma vez
+bun run infra:up
+bun run dev
+```
+
+App em [http://localhost:3000](http://localhost:3000), Postgres em `localhost:5432` (`postgres`/`postgres`, banco `my_database`) e console RustFS em [http://localhost:9001](http://localhost:9001) (`admin`/`password123`).
+
+O `infra:up` espera o Postgres ficar pronto, cria os buckets `workplace` e `post` no RustFS e aplica as migrations de `drizzle/` com `drizzle-kit migrate`. Depois de alterar `lib/db/schema/app.ts`, gere a migration com `bun run db:generate` e aplique com `bun run db:migrate`. Não escreva migrations à mão: sem snapshot, o próximo `db:generate` repete as tabelas.
+
+### Produção (Neon)
+
+Em produção a aplicação usa Neon: banco, Neon Auth e Object Storage. O `compose.prod.yaml` não sobe Postgres nem RustFS. Ele compila a imagem (`next build` + `next start` em Node), aplica as migrations no Neon com `drizzle-kit migrate` e só então inicia a aplicação:
+
+```bash
+cp .env.production.example .env.production   # valores da branch de produção do Neon
+bun run prod:up
+```
+
+Na Vercel o compose não é usado; o deploy recebe as variáveis pela integração do Neon.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

@@ -4,6 +4,7 @@ import { deleteBlogAsset } from "@/lib/blog/storage";
 import { getOwnPost, postSlug } from "@/lib/blog/posts";
 import { db } from "@/lib/db";
 import { blogAssets, blogPosts } from "@/lib/db/schema/app";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 type Context = { params: Promise<{ postId: string }> };
 
@@ -23,6 +24,7 @@ export async function GET(_request: Request, context: Context) {
 export async function PUT(request: Request, context: Context) {
   const scope = await ownedPost(context);
   if (!scope) return new Response(null, { status: 404 });
+  if (!await canWriteOrganizationData(scope.userId)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   if (Number(request.headers.get("content-length") ?? 0) > 1_500_000) return new Response("Post muito grande.", { status: 413 });
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return new Response("JSON inválido.", { status: 400 }); }
@@ -59,6 +61,7 @@ export async function PUT(request: Request, context: Context) {
 export async function DELETE(_request: Request, context: Context) {
   const scope = await ownedPost(context);
   if (!scope) return new Response(null, { status: 404 });
+  if (!await canWriteOrganizationData(scope.userId)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   const assets = await db.select({ id: blogAssets.id }).from(blogAssets).where(eq(blogAssets.postId, scope.post.id));
   await db.delete(blogPosts).where(and(eq(blogPosts.id, scope.post.id), eq(blogPosts.authorId, scope.userId)));
   await Promise.allSettled(assets.map((asset) => deleteBlogAsset(scope.userId, scope.post.id, asset.id)));

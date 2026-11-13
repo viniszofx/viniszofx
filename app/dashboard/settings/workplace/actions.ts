@@ -4,12 +4,14 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth/server";
 import { db } from "@/lib/db";
 import { workplaceSettings } from "@/lib/db/schema/app";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 export type WorkplaceActionState = { status: "idle" | "success" | "error"; message: string };
 
 export async function saveWorkplaceSettings(_previous: WorkplaceActionState, formData: FormData): Promise<WorkplaceActionState> {
   const { data: session } = await auth.getSession();
   if (!session?.user) return { status: "error", message: "Sua sessão expirou. Entre novamente." };
+  if (!await canWriteOrganizationData(session.user.id)) return { status: "error", message: "Acesso externo é somente leitura." };
 
   const name = String(formData.get("name") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();

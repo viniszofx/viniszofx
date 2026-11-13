@@ -5,6 +5,7 @@ import { deleteBlogAsset, putBlogAsset } from "@/lib/blog/storage";
 import { getOwnPost } from "@/lib/blog/posts";
 import { db } from "@/lib/db";
 import { blogAssets } from "@/lib/db/schema/app";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 export const runtime = "nodejs";
 const maxFileSize = 20 * 1024 * 1024;
@@ -29,6 +30,7 @@ export async function GET(_request: Request, context: Context) {
 export async function POST(request: Request, context: Context) {
   const scope = await scopeFor(context);
   if (!scope) return new Response(null, { status: 404 });
+  if (!await canWriteOrganizationData(scope.userId)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   const form = await request.formData();
   const file = form.get("file");
   if (!(file instanceof File) || !file.size || file.size > maxFileSize)

@@ -5,12 +5,14 @@ import { getOwnPost } from "@/lib/blog/posts";
 import { db } from "@/lib/db";
 import { blogAssets, blogPosts } from "@/lib/db/schema/app";
 import { attachmentUrl } from "@/lib/notes/types";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 type Context = { params: Promise<{ postId: string; assetId: string }> };
 
 export async function DELETE(_request: Request, context: Context) {
   const [{ data: session }, { postId, assetId }] = await Promise.all([auth.getSession(), context.params]);
   if (!session?.user) return new Response(null, { status: 401 });
+  if (!await canWriteOrganizationData(session.user.id)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   const post = await getOwnPost(postId, session.user.id);
   if (!post) return new Response(null, { status: 404 });
   const [asset] = await db.select({ id: blogAssets.id }).from(blogAssets)

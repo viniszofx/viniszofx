@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth/server";
 import { deleteFile, getFile } from "@/lib/storage/server";
 import { fileIdPattern } from "@/lib/storage/file-refs";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 export const runtime = "nodejs";
 type Context = { params: Promise<{ fileId: string }> };
@@ -33,6 +34,7 @@ export async function GET(_request: Request, context: Context) {
 export async function DELETE(_request: Request, context: Context) {
   const value = await scope(context);
   if (!value) return new Response(null, { status: 401 });
+  if (!await canWriteOrganizationData(value.userId)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   await deleteFile(value.userId, value.fileId);
   return new Response(null, { status: 204 });
 }

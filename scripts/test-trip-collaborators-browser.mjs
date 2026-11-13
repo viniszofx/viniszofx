@@ -31,17 +31,17 @@ try {
   await call('Emulation.setDeviceMetricsOverride',{width:1400,height:900,deviceScaleFactor:1,mobile:false});
   const field=async(label,value)=>evaluate(`(()=>{const el=document.querySelector('[aria-label='+${JSON.stringify(JSON.stringify(label))}+']');const descriptor=Object.getOwnPropertyDescriptor(el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype,'value');descriptor.set.call(el,${JSON.stringify(value)});el.dispatchEvent(new Event('input',{bubbles:true}));})()`);
   await call('Page.navigate',{url:baseUrl+'/dashboard/employees'});
-  await until(`document.querySelector('h1')?.textContent==='Employees' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='Novo empregado')?.disabled`);
+  await until(`document.querySelector('h1')?.textContent==='Colaboradores' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='Novo empregado')?.disabled`);
   for (const name of ['Ana Silva','Bruno Souza']) {
    await click('Novo empregado');await until(`document.querySelector('[role="dialog"] input[aria-label="Nome"]')`);await field('Nome',name);await click('Salvar empregado');
    await until(`!document.querySelector('[role="dialog"]') && document.querySelector('button[aria-label="Abrir empregado '+${JSON.stringify(name)}+ '"]')`);
   }
-  await call('Page.navigate',{url:baseUrl+'/dashboard/trip'});await until(`document.querySelector('h1')?.textContent==='Trip' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='New trip')?.disabled`);
-  await click('New trip');await until(`document.querySelector('input[aria-label="Selecionar colaborador Ana Silva"]')`);
+  await call('Page.navigate',{url:baseUrl+'/dashboard/trip'});await until(`document.querySelector('h1')?.textContent==='Viagens' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='Nova viagem')?.disabled`);
+  await click('Nova viagem');await until(`document.querySelector('input[aria-label="Selecionar colaborador Ana Silva"]')`);
   await field('Descrição da viagem','Viagem com equipe');
   await evaluate(`document.querySelector('input[aria-label="Selecionar colaborador Ana Silva"]').click()`);
   await evaluate(`document.querySelector('input[aria-label="Selecionar colaborador Bruno Souza"]').click()`);
-  await click('Salvar trip');await until(`!document.querySelector('[role="dialog"]') && document.querySelector('main article')?.textContent.includes('Ana Silva, Bruno Souza')`);
+  await click('Salvar viagem');await until(`!document.querySelector('[role="dialog"]') && document.querySelector('main article')?.textContent.includes('Ana Silva, Bruno Souza')`);
   await evaluate(`document.querySelector('button[aria-label="Abrir viagem Viagem com equipe"]').click()`);
   await until(`!document.querySelector('[role="dialog"]') && document.querySelector('input[aria-label="Selecionar colaborador Ana Silva"]')`);
   assert.ok(await evaluate(`document.querySelector('input[aria-label="Selecionar colaborador Ana Silva"]').checked && document.querySelector('input[aria-label="Selecionar colaborador Bruno Souza"]').checked`));

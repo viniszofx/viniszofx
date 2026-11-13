@@ -7,9 +7,17 @@ import { readCollection, writeCollection } from "@/lib/storage/collections";
 
 export type CardAttachment = { id: string; name: string; type: string; size: number; blob: Blob };
 export type CoverPosition = { x: number; y: number };
-export type BoardCard = { createdAt?: string; updatedAt?: string; id: string; title: string; description: string; descriptionDocument?: Record<string, unknown> | null; completed: boolean; color: string; coverAttachmentId?: string | null; coverPosition?: CoverPosition; attachments?: CardAttachment[] };
+export type CardLabel = { id: string; name: string; color: "orange" | "blue" | "green" | "purple" | "red" };
+export type CardExtras = {
+  labels?: CardLabel[];
+  checklists?: { id: string; title: string; items: { id: string; title: string; done: boolean }[] }[];
+  customFields?: { id: string; name: string; type: "text" | "number" | "date"; value: string }[];
+  due?: string; priority?: "high";
+  comments?: { id: string; text: string; createdAt: string }[];
+};
+export type BoardCard = CardExtras & { createdAt?: string; updatedAt?: string; id: string; title: string; description: string; descriptionDocument?: Record<string, unknown> | null; completed: boolean; color: string; coverAttachmentId?: string | null; coverPosition?: CoverPosition; attachments?: CardAttachment[] };
 export type BoardList = { id: string; title: string; color: string; cards: BoardCard[] };
-export type Board = { status?: BoardStatus; description?: string; clientId?: string | null; coverPosition?: CoverPosition; cover?: CardAttachment; id: string; title: string; color: string; lists: BoardList[]; createdAt: string; updatedAt: string };
+export type Board = { shareToken?: string; status?: BoardStatus; description?: string; clientId?: string | null; coverPosition?: CoverPosition; cover?: CardAttachment; id: string; title: string; color: string; lists: BoardList[]; createdAt: string; updatedAt: string };
 type Snapshot = { boards: Board[]; loaded: boolean; error: string; pending: number };
 const initial: Snapshot = { boards: [], loaded: false, error: "", pending: 0 };
 let snapshot = initial;

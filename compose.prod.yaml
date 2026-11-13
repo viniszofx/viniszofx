@@ -1,0 +1,30 @@
+# Produção: imagem compilada (`next build` + `next start`) usando Neon para
+# banco, Neon Auth e Object Storage. Não há Postgres/RustFS locais aqui.
+# Uso: bun run prod:up  (lê .env.production; veja .env.production.example)
+name: viniszofx-prod
+
+services:
+  migrate:
+    build:
+      context: .
+      target: migrate
+    env_file:
+      - path: .env.production
+        required: true
+    restart: "no"
+
+  app:
+    build:
+      context: .
+      target: runner
+    env_file:
+      - path: .env.production
+        required: true
+    environment:
+      NODE_ENV: production
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped

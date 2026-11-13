@@ -19,17 +19,17 @@ export function BoardsPage() {
   const [editing, setEditing] = useState<Board | "new" | null>(null);
   const [deleting, setDeleting] = useState<Board | null>(null);
   const [search, setSearch] = useState("");
-  return <CatalogLayout title="Boards" description="Organize tarefas em listas e cards." action={<Button disabled={!loaded} onClick={() => setEditing("new")}><Plus />Novo board</Button>}>
+  return <CatalogLayout title="Quadros" description="Organize tarefas em listas e cards." action={<Button disabled={!loaded} onClick={() => setEditing("new")}><Plus />Novo quadro</Button>}>
     <CatalogSearch label="Buscar boards" value={search} onChange={setSearch} />
     {!loaded ? <CatalogSkeleton label="Carregando boards" /> : <div className={catalogGrid}>
       {boards.filter(board => [board.title, board.description, clients.find(client => client.id === board.clientId)?.name].join(" ").toLocaleLowerCase().includes(search.trim().toLocaleLowerCase())).map(board => <CatalogTile key={board.id} style={board.color ? { backgroundColor: `color-mix(in srgb, ${board.color} 18%, var(--card))`, borderColor: `color-mix(in srgb, ${board.color} 40%, var(--border))` } : undefined}>
         <Link href={`/dashboard/boards/${board.id}`} className="block outline-none hover:bg-background/20 focus-visible:ring-2 focus-visible:ring-ring"><CatalogPreview style={board.color ? { backgroundColor: `color-mix(in srgb, ${board.color} 30%, var(--card))` } : undefined}>{board.cover ? <BoardCoverThumbnail key={board.cover.id} cover={board.cover} position={board.coverPosition} /> : <LayoutGrid className="size-8 text-primary" />}</CatalogPreview><h2 className="break-words px-4 py-3 font-semibold">{board.title}</h2><div className="px-4 pb-3"><BoardStatusBadge status={board.status} /></div>{board.description && <p className="line-clamp-2 whitespace-pre-wrap break-words px-4 pb-3 text-xs text-muted-foreground">{board.description}</p>}{board.clientId && <p className="truncate px-4 pb-3 text-xs text-muted-foreground">Cliente: {clients.find(client => client.id === board.clientId)?.name ?? "Cliente removido"}</p>}</Link>
         <CatalogFooter><span className="text-xs text-muted-foreground">{board.lists.length} listas · {board.lists.reduce((sum, list) => sum + list.cards.length, 0)} cards</span><div className="flex shrink-0 items-center"><Button variant="ghost" size="icon-sm" aria-label={`Editar ${board.title}`} onClick={() => setEditing(board)}><Pencil /></Button><BoardAppearance board={board} /><Button variant="ghost" size="icon-sm" aria-label={`Excluir ${board.title}`} onClick={() => setDeleting(board)}><Trash2 /></Button></div></CatalogFooter>
       </CatalogTile>)}
-      <CatalogCreate label="Criar board" onClick={() => setEditing("new")} />
+      <CatalogCreate label="Criar quadro" onClick={() => setEditing("new")} />
     </div>}
     {loaded && !boards.length && <p className="text-sm text-muted-foreground">Crie seu primeiro board para começar.</p>}<BoardsStatus />
-    {editing && <BoardDialog boardDetails title={editing === "new" ? "Criar board" : "Editar board"} initial={editing === "new" ? { title: "", color: "" } : editing} onClose={() => setEditing(null)} onSave={value => saveBoard(editing === "new" ? { ...value, id: newId(), lists: defaultLists(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } : { ...editing, ...value }, editing === "new" ? "Board criado" : "Board atualizado")} />}
+    {editing && <BoardDialog boardDetails title={editing === "new" ? "Criar quadro" : "Editar board"} initial={editing === "new" ? { title: "", color: "" } : editing} onClose={() => setEditing(null)} onSave={value => saveBoard(editing === "new" ? { ...value, id: newId(), lists: defaultLists(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() } : { ...editing, ...value }, editing === "new" ? "Board criado" : "Board atualizado")} />}
     {deleting && <DeleteDialog title={deleting.title} onClose={() => setDeleting(null)} onDelete={() => deleteBoard(deleting.id)} />}
   </CatalogLayout>;
 }

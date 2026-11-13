@@ -1,0 +1,38 @@
+# Infraestrutura de desenvolvimento: somente Postgres e RustFS.
+# A aplicação roda no host com `bun run dev` para ter hot reload real.
+# Produção fica em compose.prod.yaml.
+services:
+  database:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: my_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Só as tabelas de login do Better Auth; as do app vêm de `bun run db:migrate`.
+      - ./docker/postgres-init/001-auth.sql:/docker-entrypoint-initdb.d/20-auth.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d my_database"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  storage:
+    image: rustfs/rustfs:latest
+    environment:
+      RUSTFS_ROOT_USER: admin
+      RUSTFS_ROOT_PASSWORD: password123
+      RUSTFS_ADDRESS: :9000
+      RUSTFS_CONSOLE_ADDRESS: :9001
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - rustfs_data:/data
+
+volumes:
+  postgres_data:
+  rustfs_data:

@@ -4,6 +4,7 @@ import { deleteAdImage, putAdImage } from "@/lib/blog/storage";
 import { db } from "@/lib/db";
 import { blogAdSlots } from "@/lib/db/schema/app";
 import { and, eq } from "drizzle-orm";
+import { canWriteOrganizationData } from "@/lib/organizations/access";
 
 export const runtime = "nodejs";
 const imageTypes = new Set(["image/png", "image/jpeg", "image/webp", "image/avif"]);
@@ -11,6 +12,7 @@ const imageTypes = new Set(["image/png", "image/jpeg", "image/webp", "image/avif
 export async function POST(request: Request) {
   const { data: session } = await auth.getSession();
   if (!session?.user) return new Response(null, { status: 401 });
+  if (!await canWriteOrganizationData(session.user.id)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   if (Number(request.headers.get("content-length") ?? 0) > 6_000_000) return new Response("Imagem muito grande.", { status: 413 });
   const form = await request.formData();
   const position = form.get("position");
@@ -28,6 +30,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   const { data: session } = await auth.getSession();
   if (!session?.user) return new Response(null, { status: 401 });
+  if (!await canWriteOrganizationData(session.user.id)) return new Response("Acesso externo é somente leitura.", { status: 403 });
   const position = new URL(request.url).searchParams.get("position");
   if (!position || !adPositions.includes(position as AdPosition)) return new Response("Posição inválida.", { status: 400 });
   await db.update(blogAdSlots).set({ imageUrl: "", updatedAt: new Date() })

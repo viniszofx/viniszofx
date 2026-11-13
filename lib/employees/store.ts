@@ -2,11 +2,12 @@
 
 import type { CardAttachment } from "@/lib/boards/store";
 import { addressText, type AddressFieldsValue } from "@/lib/format/address";
+import type { EmployeeProfile } from "./profile";
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 import { readCollection, writeCollection } from "@/lib/storage/collections";
 
-export type EmployeeFields = AddressFieldsValue & { status?: "active" | "terminated"; attachments?: CardAttachment[]; name: string; department: string; role: string; email: string; phone: string; address: string; notes: string };
+export type EmployeeFields = AddressFieldsValue & EmployeeProfile & { status?: "active" | "terminated"; attachments?: CardAttachment[]; name: string; department: string; role: string; email: string; phone: string; address: string; notes: string };
 export type Employee = EmployeeFields & { id: string; code: string; createdAt: string; updatedAt: string };
 type Snapshot = { employees: Employee[]; loaded: boolean; pending: number; error: string };
 const initial: Snapshot = { employees: [], loaded: false, pending: 0, error: "" };
@@ -81,6 +82,6 @@ export function deleteEmployee(id: string) { persist(snapshot.employees.filter(e
 export function retryEmployees() { if (unsaved) persist(snapshot.employees); else void load(); }
 export function matchesEmployee(employee: Employee, query: string) {
   const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");
-  const text = normalize([employee.code, employee.status === "terminated" ? "Desligado" : "Ativo", addressText(employee), employee.attachments?.map(file => file.name).join(" "), employee.name, employee.department, employee.role, employee.email, employee.phone, employee.address, employee.notes].join(" "));
+  const text = normalize([employee.code, employee.status === "terminated" ? "Desligado" : "Ativo", addressText(employee), employee.attachments?.map(file => file.name).join(" "), employee.name, employee.department, employee.role, employee.email, employee.phone, employee.address, employee.notes, employee.cpf, employee.registrationNumber].join(" "));
   return normalize(query.trim()).split(/\s+/).filter(Boolean).every(term => text.includes(term));
 }

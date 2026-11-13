@@ -31,7 +31,7 @@ try {
   await call('Emulation.setDeviceMetricsOverride',{width:1400,height:900,deviceScaleFactor:1,mobile:false});
   const field=async(label,value)=>evaluate(`(()=>{const el=document.querySelector('[aria-label='+${JSON.stringify(JSON.stringify(label))}+']');const descriptor=Object.getOwnPropertyDescriptor(el.tagName==='TEXTAREA'?HTMLTextAreaElement.prototype:HTMLInputElement.prototype,'value');descriptor.set.call(el,${JSON.stringify(value)});el.dispatchEvent(new Event('input',{bubbles:true}));})()`);
   await call('Page.navigate',{url:baseUrl+'/dashboard/clients'});
-  await until(`document.querySelector('h1')?.textContent==='Clients' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='Novo cliente')?.disabled`);
+  await until(`document.querySelector('h1')?.textContent==='Clientes' && !Array.from(document.querySelectorAll('button')).find(x=>x.textContent==='Novo cliente')?.disabled`);
   assert.equal(await evaluate(`document.querySelector('nav[aria-label="Seções do dashboard"] a[href="/dashboard/clients"]').parentElement.querySelectorAll('a').length`),1,'Clients must be outside Workspace');
   await click('Novo cliente');await until(`document.querySelector('[role="dialog"]')`);
   await field('Nome','   ');await click('Salvar cliente');assert.ok(await evaluate(`!!document.querySelector('[role="dialog"]')`),'Blank name must not save');
@@ -56,7 +56,7 @@ try {
   await click('Cancelar');await evaluate(`document.querySelector('button[aria-label="Excluir cliente João Atualizado"]').click()`);await until(`document.querySelector('[role="dialog"]')`);await click('Cancelar');assert.equal(await evaluate(`document.querySelectorAll('main article').length`),1);
   await evaluate(`document.querySelector('button[aria-label="Excluir cliente João Atualizado"]').click()`);await click('Excluir');await until(`!document.querySelector('main article') && Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);
   await until(`Array.from(document.querySelectorAll('[data-notification-type="success"]')).some(x=>x.textContent.includes('Cliente excluído'))`);
-  await call('Page.navigate',{url:baseUrl+'/dashboard/clients'});await until(`document.querySelector('h1')?.textContent==='Clients' && Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);assert.equal(await evaluate(`document.querySelectorAll('main article').length`),0);
+  await call('Page.navigate',{url:baseUrl+'/dashboard/clients'});await until(`document.querySelector('h1')?.textContent==='Clientes' && Array.from(document.querySelectorAll('[aria-live]')).some(x=>x.textContent==='Salvo no navegador')`);assert.equal(await evaluate(`document.querySelectorAll('main article').length`),0);
   await evaluate(`document.querySelectorAll('button[aria-label="Fechar notificação"]').forEach(button=>button.click())`);
   await click('Novo cliente');await field('Nome','Falha de gravação');
   await evaluate(`window.__transaction=IDBDatabase.prototype.transaction;IDBDatabase.prototype.transaction=function(stores,mode,...args){if(this.name==='viniszofx-clients'&&mode==='readwrite')throw new DOMException('Quota exceeded','QuotaExceededError');return window.__transaction.call(this,stores,mode,...args)}`);

@@ -2,7 +2,8 @@
 
 import { fileIdPattern, type CollectionKind } from "./file-refs";
 
-type FileReference = { __viniszofxFile: string; type: string };
+/** Reference to an uploaded object, as stored inside a record. */
+export type FileReference = { __viniszofxFile: string; type: string };
 const uploaded = new WeakMap<Blob, string>();
 const downloaded = new Map<string, Promise<Blob>>();
 
@@ -10,6 +11,16 @@ async function responseOrError(response: Response) {
   if (response.ok) return response;
   if (response.status === 401) throw new Error("Sua sessão expirou. Entre novamente.");
   throw new Error((await response.text()) || "Não foi possível acessar seus dados no servidor.");
+}
+
+/** Uploads a file now and returns the reference to keep in a record. */
+export async function uploadStoredFile(blob: Blob): Promise<FileReference> {
+  return { __viniszofxFile: await upload(blob), type: blob.type };
+}
+
+/** Downloads a referenced file on demand (cached for the session). */
+export function fetchStoredFile(reference: FileReference) {
+  return download(reference);
 }
 
 async function upload(blob: Blob) {
@@ -58,7 +69,10 @@ async function hydrate(value: unknown): Promise<unknown> {
   return value;
 }
 
-export async function readCollection<T>(kind: CollectionKind, legacy?: () => Promise<T[]>): Promise<T[]> {
+// `hydrate: false` keeps file references as-is so large collections (the Drive)
+// only download a file when it is opened.
+export async function readCollection<T>(kind: CollectionKind, legacy?: () => Promise<T[]>, options: { hydrate?: boolean } = {}): Promise<T[]> {
+  const hydrateAll = options.hydrate === false ? (value: unknown) => Promise.resolve(value) : hydrate;
   const endpoint = `/api/data/${kind}`;
   const response = await responseOrError(await fetch(endpoint, { cache: "no-store" }));
   const result: { exists: boolean; data: unknown[] } = await response.json();
@@ -69,9 +83,9 @@ export async function readCollection<T>(kind: CollectionKind, legacy?: () => Pro
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ data }),
     }));
     const stored = await responseOrError(await fetch(endpoint, { cache: "no-store" }));
-    return await hydrate((await stored.json()).data) as T[];
+    return await hydrateAll((await stored.json()).data) as T[];
   }
-  return await hydrate(result.data) as T[];
+  return await hydrateAll(result.data) as T[];
 }
 
 export async function writeCollection<T>(kind: CollectionKind, items: T[]) {

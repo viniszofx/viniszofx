@@ -3,8 +3,11 @@
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 import { readCollection, writeCollection } from "@/lib/storage/collections";
+import { addressText, type AddressFieldsValue } from "@/lib/format/address";
 
-export type ClientFields = { name: string; company: string; email: string; phone: string; address: string; notes: string };
+export type ClientAddress = AddressFieldsValue & { id: string; label?: string };
+// Endereço principal estruturado e endereços extras, como no Nodus; `address` guarda o texto livre antigo.
+export type ClientFields = AddressFieldsValue & { document?: string; addresses?: ClientAddress[]; name: string; company: string; email: string; phone: string; address: string; notes: string };
 export type Client = ClientFields & { id: string; createdAt: string; updatedAt: string };
 type Snapshot = { clients: Client[]; loaded: boolean; pending: number; error: string };
 const initial: Snapshot = { clients: [], loaded: false, pending: 0, error: "" };
@@ -70,11 +73,12 @@ export function saveClient(fields: ClientFields, id?: string) {
   const now = new Date().toISOString();
   const client: Client = { ...fields, id: previous?.id ?? (typeof crypto.randomUUID === "function" ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join("")), createdAt: previous?.createdAt ?? now, updatedAt: now };
   persist(previous ? snapshot.clients.map(item => item.id === previous.id ? client : item) : [...snapshot.clients, client], previous ? "Cliente atualizado" : "Cliente cadastrado");
+  return client;
 }
 export function deleteClient(id: string) { persist(snapshot.clients.filter(client => client.id !== id), "Cliente excluído"); }
 export function retryClients() { if (unsaved) persist(snapshot.clients); else void load(); }
 export function matchesClient(client: Client, query: string) {
   const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");
-  const text = normalize([client.name, client.company, client.email, client.phone, client.address, client.notes].join(" "));
+  const text = normalize([client.name, client.company, client.email, client.phone, client.address, client.notes, client.document, addressText(client), ...(client.addresses ?? []).map(addressText)].join(" "));
   return normalize(query.trim()).split(/\s+/).filter(Boolean).every(term => text.includes(term));
 }

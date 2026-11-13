@@ -7,6 +7,7 @@ import { Menu } from "@base-ui/react/menu";
 import { RiSearchLine as Search, RiUserLine as UserRound, RiSettings3Line as Settings, RiLogoutBoxRLine as LogOut, RiHomeLine as House, RiLayoutGridLine as LayoutGrid, RiExternalLinkLine as External } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { DashboardMenuPopup, menuItemClass } from "./menu-popup";
+import { ThemeSelector } from "./theme-selector";
 import { authClient } from "@/lib/auth/client";
 import { notifyError } from "@/lib/ui/notifications";
 
@@ -33,7 +34,7 @@ export function DashboardHeader({ menuButton }: { menuButton: ReactNode }) {
       <input type="search" aria-label="Busca global" placeholder="Buscar…" value={search} onChange={event => setSearch(event.target.value)} className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground" />
       <kbd className="hidden text-[10px] text-muted-foreground sm:block">Enter</kbd>
     </form>
-    <div className="flex items-center justify-end gap-2"><Link href="/" target="_blank" className="hidden items-center gap-1 border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent hover:text-foreground sm:inline-flex"><External className="size-3.5" />Ver site</Link><Menu.Root>
+    <div className="flex items-center justify-end gap-2"><ThemeSelector compact /><Link href="/" target="_blank" className="hidden items-center gap-1 border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent hover:text-foreground sm:inline-flex"><External className="size-3.5" />Ver site</Link><Menu.Root>
       <Menu.Trigger render={<Button variant="ghost" size="icon-sm" className="border" aria-label="Menu do usuário" />}><UserRound /></Menu.Trigger>
       <DashboardMenuPopup>
         <p className="border-b px-3 py-3 text-xs text-muted-foreground">Meu painel</p>
