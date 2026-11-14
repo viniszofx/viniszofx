@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Oxanium, Raleway } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { siteUrl } from "@/lib/seo/site-url";
 
@@ -38,14 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         ralewayHeading.variable,
       )}
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('viniszofx:theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}})()`,
-          }}
-        />
-      </head>
       <body className="flex min-h-full flex-col">
+        {/* Tema antes da pintura; next/script evita o aviso de <script> renderizado pelo React. */}
+        <Script id="theme" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('viniszofx:theme');var d=t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.style.colorScheme=d?'dark':'light'}catch(e){}})()` }} />
         {children}
       </body>
     </html>
