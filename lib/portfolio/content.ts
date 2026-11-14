@@ -20,7 +20,7 @@ export const projects = [
   {
     name: "Workspace",
     category: "Produtividade · Web",
-    description: "Um espaço para organizar ideias e tarefas. Notes com editor por blocos e Boards com listas, cards e anexos, salvos no navegador.",
+    description: "Um espaço para organizar ideias e tarefas: anotações e quadros de tarefas com listas, cartões e anexos, que funciona direto no navegador.",
     tags: ["Next.js", "React", "Tiptap", "IndexedDB"],
     href: "https://github.com/viniszofx/viniszofx",
     preview: "workspace",
@@ -28,7 +28,7 @@ export const projects = [
   {
     name: "Areco",
     category: "Gestão de produtos · Full stack",
-    description: "Cadastro de produtos com SKU, categorias, preços e estoque. Interface React integrada a uma API com regras de validação e PostgreSQL.",
+    description: "Cadastro de produtos com código, categoria, preço e estoque, que confere os dados na hora e não deixa informação errada entrar.",
     tags: ["C#", "ASP.NET Core", "React", "PostgreSQL"],
     href: "https://github.com/viniszofx/areco-service",
     preview: "products",
@@ -36,7 +36,7 @@ export const projects = [
   {
     name: "Ticket Management",
     category: "Gestão de tickets · API",
-    description: "API REST para gerenciar tickets, status e prioridades. Desenvolvida com Spring Boot, persistência em PostgreSQL e ambiente Docker.",
+    description: "O motor de um sistema de atendimento: registra cada chamado, a prioridade e o andamento, pronto para ser ligado a qualquer tela ou aplicativo.",
     tags: ["Java", "Spring Boot", "PostgreSQL", "Docker"],
     href: "https://github.com/viniszofx/api-spring",
     preview: "api",
@@ -44,7 +44,7 @@ export const projects = [
   {
     name: "E-ticket",
     category: "Suporte técnico · Projeto acadêmico",
-    description: "Sistema de chamados desenvolvido em dupla no IFMS. Organiza solicitações de suporte e relatórios por status e tempo de resolução.",
+    description: "Sistema de chamados feito em dupla no IFMS. Organiza os pedidos de suporte e mostra quantos estão abertos e quanto tempo cada um levou.",
     tags: ["PHP", "Laravel", "Bootstrap", "Docker"],
     href: "https://github.com/viniszofx/eticket",
     preview: "tickets",

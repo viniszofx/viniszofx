@@ -12,14 +12,14 @@ import { LeadWidget, OpenLeadButton } from "@/components/marketing/lead-widget";
 import { PortfolioBackground } from "@/components/portfolio/portfolio-background";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import { profile, projects, technologies } from "@/lib/portfolio/content";
-import { aiPrinciples, aiUses, faq, processSteps, services } from "@/lib/portfolio/services";
+import { aiPrinciples, aiUses, faq, processSteps, services, situations } from "@/lib/portfolio/services";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/marketing/reveal";
 import { disabledModules } from "@/lib/modules-server";
 
 export const metadata: Metadata = {
   title: "Vinicius Souza | Desenvolvimento de software com IA consciente",
-  description: "Sistemas web, automações, APIs e apps sob medida. Desenvolvimento com IA usada como ferramenta: revisão humana, dados protegidos e transparência.",
+  description: "Sistemas e automações sob medida para empresas que perdem tempo com planilhas, retrabalho e informação espalhada. IA usada com revisão humana e dados protegidos.",
   alternates: { canonical: "/" },
 };
 
@@ -58,16 +58,26 @@ export default async function Page() {
     <main id="conteudo" className="mx-auto w-full max-w-6xl px-5 sm:px-6">
       {/* Abertura */}
       <section aria-labelledby="apresentacao" className="flex flex-col items-center pt-20 pb-24 text-center sm:pt-28 sm:pb-32">
-        <p className={cn(rise, glass, "mb-8 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-muted-foreground")}><span className="size-1.5 rounded-full bg-primary" />Desenvolvimento de software sob medida</p>
-        <h1 id="apresentacao" style={delay(120)} className="animate-rise-in motion-reduce:animate-none max-w-4xl font-heading text-5xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-7xl">Software que resolve. <span className="bg-linear-to-r from-primary to-cyan-400 bg-clip-text text-transparent dark:from-cyan-300 dark:to-sky-400">IA com consciência.</span></h1>
-        <p style={delay(260)} className="animate-rise-in motion-reduce:animate-none mt-8 max-w-2xl text-lg leading-8 text-pretty text-muted-foreground sm:text-xl sm:leading-9">Sistemas web, automações e integrações para empresas que querem ganhar tempo sem perder o controle. A IA acelera o trabalho; as decisões e a revisão continuam humanas.</p>
-        <div style={delay(400)} className="animate-rise-in motion-reduce:animate-none mt-10 flex flex-wrap justify-center gap-3">{leads ? <OpenLeadButton className={pill}><Chat />Conversar sobre seu projeto</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={pill}><Mail />Conversar sobre seu projeto</Button>}<Button nativeButton={false} render={<a href="#servicos" />} variant="outline" className={cn(pill, glass)}>Ver serviços<ArrowRight /></Button></div>
-        <ul style={delay(540)} className="animate-rise-in motion-reduce:animate-none mt-10 flex flex-wrap justify-center gap-x-7 gap-y-3 text-sm text-muted-foreground">{["Revisão humana em todo código", "Seus dados fora da IA sem autorização", "Código e acessos ficam com você"].map(item => <li key={item} className="flex items-center gap-2"><span className="grid size-5 place-items-center rounded-full bg-primary/15 text-primary"><Check className="size-3.5" /></span>{item}</li>)}</ul>
+        <p className={cn(rise, glass, "mb-8 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-muted-foreground")}><span className="size-1.5 rounded-full bg-primary" />Sistemas e automações sob medida</p>
+        <h1 id="apresentacao" style={delay(120)} className="animate-rise-in motion-reduce:animate-none max-w-4xl font-heading text-5xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-7xl">Menos planilha e retrabalho. <span className="bg-linear-to-r from-primary to-cyan-400 bg-clip-text text-transparent dark:from-cyan-300 dark:to-sky-400">Mais tempo para o seu negócio.</span></h1>
+        <p style={delay(260)} className="animate-rise-in motion-reduce:animate-none mt-8 max-w-2xl text-lg leading-8 text-pretty text-muted-foreground sm:text-xl sm:leading-9">Você me conta como o trabalho é feito hoje. Eu mostro o que dá para simplificar e construo o sistema ou a automação que resolve, com IA onde ela ajuda e revisão humana em tudo.</p>
+        <div style={delay(400)} className="animate-rise-in motion-reduce:animate-none mt-10 flex flex-wrap justify-center gap-3">{leads ? <OpenLeadButton className={pill}><Chat />Conversar sobre seu projeto</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={pill}><Mail />Conversar sobre seu projeto</Button>}<Button nativeButton={false} render={<a href="#situacoes" />} variant="outline" className={cn(pill, glass)}>Ver exemplos<ArrowRight /></Button></div>
+        <ul style={delay(540)} className="animate-rise-in motion-reduce:animate-none mt-10 flex flex-wrap justify-center gap-x-7 gap-y-3 text-sm text-muted-foreground">{["Você não precisa saber o que pedir", "Proposta com valor fechado por etapa", "O sistema fica em seu nome"].map(item => <li key={item} className="flex items-center gap-2"><span className="grid size-5 place-items-center rounded-full bg-primary/15 text-primary"><Check className="size-3.5" /></span>{item}</li>)}</ul>
+      </section>
+
+      {/* Situações: o cliente se reconhece pelo problema, sem precisar saber o nome da solução. */}
+      <section id="situacoes" aria-labelledby="situacoes-titulo" className="scroll-mt-24 py-20 sm:py-28">
+        <div id="situacoes-titulo"><Heading eyebrow="Reconhece alguma?" title="Situações que dá para resolver.">Se alguma dessas parece com o dia a dia da sua empresa, já temos por onde começar.</Heading></div>
+        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 110} className={cn(card, glassHover, "flex flex-col gap-4 p-7")}>
+          <p className="font-heading text-xl leading-snug font-semibold tracking-tight text-pretty">{item.problem}</p>
+          <p className="mt-auto flex gap-2.5 border-t border-border/60 pt-4 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />{item.solution}</p>
+        </Reveal>)}</ul>
+        <Reveal className="mt-10 flex flex-col items-center gap-4 text-center"><p className="text-muted-foreground">Não achou a sua? Conte como funciona aí.</p>{leads ? <OpenLeadButton className={pill}><Chat />Contar minha situação</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={pill}><Mail />Contar minha situação</Button>}</Reveal>
       </section>
 
       {/* Serviços (grade em mosaico) */}
       <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-24 py-20 sm:py-28">
-        <div id="servicos-titulo"><Heading eyebrow="Serviços" title="O que posso construir para você.">Do primeiro protótipo à manutenção de um sistema que já roda. Cada projeto começa entendendo o seu processo.</Heading></div>
+        <div id="servicos-titulo"><Heading eyebrow="Serviços" title="O que posso construir para você.">Do primeiro sistema ao cuidado com um que já existe. Cada projeto começa entendendo como a sua equipe trabalha.</Heading></div>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{services.map((service, index) => { const Icon = serviceIcons[service.id];
           return <Reveal as="article" key={service.id} delay={(index % 3) * 110} className={cn(card, glassHover, "flex flex-col gap-4 p-7")}>
             <span className="grid size-12 place-items-center rounded-2xl bg-primary/10 text-primary"><Icon className="size-6" aria-hidden="true" /></span>
@@ -79,7 +89,7 @@ export default async function Page() {
 
       {/* IA consciente */}
       <section id="ia" aria-labelledby="ia-titulo" className="scroll-mt-24 py-20 sm:py-28">
-        <div id="ia-titulo"><Heading eyebrow="IA consciente" title="IA como ferramenta, não como atalho.">A inteligência artificial deixa o desenvolvimento mais rápido. Usada sem critério, também deixa mais frágil. Por isso o uso segue quatro regras.</Heading></div>
+        <div id="ia-titulo"><Heading eyebrow="IA consciente" title="IA como ferramenta, não como atalho.">A inteligência artificial deixa o trabalho mais rápido e mais barato. Usada sem critério, também traz erros e riscos. Por isso o uso segue quatro regras.</Heading></div>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
           return <Reveal as="article" key={principle.title} delay={index * 100} className={cn(card, glassHover, "p-7")}><span className="grid size-11 place-items-center rounded-full bg-primary/10 text-primary"><Icon className="size-5" aria-hidden="true" /></span><h3 className="mt-5 text-lg font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-7 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -96,10 +106,11 @@ export default async function Page() {
 
       {/* Projetos */}
       <section id="projetos" aria-labelledby="projetos-titulo" className="scroll-mt-24 py-20 sm:py-28">
-        <div id="projetos-titulo"><Heading eyebrow="Projetos" title="Código em prática.">Alguns projetos públicos, com o código aberto para quem quiser conferir.</Heading></div>
+        <div id="projetos-titulo"><Heading eyebrow="Projetos" title="Alguns projetos que construí.">São projetos públicos, com o código aberto: qualquer pessoa técnica da sua confiança pode conferir a qualidade.</Heading></div>
         <div className="mt-14 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 120} className={cn(glass, glassHover, "overflow-hidden rounded-3xl [&>article]:h-full [&>article]:border-0 [&>article]:bg-transparent")}><ProjectCard project={project} index={index} /></Reveal>)}</div>
         <div className="mt-6 flex justify-center"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline dark:text-cyan-300">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
-        <div className="mt-14 grid gap-4 md:grid-cols-3">{technologies.map((group, index) => <Reveal key={group.title} delay={index * 100} className={cn(card, "p-6")}><p className="mb-4 text-sm font-semibold">{group.title}</p><ul className="flex flex-wrap gap-2">{group.items.map(item => <li key={item} className="rounded-full bg-muted/60 px-3 py-1 text-xs text-muted-foreground">{item}</li>)}</ul></Reveal>)}</div>
+        <p className="mt-14 text-center text-sm text-muted-foreground">Para quem é da área, as tecnologias com que trabalho:</p>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">{technologies.map((group, index) => <Reveal key={group.title} delay={index * 100} className={cn(card, "p-6")}><p className="mb-4 text-sm font-semibold">{group.title}</p><ul className="flex flex-wrap gap-2">{group.items.map(item => <li key={item} className="rounded-full bg-muted/60 px-3 py-1 text-xs text-muted-foreground">{item}</li>)}</ul></Reveal>)}</div>
       </section>
 
       {/* Sobre */}
@@ -110,7 +121,7 @@ export default async function Page() {
             <p className="mb-3 text-sm font-medium text-primary dark:text-cyan-300">Quem vai construir</p>
             <h2 id="sobre-titulo" className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">{profile.name}</h2>
             <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4" />{profile.location} · atendimento remoto</p>
-            <div className="mt-6 space-y-4 leading-8 text-muted-foreground"><p>{profile.role} formado em Análise e Desenvolvimento de Sistemas pelo IFMS. Desenvolvo sistemas web, APIs e automações, do levantamento de requisitos à entrega.</p><p>Uso IA todos os dias como parte do trabalho, e justamente por isso sei onde ela ajuda e onde atrapalha. O compromisso é com o resultado: software que a sua equipe entende, usa e consegue manter.</p></div>
+            <div className="mt-6 space-y-4 leading-8 text-muted-foreground"><p>{profile.role} formado em Análise e Desenvolvimento de Sistemas pelo IFMS. Cuido do projeto do começo ao fim: da primeira conversa ao sistema funcionando na sua empresa, sem intermediários.</p><p>Uso IA todos os dias como parte do trabalho, e justamente por isso sei onde ela ajuda e onde atrapalha. O compromisso é com o resultado: um sistema que a sua equipe entende, usa de verdade e não fica refém de ninguém.</p></div>
             <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline dark:text-cyan-300"><Linkedin className="size-4" />Trajetória no LinkedIn<ArrowUpRight className="size-4" /></a>
           </div>
         </Reveal>
@@ -125,8 +136,8 @@ export default async function Page() {
       {/* Contato */}
       <section id="contato" aria-labelledby="contato-titulo" className="scroll-mt-24 pt-12 pb-24 sm:pb-32">
         <Reveal className={cn(glass, "relative overflow-hidden rounded-[2rem] border-primary/30! bg-linear-to-br from-primary/20 via-transparent to-transparent px-6 py-16 text-center sm:px-12 sm:py-24")}>
-          <h2 id="contato-titulo" className="mx-auto max-w-3xl font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">Tem um processo que poderia ser mais simples?</h2>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-pretty text-muted-foreground">Conte o que você precisa. Respondo com perguntas, uma ideia de caminho e, se fizer sentido, uma proposta com escopo e valor.</p>
+          <h2 id="contato-titulo" className="mx-auto max-w-3xl font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">Alguma tarefa toma tempo demais por aí?</h2>
+          <p className="mx-auto mt-5 max-w-xl text-lg leading-8 text-pretty text-muted-foreground">Você não precisa saber o que pedir. Conte como o trabalho é feito hoje e o que mais incomoda: eu respondo com perguntas, uma ideia de caminho e, se fizer sentido, uma proposta com prazo e valor.</p>
           <div className="mt-10 flex flex-wrap justify-center gap-3">{leads ? <OpenLeadButton className={pill}><Chat />Enviar mensagem</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={pill}><Mail />Enviar e-mail</Button>}<Button nativeButton={false} render={<a href={profile.linkedin} target="_blank" rel="noopener noreferrer" />} variant="outline" className={cn(pill, "bg-card/60")}><Linkedin />LinkedIn</Button></div>
           <a href={`mailto:${profile.email}`} className="mt-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><Mail className="size-4" />{profile.email}</a>
         </Reveal>

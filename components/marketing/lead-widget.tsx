@@ -11,8 +11,8 @@ const glass = "border border-foreground/10 bg-card/80 backdrop-blur-2xl backdrop
 type Step = "topic" | "name" | "email" | "phone" | "message" | "confirm" | "sending" | "done";
 type Bubble = { id: number; from: "bot" | "user"; text: ReactNode };
 type Lead = { topic: string; name: string; email: string; phone: string; message: string };
-const topics = ["Quero um orçamento", "Automatizar um processo", "Tenho uma dúvida"];
-const placeholders: Partial<Record<Step, string>> = { name: "Seu nome", email: "seu@email.com", phone: "(00) 00000-0000", message: "Conte sobre seu projeto ou ideia" };
+const topics = ["Quero um orçamento", "Não sei bem o que preciso", "Tenho uma dúvida"];
+const placeholders: Partial<Record<Step, string>> = { name: "Seu nome", email: "seu@email.com", phone: "(00) 00000-0000", message: "Ex.: controlo os pedidos numa planilha e sempre algo se perde" };
 const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? "";
 
 /**
@@ -72,7 +72,7 @@ export function LeadWidget() {
   function chooseTopic(topic: string) {
     if (typing || step !== "topic") return;
     push("user", topic); setLead(previous => ({ ...previous, topic }));
-    say(["Ótimo! Para começar, como posso te chamar?"], () => setStep("name"));
+    say([topic === topics[1] ? "Sem problema, é para isso que serve a conversa. Como posso te chamar?" : "Ótimo! Para começar, como posso te chamar?"], () => setStep("name"));
   }
 
   async function send(data: Lead) {
@@ -109,10 +109,10 @@ export function LeadWidget() {
     if (step === "phone") {
       if (value && value.replace(/\D/g, "").length < 10) return say(["Coloque o número com DDD, por favor. Ou toque em Pular."]);
       push("user", value || "Prefiro não informar"); setInput(""); setLead(previous => ({ ...previous, phone: value }));
-      return say(["Perfeito. Agora me conta: o que você precisa? Quanto mais detalhe, melhor a resposta."], () => setStep("message"));
+      return say(["Perfeito. Agora me conta como funciona hoje e o que mais incomoda. Pode ser do seu jeito, sem termos técnicos."], () => setStep("message"));
     }
     if (step === "message") {
-      if (value.length < 5) return say(["Escreve um pouquinho mais sobre o que você precisa. 🙂"]);
+      if (value.length < 5) return say(["Escreve um pouquinho mais sobre como funciona hoje. 🙂"]);
       push("user", value); setInput("");
       const next = { ...lead, message: value }; setLead(next);
       return say([<Summary key="summary" lead={next} />, "Posso enviar?"], () => setStep("confirm"));

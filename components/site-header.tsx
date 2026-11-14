@@ -17,7 +17,7 @@ export function SiteHeader({ authenticated, blog = true }: { authenticated: bool
           <span className="hidden sm:inline">Vinicius Souza</span>
           <span className="sm:hidden">V</span>
         </Link>
-        <div className="flex items-center gap-4 sm:gap-6"><div className="hidden items-center gap-5 text-xs sm:flex"><Link href="/#servicos" className="hover:text-primary">Serviços</Link><Link href="/#ia" className="hover:text-primary">IA consciente</Link><Link href="/#projetos" className="hover:text-primary">Projetos</Link><Link href="/#contato" className="hover:text-primary">Contato</Link></div>
+        <div className="flex items-center gap-4 sm:gap-6"><div className="hidden items-center gap-5 text-xs sm:flex"><Link href="/#situacoes" className="hover:text-primary">Exemplos</Link><Link href="/#servicos" className="hover:text-primary">Serviços</Link><Link href="/#ia" className="hover:text-primary">IA consciente</Link><Link href="/#projetos" className="hover:text-primary">Projetos</Link><Link href="/#contato" className="hover:text-primary">Contato</Link></div>
         {blog && <Link href="/blog" className="text-xs font-medium hover:text-primary">Blog</Link>}
         <ThemeSelector compact />
         <Button nativeButton={false} render={<Link href={authenticated ? "/dashboard" : "/login"} />} variant="outline" size="sm">{authenticated ? "Ir ao app" : "Login"}</Button>
