@@ -1,3 +1,4 @@
+import { localDate } from "@/lib/format/date";
 // Campos trabalhistas do colaborador, portados do cadastro do Nodus.
 // Tudo é opcional para manter os registros antigos válidos.
 
@@ -88,7 +89,7 @@ export function blankEvent(id: string, type: EmploymentEventType = "vacation", s
 
 /** As mesmas regras do esquema do Nodus; devolve a primeira mensagem de erro. */
 export function validateProfile(value: EmployeeProfile) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDate();
   if (!validCpf(value.cpf)) return "CPF inválido.";
   if (value.birthDate && value.birthDate > today) return "A data de nascimento não pode ser futura.";
   if (value.contractEndDate && !value.admissionDate) return "Informe a data de admissão antes do fim do contrato.";

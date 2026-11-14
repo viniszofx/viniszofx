@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { saveClient, useClients } from "@/lib/clients/store";
 import { matchesText } from "@/lib/records/store";
 import { notifyError, notifySuccess } from "@/lib/ui/notifications";
+import { today } from "@/lib/format/date";
 
 export type Lead = {
   id: string; name: string; email: string; phone: string; message: string; status: Status; source: string;
@@ -45,7 +46,7 @@ function exportCsv(rows: Lead[]) {
   const header = ["Data", "Nome", "E-mail", "Telefone", "Etapa", "Mensagem", "Origem", "Campanha", "Próximo contato", "Anotações"];
   const lines = rows.map(lead => [when(lead.createdAt), lead.name, lead.email, lead.phone, stage(lead.status).label, lead.message, lead.source, Object.entries(lead.campaign).map(([key, value]) => `${key}=${value}`).join(" "), lead.nextContactAt ? when(lead.nextContactAt) : "", lead.notes].map(cell).join(";"));
   const url = URL.createObjectURL(new Blob(["﻿" + [header.map(cell).join(";"), ...lines].join("\r\n")], { type: "text/csv;charset=utf-8" }));
-  Object.assign(document.createElement("a"), { href: url, download: `leads-${new Date().toISOString().slice(0, 10)}.csv` }).click();
+  Object.assign(document.createElement("a"), { href: url, download: `leads-${today()}.csv` }).click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
