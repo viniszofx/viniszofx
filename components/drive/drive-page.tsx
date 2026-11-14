@@ -1,6 +1,6 @@
 "use client";
 import { surfaceVariants } from "@/components/ui/card";
-import { useCallback, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useCallback, useRef, useState, type KeyboardEvent, type MouseEvent, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { RiDeleteBinLine, RiDownloadLine, RiEyeLine, RiFileCopyLine, RiFileExcel2Line, RiFilePdf2Line, RiFileWord2Line, RiFolderAddLine, RiFolderTransferLine, RiFolderUploadLine, RiLink, RiPencilLine, RiUploadLine } from "@remixicon/react";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -12,7 +12,7 @@ import { DriveBreadcrumb } from "./drive-breadcrumb";
 import { DriveDetails } from "./drive-details";
 import { DriveGrid, DriveList } from "./drive-items";
 import { DRIVE_SECTIONS, DriveSidebar, type DriveView } from "./drive-sidebar";
-import { DriveToolbar } from "./drive-toolbar";
+import { DriveSelectionBar, DriveToolbar } from "./drive-toolbar";
 import { DriveViewControls, type DrivePreset, type DriveSort } from "./drive-view-controls";
 import { FolderColorMenu } from "./folder-color-menu";
 import { MoveDialog } from "./move-dialog";
@@ -46,6 +46,9 @@ function itemsFor(view: DriveView, all: DriveItem[], parentId: string, sort: Dri
   if (view === "public") return sortItems(all.filter(item => item.visibility === "public" || item.shareToken), all, sort);
   return sortItems(all.filter(item => item.parentId === parentId), all, sort);
 }
+
+const NARROW = "(max-width: 767px)";
+const subscribeNarrow = (notify: () => void) => { const query = window.matchMedia(NARROW); query.addEventListener("change", notify); return () => query.removeEventListener("change", notify); };
 
 export function DrivePage({ view, folderId }: { view: DriveView; folderId: string }) {
   const router = useRouter();
@@ -192,21 +195,22 @@ export function DrivePage({ view, folderId }: { view: DriveView; folderId: strin
   const missingFolder = loaded && view === "drive" && !!folderId && !folder;
   const status = uploading ? `Enviando ${uploading} arquivo(s)…` : pending ? "Salvando…" : error;
   const ItemView = layout === "grid" ? DriveGrid : DriveList;
+  const narrow = useSyncExternalStore(subscribeNarrow, () => window.matchMedia(NARROW).matches, () => false);
+  const selectionMode = selectedItems.length > 0;
+  const folderColor = selected?.kind === "folder" ? <FolderColorMenu value={selected.color} onChange={color => paintFolder(selected, color)} /> : null;
   const sharedItem = records.find(item => item.id === sharing);
 
-  return <main className="flex min-h-[calc(100svh-57px)] w-full max-w-none min-w-0 flex-col gap-4 px-3 py-4 sm:px-6 lg:px-8" onKeyDown={onKeyDown}>
-    <header><p className="text-xs uppercase tracking-widest text-primary">Ferramentas</p><h1 className="mt-2 font-heading text-3xl font-semibold">Drive</h1></header>
+  return <main className="flex w-full max-w-none min-w-0 flex-col gap-4 md:min-h-[calc(100svh-57px)] md:px-6 md:py-4 lg:px-8" onKeyDown={onKeyDown}>
+    <header className="max-md:hidden"><p className="text-xs uppercase tracking-widest text-primary">Ferramentas</p><h1 className="mt-2 font-heading text-3xl font-semibold">Drive</h1></header>
     <input ref={uploadInput} type="file" multiple className="sr-only" aria-label="Enviar arquivos" onChange={event => { void upload([...(event.target.files ?? [])]); event.target.value = ""; }} />
     <input ref={element => { if (element) element.setAttribute("webkitdirectory", ""); folderInput.current = element; }} type="file" multiple className="sr-only" aria-label="Enviar pasta" onChange={event => { void uploadFolder([...(event.target.files ?? [])]); event.target.value = ""; }} />
-    <div className={cn(surfaceVariants(), "flex min-h-[min(70svh,42rem)] min-w-0 flex-1 flex-col overflow-hidden md:flex-row")}>
-      <DriveSidebar view={view} usedBytes={records.reduce((sum, item) => sum + (item.file?.size ?? 0), 0)} files={records.filter(item => item.kind === "file").length} onSelect={next => go(next)} rootDrop={{ highlighted: drag.isDropTarget(""), props: drag.dropTarget("") }} />
+    <div className={cn(surfaceVariants(), "flex min-w-0 flex-col overflow-hidden md:min-h-[min(70svh,42rem)] md:flex-1 md:flex-row max-md:h-[calc(100dvh-5.5rem-1px-3.5rem-env(safe-area-inset-bottom))] max-md:rounded-none max-md:border-0")}>
+      <DriveSidebar view={view} usedBytes={records.reduce((sum, item) => sum + (item.file?.size ?? 0), 0)} files={records.filter(item => item.kind === "file").length} onSelect={next => go(next)} rootDrop={{ highlighted: drag.isDropTarget(""), props: drag.dropTarget("") }} hidden={narrow && selectionMode} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <DriveToolbar actions={actions} createActions={createActions} canAdd={canAdd} selectedCount={selectedItems.length} onUpload={() => uploadInput.current?.click()} onUploadFolder={() => folderInput.current?.click()} onClear={() => setSelectedIds([])}
-          extra={selected?.kind === "folder" && <FolderColorMenu value={selected.color} onChange={color => paintFolder(selected, color)} />} />
-        <header className="flex min-h-12 min-w-0 flex-wrap items-center justify-between gap-2 border-b px-3 py-2 sm:px-4">
-          <div className="min-w-0 flex-1"><DriveBreadcrumb root={DRIVE_SECTIONS.find(entry => entry.view === view)!.label} path={view === "drive" ? path : []} droppable={view === "drive"} drag={drag} onOpen={id => go(view, id)} /></div>
-          <DriveViewControls sort={view === "recent" ? undefined : sort} onSort={setSort} preset={preset} onPreset={applyPreset} />
-        </header>
+        <DriveToolbar actions={actions} createActions={createActions} canAdd={canAdd} selectedCount={selectedItems.length} total={items.length} narrow={narrow} extra={folderColor}
+          onUpload={() => uploadInput.current?.click()} onUploadFolder={() => folderInput.current?.click()} onClear={() => setSelectedIds([])} onSelectAll={() => setSelectedIds(items.map(item => item.id))}
+          breadcrumb={<DriveBreadcrumb root={DRIVE_SECTIONS.find(entry => entry.view === view)!.label} path={view === "drive" ? path : []} droppable={view === "drive"} drag={drag} onOpen={id => go(view, id)} />}
+          viewControls={<DriveViewControls sort={view === "recent" ? undefined : sort} onSort={setSort} preset={preset} onPreset={applyPreset} />} />
         <div className="flex min-h-0 flex-1">
           <div tabIndex={-1} {...areaProps} className={cn("relative min-h-72 min-w-0 flex-1 overflow-auto p-3 outline-none sm:p-4", fileDrag && "bg-primary/5 ring-2 ring-primary ring-inset")}
             onContextMenu={event => { if (!canAdd) return; event.preventDefault(); setSelectedIds([]); setMenu({ x: event.clientX, y: event.clientY, target: "background" }); }}
@@ -221,10 +225,11 @@ export function DrivePage({ view, folderId }: { view: DriveView; folderId: strin
           </div>
           {details && <DriveDetails item={selected} count={selectedItems.length} all={records} showLocation={view !== "drive"} />}
         </div>
-        <footer className="flex flex-wrap justify-between gap-2 border-t bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground"><span>{items.length === 1 ? "1 item" : `${items.length} itens`} · Até 10 MB por arquivo</span><span aria-live="polite" className={cn(error && !uploading && !pending && "text-destructive")}>{status}</span></footer>
+        {narrow && selectionMode && <DriveSelectionBar actions={actions} extra={folderColor} />}
+        <footer className={cn("flex flex-wrap justify-between gap-2 border-t bg-foreground/[0.03] px-3 py-1.5 text-xs text-muted-foreground", narrow && selectionMode && "hidden")}><span>{items.length === 1 ? "1 item" : `${items.length} itens`} · Até 10 MB por arquivo</span><span aria-live="polite" className={cn(error && !uploading && !pending && "text-destructive")}>{status}</span></footer>
       </div>
     </div>
-    <p className="text-xs text-muted-foreground">Atalhos: clique seleciona, duplo clique abre, Ctrl/⌘ e Shift selecionam vários, arraste para mover, F2 renomeia, Delete exclui, Ctrl+A seleciona tudo.</p>
+    <p className="text-xs text-muted-foreground max-md:hidden">Atalhos: clique seleciona, duplo clique abre, Ctrl/⌘ e Shift selecionam vários, arraste para mover, F2 renomeia, Delete exclui, Ctrl+A seleciona tudo.</p>
     {menu && (menu.target === "background" || selectedItems.length > 0) && <ContextMenu x={menu.x} y={menu.y} label={menu.target === "background" ? "Atalhos do Drive" : "Ações do item"} onClose={closeMenu}>
       <ActionList showLabel actions={menu.target === "item" ? actions : [...createActions, { key: "upload", label: "Enviar arquivos", icon: RiUploadLine, run: () => uploadInput.current?.click() }, { key: "upload-folder", label: "Enviar pasta", icon: RiFolderUploadLine, run: () => folderInput.current?.click() }]} />
     </ContextMenu>}

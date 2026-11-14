@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { ModulesProvider } from "@/lib/modules-context";
 import { Dialog } from "@base-ui/react/dialog";
 import { RiSidebarUnfoldLine as PanelLeftOpen } from "@remixicon/react";
-import { usePathname } from "next/navigation";
 import { useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
 import { DashboardNavigation } from "./dashboard/shell/dashboard-navigation";
 import { DesktopAppsGallery, MobileMenuSheet } from "./dashboard/shell/apps";
@@ -16,7 +15,6 @@ const MIN_WIDTH = 204;
 const MAX_WIDTH = 320;
 const CLOSE_THRESHOLD = 96;
 export function DashboardShell({ children, isPlatformAdmin = false, disabledModules = [] }: { children: ReactNode; isPlatformAdmin?: boolean; disabledModules?: string[] }) {
-  const pathname = usePathname();
   const [width, setWidth] = useState(224);
   const [isResizing, setIsResizing] = useState(false);
   const [desktopOpen, setDesktopOpen] = useState(true);
@@ -142,7 +140,7 @@ export function DashboardShell({ children, isPlatformAdmin = false, disabledModu
             />
           </div>
         </aside>
-        <div className={cn("min-w-0 flex-1 md:pb-0", pathname.startsWith("/dashboard/drive") ? "pb-[calc(6.5rem+env(safe-area-inset-bottom))]" : "pb-[calc(3.5rem+env(safe-area-inset-bottom))]")}><ModulesProvider disabled={disabledModules}><ModuleGate disabledModules={disabledModules}>{children}</ModuleGate></ModulesProvider></div>
+        <div className={cn("min-w-0 flex-1 md:pb-0", "pb-[calc(3.5rem+env(safe-area-inset-bottom))]")}><ModulesProvider disabled={disabledModules}><ModuleGate disabledModules={disabledModules}>{children}</ModuleGate></ModulesProvider></div>
       </div>
     </div>
   );

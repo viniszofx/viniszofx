@@ -12,16 +12,20 @@ export const DRIVE_SECTIONS = [
   { view: "links", label: "Com link", icon: RiLink },
 ] as const;
 
-export function DriveSidebar({ view, usedBytes, files, onSelect, rootDrop }: {
-  view: DriveView; usedBytes: number; files: number; onSelect: (view: DriveView) => void; rootDrop: { highlighted: boolean; props: object };
+/**
+ * Seções do Drive (como no Nodus): barra lateral do tablet para cima; no celular, abas com ícone
+ * embaixo do quadro, que dão lugar às ações quando há itens selecionados (`hidden`).
+ */
+export function DriveSidebar({ view, usedBytes, files, onSelect, rootDrop, hidden = false }: {
+  view: DriveView; usedBytes: number; files: number; onSelect: (view: DriveView) => void; rootDrop: { highlighted: boolean; props: object }; hidden?: boolean;
 }) {
-  return <aside className="hidden min-w-0 shrink-0 bg-muted/40 md:flex md:w-52 md:flex-col md:gap-0.5 md:border-r md:p-3">
-    <nav aria-label="Seções do Drive" className="hidden md:flex md:flex-col md:gap-0.5">{DRIVE_SECTIONS.map(({ view: entry, label, icon: Icon }) =>
+  return <aside className={cn("flex min-w-0 shrink-0 flex-col border-t bg-foreground/[0.03] px-2 py-1.5 max-md:order-last md:w-52 md:gap-0.5 md:border-t-0 md:border-r md:p-3", hidden && "max-md:hidden")}>
+    <nav aria-label="Seções do Drive" className="grid grid-cols-5 gap-0.5 md:flex md:flex-col">{DRIVE_SECTIONS.map(({ view: entry, label, icon: Icon }) =>
       <button key={entry} type="button" aria-current={view === entry ? "page" : undefined} onClick={() => onSelect(entry)} {...(entry === "drive" ? rootDrop.props : {})}
-        className={cn("flex min-w-0 items-center gap-2 px-2.5 py-1.5 text-left text-sm", view === entry ? "bg-primary/10 font-medium text-primary" : "hover:bg-muted", entry === "drive" && rootDrop.highlighted && "ring-2 ring-primary")}>
-        <Icon className="size-4 shrink-0" /><span className="truncate">{label}</span>
+        className={cn("flex min-w-0 flex-col items-center gap-0.5 rounded-lg px-0.5 py-1.5 text-[10px] tracking-tight md:flex-row md:gap-2 md:px-2.5 md:text-left md:text-sm md:tracking-normal",
+          view === entry ? "bg-primary/10 font-medium text-primary" : "text-muted-foreground hover:bg-muted md:text-foreground", entry === "drive" && rootDrop.highlighted && "ring-2 ring-primary")}>
+        <Icon className="size-5 shrink-0 md:size-4" /><span className="max-w-full truncate">{label}</span>
       </button>)}</nav>
     <div className="mt-auto hidden px-2.5 pt-4 text-xs text-muted-foreground md:block"><p>{formatBytes(usedBytes)} em uso</p><p>{files} arquivos</p></div>
   </aside>;
 }
-
