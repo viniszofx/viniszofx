@@ -7,12 +7,12 @@ import { UniverSheetsFindReplacePreset } from "@univerjs/preset-sheets-find-repl
 import findReplacePtBR from "@univerjs/preset-sheets-find-replace/locales/pt-BR";
 import "@univerjs/preset-sheets-core/lib/index.css";
 import "@univerjs/preset-sheets-find-replace/lib/index.css";
-import { RiDownloadLine, RiSaveLine } from "@remixicon/react";
+import { RiDownloadLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { ErrorToast } from "@/components/ui/error-toast";
-import { Switch } from "@/components/ui/switch";
 import { LoadingBlock as LoadingSkeleton } from "@/components/ui/feedback";
 import { saveBlob } from "@/lib/drive/files";
+import { AUTO_SAVE_DELAY, SaveControls, saveStatus, useAutoSavePreference } from "./editor-save";
 import { toExcelFormula } from "@/lib/drive/editors/excel-formulas";
 import { loadSheetFonts, sheetFamilies } from "@/lib/drive/editors/sheet-fonts";
 import { registerSheetShortcuts } from "@/lib/drive/editors/xlsx-shortcuts";
@@ -20,7 +20,6 @@ import { univerToXlsx, xlsxToUniver } from "@/lib/drive/editors/xlsx-univer";
 
 const XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 const AUTO_SAVE_KEY = "nodus:xlsx-auto-save";
-const AUTO_SAVE_DELAY = 1500;
 // Só mutações da planilha contam como edição (valores, estilos, linhas, abas, inclusive desfazer);
 // o editor interno de texto e o cálculo de fórmulas disparam outros comandos ao abrir.
 const EDIT = /^sheet\.mutation\./;
@@ -28,9 +27,6 @@ const VIEW_ONLY = /activate|selection|scroll|zoom/i;
 // Tempo que a abertura espera as fontes do arquivo; depois disso abre e redesenha quando elas chegarem.
 const FONT_WAIT = 2500;
 
-function savedPreference() {
-  try { return localStorage.getItem(AUTO_SAVE_KEY) === "on"; } catch { return false; }
-}
 
 // Formulas de todas as abas, já com referências relativas resolvidas (fórmulas copiadas ficam só com um id no modelo).
 function collectFormulas(api: FUniver) {
@@ -61,7 +57,7 @@ export function XlsxDocument({ file, name, onSave, leading }: {
   const [failedFile, setFailedFile] = useState<Blob | null>(null);
   const [dirtyFile, setDirtyFile] = useState<Blob | null>(null);
   const [busy, setBusy] = useState(false);
-  const [autoSave, setAutoSave] = useState(savedPreference);
+  const [autoSave, setAutoSave] = useAutoSavePreference(AUTO_SAVE_KEY);
   const [savedAt, setSavedAt] = useState<Date>();
   const [error, setError] = useState("");
   const loaded = openedFile === file;
@@ -179,7 +175,6 @@ export function XlsxDocument({ file, name, onSave, leading }: {
 
   function toggleAutoSave(value: boolean) {
     setAutoSave(value);
-    try { localStorage.setItem(AUTO_SAVE_KEY, value ? "on" : "off"); } catch { /* Vale nesta sessão. */ }
     if (value && dirty) void save(true);
   }
 
@@ -196,15 +191,14 @@ export function XlsxDocument({ file, name, onSave, leading }: {
     catch (cause) { setError(cause instanceof Error ? cause.message : "Não foi possível baixar a planilha."); }
   }
 
-  const status = busy ? "Salvando…" : dirty ? "Alterações não salvas" : savedAt ? `Salvo às ${savedAt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}` : "";
+  const status = saveStatus(busy, dirty, savedAt);
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-card" onKeyDownCapture={onSave ? saveShortcut : undefined}>
       <div className="flex flex-wrap items-center justify-end gap-3 border-b bg-card p-2">
         <div className="mr-auto flex min-w-0 items-center gap-2">{leading}</div>
-        <span role="status" className="px-1 text-xs text-muted-foreground">{status}</span>
-        {onSave && <Switch checked={autoSave} onChange={toggleAutoSave} label="Salvar automaticamente" disabled={!loaded} />}
-        <Button type="button" variant="outline" size="sm" disabled={!loaded || busy} onClick={() => void download()}><RiDownloadLine />Baixar</Button>
-        {onSave && <Button type="button" size="sm" disabled={!loaded || !dirty || busy} onClick={() => void save(false)}><RiSaveLine />Salvar</Button>}
+        <SaveControls status={status} autoSave={autoSave} onAutoSave={onSave ? toggleAutoSave : undefined} ready={loaded} canSave={dirty && !busy} onSave={onSave ? () => void save(false) : undefined}>
+          <Button type="button" variant="outline" size="sm" disabled={!loaded || busy} onClick={() => void download()}><RiDownloadLine />Baixar</Button>
+        </SaveControls>
       </div>
       <ErrorToast message={failedFile === file ? "Não foi possível abrir esta planilha Excel." : error} />
       {/* O Univer mede o contêiner ao iniciar: ele já existe com tamanho, e o carregamento fica por cima. */}

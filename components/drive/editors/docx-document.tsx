@@ -3,30 +3,20 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { DocxEditor, type DocxEditorRef, useFonts } from "@docx-editor.dev/react";
 import ptBR from "@docx-editor.dev/i18n/pt-BR";
 import "@docx-editor.dev/core/styles/editor.css";
-import { RiDownloadLine, RiFilePdf2Line, RiPrinterLine, RiSaveLine } from "@remixicon/react";
+import { RiDownloadLine, RiFilePdf2Line, RiPrinterLine } from "@remixicon/react";
 import { docxToPdf } from "@/lib/drive/editors/docx-pdf";
 import { printDocx } from "@/lib/drive/editors/print-docx";
 import { Button } from "@/components/ui/button";
 import { ErrorToast } from "@/components/ui/error-toast";
-import { Switch } from "@/components/ui/switch";
 import { LoadingBlock as LoadingSkeleton } from "@/components/ui/feedback";
 import { DOCUMENT_FONTS } from "@/lib/drive/editors/document-fonts";
 import { saveBlob } from "@/lib/drive/files";
+import { AUTO_SAVE_DELAY, SaveControls, saveStatus, useAutoSavePreference } from "./editor-save";
 import { DocxContextMenu, DocxImageMenu } from "./docx-image-tools";
 import { createDocxExporters, docxFileMenu } from "./docx-file-menu";
 
 const DOCX_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 const AUTO_SAVE_KEY = "nodus:docx-auto-save";
-const AUTO_SAVE_DELAY = 1500;
-const clock = new Intl.DateTimeFormat("pt-BR", { hour: "2-digit", minute: "2-digit" });
-
-function readAutoSave() {
-  try {
-    return window.localStorage.getItem(AUTO_SAVE_KEY) === "on";
-  } catch {
-    return false;
-  }
-}
 
 // Editor de DOCX completo: páginas, menus, barra de formatação, tabelas e impressão. Sem onSave, abre só para leitura.
 export function DocxDocument({ file, name, onSave, saveLabel = "Salvar", allowAutoSave = false, leading }: {
@@ -45,7 +35,7 @@ export function DocxDocument({ file, name, onSave, saveLabel = "Salvar", allowAu
   const [busy, setBusy] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
-  const [autoSave, setAutoSave] = useState(readAutoSave);
+  const [autoSave, setAutoSave] = useAutoSavePreference(AUTO_SAVE_KEY);
   const [error, setError] = useState("");
   const [printing, setPrinting] = useState(false);
   const [exporting, setExporting] = useState(false);
@@ -95,9 +85,6 @@ export function DocxDocument({ file, name, onSave, saveLabel = "Salvar", allowAu
 
   function toggleAutoSave(next: boolean) {
     setAutoSave(next);
-    try {
-      window.localStorage.setItem(AUTO_SAVE_KEY, next ? "on" : "off");
-    } catch { /* A preferência vale só nesta sessão. */ }
     if (next && dirty) void save(true);
   }
 
@@ -132,10 +119,9 @@ export function DocxDocument({ file, name, onSave, saveLabel = "Salvar", allowAu
   }
 
   const ready = bytes?.file === file;
-  const status = busy ? "Salvando…" : dirty ? "Alterações não salvas" : savedAt ? `Salvo às ${clock.format(savedAt)}` : "";
+  const status = saveStatus(busy, dirty, savedAt);
   const actions = <div className="flex flex-wrap items-center justify-end gap-2">
-        <span role="status" className="px-1 text-xs text-muted-foreground">{status}</span>
-        {onSave && allowAutoSave && <Switch checked={autoSave} onChange={toggleAutoSave} label="Salvar automaticamente" disabled={!ready} />}
+        <SaveControls status={status} autoSave={autoSave} onAutoSave={onSave && allowAutoSave ? toggleAutoSave : undefined} ready={ready} canSave={!busy} label={saveLabel} onSave={onSave ? () => void save(false) : undefined}>
         <Button variant="ghost" size="sm" disabled={!ready || printing} title="Imprimir (Ctrl+P)" onClick={() => void print()}>
           <RiPrinterLine className="size-4" />{printing ? "Preparando…" : "Imprimir"}
         </Button>
@@ -145,11 +131,7 @@ export function DocxDocument({ file, name, onSave, saveLabel = "Salvar", allowAu
         <Button variant="ghost" size="sm" disabled={!ready} onClick={() => void download()}>
           <RiDownloadLine className="size-4" />Baixar
         </Button>
-        {onSave && (
-          <Button size="sm" disabled={!ready || busy} onClick={() => void save(false)}>
-            <RiSaveLine className="size-4" />{saveLabel}
-          </Button>
-        )}
+        </SaveControls>
       </div>;
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
