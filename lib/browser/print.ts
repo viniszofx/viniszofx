@@ -62,3 +62,20 @@ export function dateLabel(value?: string, empty = "") {
   const [year, month, day] = value.slice(0, 10).split("-");
   return year && month && day ? `${day}/${month}/${year}` : value;
 }
+
+/** Imprime um arquivo (ex.: PDF) pelo diálogo do navegador, num iframe escondido. */
+export function printBlob(blob: Blob) {
+  const url = URL.createObjectURL(blob);
+  const frame = document.createElement("iframe");
+  frame.hidden = true;
+  frame.src = url;
+  frame.onload = () => {
+    frame.contentWindow?.focus();
+    frame.contentWindow?.print();
+    window.setTimeout(() => {
+      frame.remove();
+      URL.revokeObjectURL(url);
+    }, 60000);
+  };
+  document.body.append(frame);
+}

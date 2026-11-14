@@ -1,123 +1,31 @@
-import { type ChangeEvent, type ComponentType, type CSSProperties, type KeyboardEvent, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
-import {
-  RiAddLine,
-  RiArrowGoBackLine,
-  RiArrowGoForwardLine,
-  RiBookOpenLine,
-  RiChat1Line,
-  RiCheckLine,
-  RiClockwiseLine,
-  RiCursorLine,
-  RiDeleteBinLine,
-  RiDownloadLine,
-  RiEditLine,
-  RiEqualizerLine,
-  RiExpandWidthLine,
-  RiFileLine,
-  RiImageAddLine,
-  RiLayoutGridLine,
-  RiLayoutTopLine,
-  RiMarkPenLine,
-  RiMoreLine,
-  RiPencilLine,
-  RiPrinterLine,
-  RiSaveLine,
-  RiSearchLine,
-  RiSidebarFoldLine,
-  RiSubtractLine,
-  RiText,
-} from "@remixicon/react";
+import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type ReactNode, useEffect, useRef, useState } from "react";
+import { RiChat1Line, RiDeleteBinLine } from "@remixicon/react";
 import type { PDFDocumentProxy, PDFPageProxy } from "pdfjs-dist";
 import { isRefId, type ParsedNote, readNotes } from "../annotations/mod";
-import { Button } from "@/components/ui/button";
 import { ErrorToast } from "@/components/ui/error-toast";
 import { toast } from "../compat";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LoadingBlock } from "@/components/ui/feedback";
 import { authClient } from "@/lib/auth/client";
 import { type PdfCommentAction, saveBlob } from "../compat";
-import { loadPdfViewer, openPdf, pdfjs } from "../pdf-engine";
+import { loadPdfViewer, openPdf } from "../pdf-engine";
 import { type Area, containsPoint, isNarrow, overlaps, PAGE_SELECTOR, pageArea, pageElement, pageNumberOf, placeOnPage, scrollOrigin } from "../pdf-geometry";
 import { type Comment, type CommentDraft, type HighlightBox, markSaved, type PlainHighlight, quoteFrom, readViewerAnnotations, reconcileThreads, removeFrom, type Reply, unsaved } from "../pdf-model";
 import { includeLettersUnderPointer, selectionBoxes } from "../pdf-selection";
 import { stampPages, type StampOptions } from "../pdf-stamp";
 import { FAMILY_CSS, fontStyleOf, nearestLine, sampleColors, type TextEdit, viewBoxOf } from "../pdf-text-edit";
 import { collectChanges, DEFAULT_HIGHLIGHT, hasChangesToWrite, writeAnnotations } from "../pdf-write";
+import { type Bus, COLOR_PARAM, type ColorTool, type CommentMarker, EDITORS, Editor, HIGHLIGHT_COLORS, LOCKED_MESSAGE, MODES, OBJECTS, OBJECT_KINDS, type PaintedBox, Param, SIZE_PARAM, type SelectionState, type SizeTool, type TextContent, type Tool, type Viewer, clampScale, isColorTool, isSizeTool, pdfBlob, unit, unlessSame } from "../pdf-tools";
+import { printBlob } from "@/lib/browser/print";
 import { PdfCommentsPanel, type Thread } from "./pdf-comments-panel";
 import { PdfControlsPanel } from "./pdf-controls-panel";
-import { type ContextMenuState, MenuItem, MenuSeparator, PdfContextMenu, PdfSearchBar, PdfSelectionBar, PdfZoomInput, ViewMenuItems } from "./pdf-menus";
+import { type ContextMenuState, PdfContextMenu, PdfSearchBar, PdfSelectionBar } from "./pdf-menus";
 import { PdfOrganizer } from "./pdf-organizer";
 import { PdfPaginationDialog } from "./pdf-pagination-dialog";
 import { PdfThumbnails } from "./pdf-thumbnails";
+import { PdfToolbar } from "./pdf-toolbar";
 import { defaultZoom, isZoomPreset, type PdfSync, readStoredSpread, SPREADS, storeSpread, useDismiss, usePinchZoom, useVersionSync, type ZoomPreset } from "./pdf-viewer-hooks";
 
 export type { PdfSync };
-
-const { AnnotationEditorParamsType: Param, AnnotationEditorType: Editor } = pdfjs;
-type Tool = "select" | "edittext" | "ink" | "highlight" | "text" | "image" | "comment";
-type ColorTool = "ink" | "highlight" | "text";
-type SizeTool = "ink" | "text";
-type SelectionState = CommentDraft & { left: number; top: number; barLeft: number; barTop: number };
-type CommentMarker = { id: string; left: number; top: number; index: number };
-type PaintedBox = Area & { id: string; color?: string; paint: boolean };
-type TextContent = Awaited<ReturnType<PDFPageProxy["getTextContent"]>>;
-type Viewer = {
-  annotationEditorMode: { mode: number; editId?: string };
-  currentScale: number;
-  currentScaleValue: string;
-  currentPageNumber: number;
-  pagesRotation: number;
-  spreadMode: number;
-  refresh: () => void;
-  setDocument: (pdf: PDFDocumentProxy) => void;
-};
-type Bus = { dispatch: (name: string, data: Record<string, unknown>) => void };
-
-const MODES: Record<Tool, number> = { select: Editor.NONE, edittext: Editor.NONE, ink: Editor.INK, highlight: Editor.HIGHLIGHT, text: Editor.FREETEXT, image: Editor.STAMP, comment: Editor.NONE };
-const TOOLS: { tool: Tool; label: string; icon: ComponentType<{ className?: string }> }[] = [
-  { tool: "select", label: "Selecionar", icon: RiCursorLine },
-  { tool: "ink", label: "Desenhar", icon: RiPencilLine },
-  { tool: "highlight", label: "Realçar", icon: RiMarkPenLine },
-  { tool: "edittext", label: "Editar texto", icon: RiEditLine },
-  { tool: "text", label: "Texto", icon: RiText },
-];
-// Cores do marca-texto: as mesmas da paleta do pdf.js.
-const HIGHLIGHT_COLORS = ["#ffff98", "#53ffbc", "#80ebff", "#ffcbe6", "#ff4f5f"];
-const COLOR_PARAM: Record<ColorTool, number> = { ink: Param.INK_COLOR, highlight: Param.HIGHLIGHT_COLOR, text: Param.FREETEXT_COLOR };
-const SIZE_PARAM: Record<SizeTool, { param: number; min: number; max: number }> = {
-  ink: { param: Param.INK_THICKNESS, min: 1, max: 20 },
-  text: { param: Param.FREETEXT_SIZE, min: 6, max: 72 },
-};
-const isColorTool = (tool: Tool): tool is ColorTool => tool in COLOR_PARAM;
-const isSizeTool = (tool: Tool): tool is SizeTool => tool in SIZE_PARAM;
-// Itens que a ferramenta Selecionar abre na ferramenta deles: imagem, desenho e caixa de texto, em edição ou já no arquivo.
-const OBJECT_KINDS: [string, Tool][] = [["stamp", "image"], ["ink", "ink"], ["freeText", "text"]];
-const EDITORS = ".annotationEditorLayer :is(.stampEditor,.inkEditor,.freeTextEditor)";
-const OBJECTS = `${EDITORS}, .annotationLayer :is(.stampAnnotation,.inkAnnotation,.freeTextAnnotation)`;
-
-const LOCKED_MESSAGE = "Este PDF é protegido contra edição. Realces e comentários não podem ser gravados nele.";
-const unit = (value: number) => Math.min(1, Math.max(0, value));
-const clampScale = (value: number) => Math.min(4, Math.max(0.25, value));
-const pdfBlob = (bytes: Uint8Array) => new Blob([new Uint8Array(bytes)], { type: "application/pdf" });
-// Atualiza a lista só quando ela mudou, para a medição a cada desenho da página não redesenhar a tela à toa.
-const unlessSame = <T,>(next: T) => (current: T) => JSON.stringify(current) === JSON.stringify(next) ? current : next;
-
-function printBlob(blob: Blob) {
-  const url = URL.createObjectURL(blob);
-  const frame = document.createElement("iframe");
-  frame.hidden = true;
-  frame.src = url;
-  frame.onload = () => {
-    frame.contentWindow?.focus();
-    frame.contentWindow?.print();
-    window.setTimeout(() => {
-      frame.remove();
-      URL.revokeObjectURL(url);
-    }, 60000);
-  };
-  document.body.append(frame);
-}
 
 // Visualizador e editor de PDF: as anotações são gravadas no próprio arquivo e continuam editáveis em outros leitores.
 // `leading` (ex.: Voltar e o nome) entra no começo da barra de ferramentas, que fica sendo a única acima do PDF.
@@ -1095,93 +1003,7 @@ export function PdfDocument({ file, name, onSave, onDirtyChange, sync, leading }
   return (
     <div ref={root} tabIndex={-1} onKeyDown={shortcuts} className={`@container/pdf flex min-h-0 flex-1 flex-col overflow-hidden bg-card outline-none ${leading ? "" : "rounded-lg border"}`}>
       {organizing && <PdfOrganizer bytes={organizing} name={name} onCancel={() => setOrganizing(null)} onApply={applyOrganized} />}
-      <div role="toolbar" aria-label="Ferramentas do PDF" className={`flex flex-wrap items-center gap-1 border-b p-1.5 md:flex-nowrap ${organizing ? "hidden" : ""}`}>
-        {/* Voltar e o nome do arquivo; no celular ficam numa linha própria, acima das ferramentas. Do tablet para cima tudo
-            fica numa linha só: o nome encolhe (com reticências) antes de algum botão descer. */}
-        {leading && <div className="flex min-w-0 items-center gap-2 max-md:basis-full md:flex-initial @6xl/pdf:max-w-md">{leading}<span className="mx-1 h-5 w-px shrink-0 bg-border max-md:hidden" /></div>}
-        {/* Em tela estreita (celular), tudo numa linha: ferramentas, página, Mais (⋯), Editar e Salvar. */}
-        <div className="flex min-w-0 flex-wrap items-center gap-1 md:shrink-0 md:flex-nowrap">
-          <Button type="button" variant="ghost" size="icon-sm" className="shrink-0 max-md:hidden" aria-label="Miniaturas" title="Miniaturas" aria-pressed={sidebar} onClick={() => setSidebar((value) => !value)}><RiSidebarFoldLine /></Button>
-          <span className="mx-1 h-5 w-px bg-border max-md:hidden" />
-          {/* Na leitura ficam Selecionar, Realçar e Comentário, como no Word; o resto aparece ao editar. */}
-          {TOOLS.filter(({ tool: entry }) => editMode || entry === "select" || entry === "highlight").map(({ tool: entry, label, icon: Icon }) => (
-            <Button key={entry} type="button" variant={tool === entry ? "secondary" : "ghost"} size="sm" aria-label={label} aria-pressed={tool === entry} title={label} disabled={!pdf} onClick={() => choose(entry)}>
-              <Icon className="size-4" /><span className={toolLabel}>{label}</span>
-            </Button>
-          ))}
-          <Button type="button" variant={tool === "comment" ? "secondary" : "ghost"} size="sm" className="hidden md:inline-flex" aria-label="Adicionar comentário" title="Adicionar comentário" aria-pressed={tool === "comment"} disabled={!pdf} onClick={() => choose("comment")}><RiChat1Line className="size-4" /><span className={toolLabel}>Comentário</span></Button>
-          {editMode && <>
-            <Button type="button" variant={tool === "image" ? "secondary" : "ghost"} size="sm" title="Imagem ou assinatura" disabled={!pdf} onClick={() => picker.current?.click()}>
-              <RiImageAddLine className="size-4" /><span className={toolLabel}>Imagem</span>
-            </Button>
-            <input ref={picker} type="file" hidden multiple accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={addImage} />
-            <Button type="button" variant="ghost" size="sm" className={collapse} title="Organizar páginas: ordem, girar, excluir, inserir e extrair" disabled={!pdf || busy} onClick={() => void organize()}><RiLayoutGridLine className="size-4" /><span className={toolLabel}>Organizar</span></Button>
-            <Button type="button" variant="ghost" size="sm" className={collapse} title="Cabeçalho e rodapé: textos, logo, número de página e marca-d'água" disabled={!pdf || busy} onClick={openPagination}><RiLayoutTopLine className="size-4" /><span className={toolLabel}>Cabeçalho e rodapé</span></Button>
-          </>}
-          {color && !controlsOpen && <input type="color" aria-label="Cor" title="Cor" value={color} onChange={(event) => changeColor(event.target.value)} className="size-7 shrink-0 cursor-pointer rounded border bg-transparent p-0.5" />}
-          {size && !controlsOpen && <input type="range" aria-label={sizeLabel} title={sizeLabel} min={size.min} max={size.max} value={size.value} onChange={(event) => changeSize(Number(event.target.value))} className="w-20 accent-primary" />}
-        </div>
-        <div className="flex shrink-0 items-center gap-1">
-          {editMode && !controlsOpen && <>
-            <Button type="button" variant="ghost" size="icon-sm" aria-label="Desfazer" title="Desfazer (Ctrl+Z)" disabled={!pdf} onClick={() => action("undo")}><RiArrowGoBackLine /></Button>
-            <Button type="button" variant="ghost" size="icon-sm" aria-label="Refazer" title="Refazer (Ctrl+Y)" disabled={!pdf} onClick={() => action("redo")}><RiArrowGoForwardLine /></Button>
-            <Button type="button" variant="ghost" size="icon-sm" aria-label="Excluir anotação" title="Excluir anotação selecionada (Del)" disabled={!pdf} onClick={() => action("delete")}><RiDeleteBinLine /></Button>
-            <span className="mx-1 h-5 w-px bg-border max-md:hidden" />
-          </>}
-          <Button type="button" variant="ghost" size="icon-sm" aria-label="Reduzir" title="Reduzir" className="@max-4xl/pdf:hidden" disabled={!pdf} onClick={() => setScale(zoom / 100 - 0.1)}><RiSubtractLine /></Button>
-          <PdfZoomInput zoom={zoom} disabled={!pdf} className={collapse} onScale={setScale} onZoom={zoomTo} />
-          <Button type="button" variant="ghost" size="icon-sm" aria-label="Ampliar" title="Ampliar" className="@max-4xl/pdf:hidden" disabled={!pdf} onClick={() => setScale(zoom / 100 + 0.1)}><RiAddLine /></Button>
-          {!autoZoom && <Button type="button" variant="ghost" size="icon-sm" className={collapse} aria-label="Voltar ao zoom automático" title="Voltar ao zoom automático (página inteira)" disabled={!pdf} onClick={() => zoomTo(defaultZoom())}><RiExpandWidthLine /></Button>}
-          <Popover>
-            <PopoverTrigger render={<Button type="button" variant={spread ? "secondary" : "ghost"} size="icon-sm" className={collapse} aria-label="Exibição de páginas" title="Exibição de páginas" disabled={!pdf} />}>{spread ? <RiBookOpenLine /> : <RiFileLine />}</PopoverTrigger>
-            <PopoverContent className="w-60 p-1">
-              <ViewMenuItems spread={spread} onZoom={zoomTo} onSpread={changeSpread} />
-            </PopoverContent>
-          </Popover>
-          <Button type="button" variant="ghost" size="icon-sm" className={collapse} aria-label="Girar páginas" title="Girar páginas" disabled={!pdf} onClick={rotate}><RiClockwiseLine /></Button>
-          <span className="mx-1 h-5 w-px bg-border max-md:hidden" />
-          <span className="flex items-center gap-1 text-xs tabular-nums">
-            <Input aria-label="Página" key={page} defaultValue={page} className="h-7 w-11 px-1 text-center text-xs" onKeyDown={(event) => { if (event.key === "Enter") goTo(Number(event.currentTarget.value)); }} />
-            / {pdf?.numPages ?? "–"}
-          </span>
-        </div>
-        <span className="ml-auto flex shrink-0 items-center gap-1">
-          {status && <span role="status" className={`px-1 text-xs text-muted-foreground ${collapse}`}>{status}</span>}
-          <Button type="button" variant="ghost" size="icon-sm" className={collapse} aria-label="Localizar" title="Localizar (Ctrl+F)" disabled={!pdf} onClick={openSearch}><RiSearchLine /></Button>
-          <Button type="button" variant="ghost" size="icon-sm" className={collapse} aria-label="Imprimir" title="Imprimir (Ctrl+P)" disabled={!pdf} onClick={() => void print()}><RiPrinterLine /></Button>
-          <Button type="button" variant="ghost" size="sm" className={collapse} disabled={!pdf} onClick={() => void download()}><RiDownloadLine className="size-4" /><span className="hidden @7xl/pdf:inline">Baixar</span></Button>
-          <Button type="button" variant={commentPanel ? "secondary" : "ghost"} size="icon-sm" className="hidden md:inline-flex" aria-label="Mostrar comentários" title="Mostrar comentários" aria-pressed={commentPanel} onClick={() => setRightPanel((value) => value === "comments" ? null : "comments")}><RiChat1Line /></Button>
-          {editMode && <Button type="button" variant={rightPanel === "controls" ? "secondary" : "ghost"} size="icon-sm" className="hidden md:inline-flex" aria-label="Painel de controles" title="Painel de controles" aria-pressed={rightPanel === "controls"} onClick={() => setRightPanel((value) => value === "controls" ? null : "controls")}><RiEqualizerLine /></Button>}
-          <Popover>
-            <PopoverTrigger render={<Button type="button" variant="ghost" size="icon-sm" className={moreOnly} aria-label="Mais opções" title="Mais opções" disabled={!pdf} />}><RiMoreLine /></PopoverTrigger>
-            <PopoverContent align="end" className="w-64 p-1">
-              <div className="flex items-center justify-between gap-1 px-2 py-1.5">
-                <span className="text-sm">Zoom</span>
-                <span className="flex items-center gap-1">
-                  <Button type="button" variant="ghost" size="icon-sm" aria-label="Reduzir" onClick={() => setScale(zoom / 100 - 0.1)}><RiSubtractLine /></Button>
-                  <span className="w-11 text-center text-xs tabular-nums">{zoom}%</span>
-                  <Button type="button" variant="ghost" size="icon-sm" aria-label="Ampliar" onClick={() => setScale(zoom / 100 + 0.1)}><RiAddLine /></Button>
-                </span>
-              </div>
-              <ViewMenuItems spread={spread} onZoom={zoomTo} onSpread={changeSpread} />
-              <MenuItem icon={<RiClockwiseLine className="size-4" />} onClick={rotate}>Girar páginas</MenuItem>
-              <MenuSeparator />
-              <MenuItem icon={<RiSearchLine className="size-4" />} onClick={openSearch}>Localizar</MenuItem>
-              <MenuItem icon={<RiPrinterLine className="size-4" />} onClick={() => void print()}>Imprimir</MenuItem>
-              <MenuItem icon={<RiDownloadLine className="size-4" />} onClick={() => void download()}>Baixar</MenuItem>
-              {editMode && <>
-                <MenuSeparator />
-                <MenuItem icon={<RiLayoutGridLine className="size-4" />} disabled={busy} onClick={() => void organize()}>Organizar páginas</MenuItem>
-                <MenuItem icon={<RiLayoutTopLine className="size-4" />} disabled={busy} onClick={openPagination}>Cabeçalho e rodapé</MenuItem>
-              </>}
-            </PopoverContent>
-          </Popover>
-          {editMode
-            ? <Button type="button" variant="secondary" size="sm" title="Voltar à leitura" disabled={!pdf} onClick={leaveEditMode}><RiCheckLine className="size-4" />Concluir</Button>
-            : <Button type="button" variant="outline" size="sm" title="Editar o PDF: texto, desenho, realce, imagens, páginas, cabeçalho e rodapé" disabled={!pdf} onClick={enterEditMode}><RiEditLine className="size-4" />Editar</Button>}
-          {onSave && <Button type="button" size="sm" aria-label="Salvar" title={status || "Salvar"} disabled={!pdf || busy || !hasChanges} onClick={() => void save()}><RiSaveLine className="size-4" /><span className={collapse}>Salvar</span></Button>}
-        </span>
-      </div>
+      <PdfToolbar action={action} addImage={addImage} autoZoom={autoZoom} busy={busy} changeColor={changeColor} changeSize={changeSize} changeSpread={changeSpread} choose={choose} collapse={collapse} color={color} commentPanel={commentPanel} controlsOpen={controlsOpen} download={download} editMode={editMode} enterEditMode={enterEditMode} goTo={goTo} hasChanges={hasChanges} leading={leading} leaveEditMode={leaveEditMode} moreOnly={moreOnly} onSave={onSave} openPagination={openPagination} openSearch={openSearch} organize={organize} organizing={organizing} page={page} pdf={pdf} picker={picker} print={print} rightPanel={rightPanel} rotate={rotate} save={save} setRightPanel={setRightPanel} setScale={setScale} setSidebar={setSidebar} sidebar={sidebar} size={size} sizeLabel={sizeLabel} spread={spread} status={status} tool={tool} toolLabel={toolLabel} zoom={zoom} zoomTo={zoomTo} />
       {search !== null && !organizing && <PdfSearchBar query={search} matches={matches} inputRef={searchInput} onChange={findText} onFind={(previous) => find(search, true, previous)} onClose={closeSearch} />}
       <ErrorToast message={error} />
       <PdfPaginationDialog open={paginating} name={name} pageCount={pdf?.numPages ?? 1} busy={busy} onOpenChange={setPaginating} onApply={(options) => void applyPagination(options)} />
