@@ -13,14 +13,15 @@ export async function PUT(request: Request) {
   if (!context) return unauthorized();
   const body = await request.json().catch(() => ({}));
   const other = typeof body.with === "string" ? body.with : "";
-  if (!other || other === context.userId || !(await organizationPeople(context.organizationId)).some(person => person.id === other)) return new Response("Conversa inválida.", { status: 400 });
+  if (!other || !(await organizationPeople(context.organizationId)).some(person => person.id === other)) return new Response("Conversa inválida.", { status: 400 });
   if ("autoDeleteSeconds" in body) {
     const seconds = body.autoDeleteSeconds === null ? null : Number(body.autoDeleteSeconds);
     if (seconds !== null && !autoDeleteOptions.includes(seconds as (typeof autoDeleteOptions)[number])) return new Response("Prazo de autoexclusão inválido.", { status: 400 });
     await setAutoDelete(context.organizationId, context.userId, other, seconds);
   }
   const change: Partial<typeof messageThreads.$inferInsert> = { updatedAt: new Date() };
-  for (const key of ["archived", "muted", "blocked", "protectContent"] as const) if (typeof body[key] === "boolean") change[key] = body[key];
+  // Em "Mensagens salvas" (consigo mesma) só faz sentido arquivar, apagar e autoexclusão.
+  for (const key of ["archived", "muted", "blocked", "protectContent"] as const) if (typeof body[key] === "boolean" && (key === "archived" || other !== context.userId)) change[key] = body[key];
   if (body.clear === true) {
     change.clearedAt = new Date();
     // O que foi apagado não fica contando como não lido.

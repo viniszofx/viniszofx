@@ -209,3 +209,254 @@
     50% { transform: translate3d(2%, -3%, 0) scale(1.06); }
   }
 }
+
+/* Mensagens: temas, fundo e animações do chat, copiados do Nodus. */
+/* Temas de conversa (modelo do Telegram): 4 cores de fundo em gradiente livre, balões enviados em
+   gradiente e versão escura. Padrão e intensidade de cada tema ficam em chat-theme.ts. */
+.chat-theme-classic {
+  --chat-bg-1: var(--background);
+  --chat-bg-2: color-mix(in oklch, var(--primary) 16%, var(--background));
+  --chat-bg-3: color-mix(in oklch, var(--primary) 6%, var(--background));
+  --chat-bg-4: color-mix(in oklch, var(--primary) 24%, var(--background));
+  --chat-sent: var(--primary);
+  --chat-sent-2: color-mix(in oklch, var(--primary) 78%, white);
+  --chat-sent-ink: var(--primary-foreground);
+  --chat-received: var(--card);
+  --chat-received-ink: var(--card-foreground);
+  @variant dark { --chat-sent-2: color-mix(in oklch, var(--primary) 82%, black); }
+}
+
+
+.chat-theme-ocean {
+  --chat-bg-1: #d4ebff;
+  --chat-bg-2: #a6d4f7;
+  --chat-bg-3: #e8f5ff;
+  --chat-bg-4: #86c1ee;
+  --chat-sent: #2672dc;
+  --chat-sent-2: #33a3e6;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #ffffff;
+  --chat-received-ink: #172b46;
+  @variant dark {
+  --chat-bg-1: #0e2135;
+  --chat-bg-2: #13314f;
+  --chat-bg-3: #0a1929;
+  --chat-bg-4: #183f62;
+  --chat-sent: #2a63bf;
+  --chat-sent-2: #2c8dcc;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #1d3550;
+  --chat-received-ink: #f1f7ff; }
+}
+
+
+.chat-theme-forest {
+  --chat-bg-1: #dcefd6;
+  --chat-bg-2: #b3dbab;
+  --chat-bg-3: #eef7e6;
+  --chat-bg-4: #9fcf9a;
+  --chat-sent: #257a50;
+  --chat-sent-2: #46a46a;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #ffffff;
+  --chat-received-ink: #203426;
+  @variant dark {
+  --chat-bg-1: #12231a;
+  --chat-bg-2: #1a3424;
+  --chat-bg-3: #0d1a13;
+  --chat-bg-4: #22412e;
+  --chat-sent: #287a52;
+  --chat-sent-2: #3a9764;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #233a2b;
+  --chat-received-ink: #f2f9f2; }
+}
+
+
+.chat-theme-sunset {
+  --chat-bg-1: #ffe1c4;
+  --chat-bg-2: #ffbfa3;
+  --chat-bg-3: #ffd8e2;
+  --chat-bg-4: #ffb08f;
+  --chat-sent: #ec6236;
+  --chat-sent-2: #d9437a;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #ffffff;
+  --chat-received-ink: #3a2018;
+  @variant dark {
+  --chat-bg-1: #2a1712;
+  --chat-bg-2: #3c1e19;
+  --chat-bg-3: #2b1421;
+  --chat-bg-4: #47231a;
+  --chat-sent: #c44e2d;
+  --chat-sent-2: #b2386a;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #3a2422;
+  --chat-received-ink: #fff3ef; }
+}
+
+
+.chat-theme-lavender {
+  --chat-bg-1: #e8e1ff;
+  --chat-bg-2: #d1c3ff;
+  --chat-bg-3: #f3e9ff;
+  --chat-bg-4: #c4b2f5;
+  --chat-sent: #7655de;
+  --chat-sent-2: #a256d4;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #ffffff;
+  --chat-received-ink: #271d45;
+  @variant dark {
+  --chat-bg-1: #1b1630;
+  --chat-bg-2: #251c42;
+  --chat-bg-3: #191427;
+  --chat-bg-4: #2e2252;
+  --chat-sent: #6649cc;
+  --chat-sent-2: #8c47bd;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #2a2440;
+  --chat-received-ink: #f4f0ff; }
+}
+
+
+.chat-theme-graphite {
+  --chat-bg-1: #e6e8ec;
+  --chat-bg-2: #d0d5dc;
+  --chat-bg-3: #f3f4f6;
+  --chat-bg-4: #c7ced8;
+  --chat-sent: #334155;
+  --chat-sent-2: #4b5a70;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #ffffff;
+  --chat-received-ink: #1f2937;
+  @variant dark {
+  --chat-bg-1: #0e1013;
+  --chat-bg-2: #16191e;
+  --chat-bg-3: #0a0b0d;
+  --chat-bg-4: #1d2128;
+  --chat-sent: #3b4656;
+  --chat-sent-2: #556173;
+  --chat-sent-ink: #ffffff;
+  --chat-received: #1f242c;
+  --chat-received-ink: #f1f5f9; }
+}
+
+
+/* Pontos do gradiente livre: mudam de lugar a cada mensagem enviada (posições em chat-backdrop.tsx). */
+@property --chat-p1x { syntax: "<percentage>"; inherits: true; initial-value: 80%; }
+@property --chat-p1y { syntax: "<percentage>"; inherits: true; initial-value: 10%; }
+@property --chat-p2x { syntax: "<percentage>"; inherits: true; initial-value: 35%; }
+@property --chat-p2y { syntax: "<percentage>"; inherits: true; initial-value: 25%; }
+@property --chat-p3x { syntax: "<percentage>"; inherits: true; initial-value: 20%; }
+@property --chat-p3y { syntax: "<percentage>"; inherits: true; initial-value: 90%; }
+@property --chat-p4x { syntax: "<percentage>"; inherits: true; initial-value: 65%; }
+@property --chat-p4y { syntax: "<percentage>"; inherits: true; initial-value: 75%; }
+
+.chat-gradient {
+  background-color: var(--chat-bg-1);
+  background-image:
+    radial-gradient(circle at var(--chat-p1x) var(--chat-p1y), var(--chat-bg-1), transparent 60%),
+    radial-gradient(circle at var(--chat-p2x) var(--chat-p2y), var(--chat-bg-2), transparent 60%),
+    radial-gradient(circle at var(--chat-p3x) var(--chat-p3y), var(--chat-bg-3), transparent 60%),
+    radial-gradient(circle at var(--chat-p4x) var(--chat-p4y), var(--chat-bg-4), transparent 60%);
+  transition: --chat-p1x 700ms, --chat-p1y 700ms, --chat-p2x 700ms, --chat-p2y 700ms,
+    --chat-p3x 700ms, --chat-p3y 700ms, --chat-p4x 700ms, --chat-p4y 700ms, background-color 220ms;
+  transition-timing-function: cubic-bezier(.3, 0, .2, 1);
+}
+
+/* Padrão desenhado como máscara: a tinta escurece suavemente no claro e clareia no escuro. */
+.chat-pattern {
+  background-color: #000;
+  mask-image: var(--chat-pattern-mask);
+  mask-size: var(--chat-pattern-size);
+  mask-repeat: repeat;
+  mix-blend-mode: soft-light;
+}
+.chat-pattern { @variant dark { background-color: #fff; mix-blend-mode: overlay; } }
+.chat-pattern-dots { --chat-pattern-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Cg fill='%23fff'%3E%3Ccircle cx='11' cy='11' r='1.5'/%3E%3C/g%3E%3C/svg%3E"); --chat-pattern-size: 22px 22px; }
+.chat-pattern-waves { --chat-pattern-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='22'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M0 11q11-8 22 0t22 0'/%3E%3C/g%3E%3C/svg%3E"); --chat-pattern-size: 44px 22px; }
+.chat-pattern-diamonds { --chat-pattern-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 5l13 13-13 13L5 18z'/%3E%3C/g%3E%3C/svg%3E"); --chat-pattern-size: 36px 36px; }
+.chat-pattern-doodles { --chat-pattern-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='132' height='132'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='24' r='7'/%3E%3Cpath d='M86 12l3.5 7 7.7 1.1-5.6 5.4 1.3 7.7-6.9-3.6-6.9 3.6 1.3-7.7-5.6-5.4 7.7-1.1z'/%3E%3Cpath d='M32 96c-6-5-11-9-11-14a5.5 5.5 0 0 1 11-1 5.5 5.5 0 0 1 11 1c0 5-5 9-11 14z'/%3E%3Cpath d='M84 74h22a6 6 0 0 1 6 6v10a6 6 0 0 1-6 6H94l-7 6v-6h-3a6 6 0 0 1-6-6V80a6 6 0 0 1 6-6z'/%3E%3Cpath d='M60 48v12M54 54h12'/%3E%3Cpath d='M6 124q6-8 12 0t12 0t12 0'/%3E%3Cpath d='M118 40l6 6m0-6l-6 6'/%3E%3C/g%3E%3C/svg%3E"); --chat-pattern-size: 132px 132px; }
+
+.chat-message-enter {
+  animation: chat-message-in 180ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.chat-message-sent { --chat-enter-x: 8px; }
+.chat-message-received { --chat-enter-x: -8px; }
+
+@keyframes chat-message-in {
+  from { opacity: 0; transform: translateX(var(--chat-enter-x)) translateY(4px); }
+  to { opacity: 1; transform: translateX(0) translateY(0); }
+}
+
+.chat-emoji-enter, .chat-banner-enter {
+  animation: chat-control-in 160ms cubic-bezier(.2, .8, .2, 1) both;
+}
+
+@keyframes chat-control-in {
+  from { opacity: 0; transform: translateY(4px) scale(.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chat-action { transition: transform 150ms ease, background-color 150ms ease; }
+.chat-action:not(:disabled):hover { transform: scale(1.07); }
+.chat-action:not(:disabled):active { transform: scale(.93); }
+.chat-reaction { transition: transform 150ms ease, background-color 150ms ease, border-color 150ms ease; }
+.chat-reaction:hover { transform: translateY(-2px); }
+.chat-reaction:active { transform: translateY(0); }
+.chat-swipeable { touch-action: pan-y; transition: transform 150ms ease-out; }
+.chat-swipe-active { transition: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-message-enter, .chat-emoji-enter, .chat-banner-enter { animation: none; }
+  .chat-action, .chat-reaction, .chat-swipeable, .chat-gradient { transition: none; }
+  .chat-action:not(:disabled):hover, .chat-action:not(:disabled):active, .chat-reaction:hover, .chat-reaction:active { transform: none; }
+}
+
+/* Vidro (mesmo do Nodus): barras, peças flutuantes sobre o fundo colorido do chat, cartões e menus. */
+@utility glass-bar {
+  background-color: var(--card);
+  @supports (backdrop-filter: blur(1px)) {
+    background-color: color-mix(in oklch, var(--card) 66%, transparent);
+    backdrop-filter: blur(32px) saturate(1.6);
+  }
+  @media (prefers-reduced-transparency: reduce) { background-color: var(--card); backdrop-filter: none; }
+}
+@utility glass-float {
+  background-color: var(--card);
+  @supports (backdrop-filter: blur(1px)) {
+    background-color: color-mix(in oklch, var(--card) 78%, transparent);
+    background-image: linear-gradient(180deg, color-mix(in oklch, white 8%, transparent), transparent 70%);
+    backdrop-filter: blur(36px) saturate(1.3);
+    border-color: color-mix(in oklch, white 45%, transparent);
+    box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 45%, transparent), 0 10px 32px -14px rgb(0 0 0 / 0.25);
+    @variant dark {
+      background-color: color-mix(in oklch, var(--card) 74%, transparent);
+      background-image: none;
+      border-color: color-mix(in oklch, white 12%, transparent);
+      box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 12%, transparent), 0 10px 32px -14px rgb(0 0 0 / 0.6);
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) { background-color: var(--card); background-image: none; backdrop-filter: none; }
+}
+@utility glass-card {
+  background-color: var(--card);
+  @supports (backdrop-filter: blur(1px)) {
+    background-color: color-mix(in oklch, var(--card) 74%, transparent);
+    backdrop-filter: blur(24px) saturate(1.5);
+    box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 50%, transparent), 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    @variant dark { background-color: color-mix(in oklch, var(--card) 72%, transparent); box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 6%, transparent), 0 1px 2px 0 rgb(0 0 0 / 0.3); }
+  }
+  @media (prefers-reduced-transparency: reduce) { background-color: var(--card); backdrop-filter: none; }
+}
+@utility glass-surface {
+  background-color: var(--popover);
+  @supports (backdrop-filter: blur(1px)) {
+    background-color: color-mix(in oklch, var(--popover) 82%, transparent);
+    backdrop-filter: blur(28px) saturate(1.5);
+    @variant dark { background-color: color-mix(in oklch, var(--popover) 78%, transparent); }
+  }
+  @media (prefers-reduced-transparency: reduce) { background-color: var(--popover); backdrop-filter: none; }
+}
+@custom-variant reduced-transparency (@media (prefers-reduced-transparency: reduce));

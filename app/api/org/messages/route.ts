@@ -11,7 +11,8 @@ const noStore = { "Cache-Control": "private, no-store" };
 
 /**
  * Sem `with`: pessoas, última mensagem, não lidas, preferências e "visto por último" (e busca em todas com `q`).
- * Com `with`: a conversa paginada (`before`), com busca (`q`) ou só mídia e arquivos (`shared=1`), e marca como lida.
+ * Com `with`: a conversa paginada (`before`), com busca (`q`) ou só mídia, arquivos e links (`shared=1`), e marca como lida
+ * (menos na prévia, `peek=1`). `with` igual à própria pessoa é "Mensagens salvas", que só ela vê.
  */
 export async function GET(request: Request) {
   const context = await currentOrganization();
@@ -21,11 +22,11 @@ export async function GET(request: Request) {
   const query = url.searchParams.get("q")?.trim().slice(0, 200) ?? "";
   const [people] = await Promise.all([organizationPeople(context.organizationId), purgeExpired(context.organizationId)]);
   if (other) {
-    if (other === context.userId || !people.some(person => person.id === other)) return new Response("Essa pessoa não está disponível nesta organização.", { status: 404 });
+    if (!people.some(person => person.id === other)) return new Response("Essa pessoa não está disponível nesta organização.", { status: 404 });
     const thread = await threadState(context.organizationId, context.userId, other);
     const conditions = [between(context.organizationId, context.userId, other), visible(thread.clearedAt)];
     if (url.searchParams.get("shared") === "1") {
-      const rows = await db.select().from(directMessages).where(and(...conditions, isNull(directMessages.deletedAt), sql`jsonb_array_length(${directMessages.attachments}) > 0`))
+      const rows = await db.select().from(directMessages).where(and(...conditions, isNull(directMessages.deletedAt), or(sql`jsonb_array_length(${directMessages.attachments}) > 0`, ilike(directMessages.body, "%http%"))))
         .orderBy(desc(directMessages.createdAt)).limit(300);
       return Response.json({ messages: await present(rows, context.userId, people, { peerProtects: thread.peerProtects }) }, { headers: noStore });
     }
@@ -33,10 +34,11 @@ export async function GET(request: Request) {
     if (before && !Number.isNaN(Date.parse(before))) conditions.push(lt(directMessages.createdAt, new Date(before)));
     if (query) conditions.push(ilike(directMessages.body, like(query)), isNull(directMessages.deletedAt));
     const rows = await db.select().from(directMessages).where(and(...conditions)).orderBy(desc(directMessages.createdAt)).limit(PAGE + 1);
-    if (!query && !before) await db.update(directMessages).set({ readAt: new Date() }).where(and(eq(directMessages.organizationId, context.organizationId), eq(directMessages.senderId, other), eq(directMessages.recipientId, context.userId), isNull(directMessages.readAt)));
+    if (!query && !before && url.searchParams.get("peek") !== "1") await db.update(directMessages).set({ readAt: new Date() }).where(and(eq(directMessages.organizationId, context.organizationId), eq(directMessages.senderId, other), eq(directMessages.recipientId, context.userId), isNull(directMessages.readAt)));
     return Response.json({ messages: await present(rows.slice(0, PAGE).reverse(), context.userId, people, { peerProtects: thread.peerProtects }), hasMore: rows.length > PAGE, thread: { ...thread, clearedAt: undefined } }, { headers: noStore });
   }
   const others = people.filter(person => person.id !== context.userId);
+  const self = people.find(person => person.id === context.userId);
   const mine = or(eq(directMessages.senderId, context.userId), eq(directMessages.recipientId, context.userId));
   const prefs = await db.select().from(messageThreads).where(and(eq(messageThreads.organizationId, context.organizationId), eq(messageThreads.userId, context.userId)));
   const clearedFor = (id: string) => prefs.find(item => item.otherId === id)?.clearedAt ?? null;
@@ -57,18 +59,20 @@ export async function GET(request: Request) {
     others.length ? db.select({ userId: userProfiles.userId, avatarFileId: userProfiles.avatarFileId }).from(userProfiles).where(and(inArray(userProfiles.userId, others.map(person => person.id)), isNotNull(userProfiles.avatarFileId))) : [],
     presenceOf(context.organizationId, context.userId),
   ]);
-  const list = others.map(person => {
+  // "Mensagens salvas" (conversa consigo mesma) fica sempre no topo.
+  const list = [...(self ? [self] : []), ...others].map(person => {
     const cleared = clearedFor(person.id);
-    const found = latest.find(item => item.senderId === person.id || item.recipientId === person.id);
+    const isSelf = person.id === context.userId;
+    const found = latest.find(item => isSelf ? item.senderId === person.id && item.recipientId === person.id : item.senderId === person.id || item.recipientId === person.id);
     // Conversa apagada só para mim: a prévia some até chegar mensagem nova.
     const last = found && (!cleared || found.createdAt > cleared) ? found : undefined;
     const pref = prefs.find(item => item.otherId === person.id);
     const count = unread.find(item => item.senderId === person.id)?.count ?? 0;
     const preview = !last ? "" : last.deletedAt ? "Mensagem apagada" : last.body || (last.sharedUserId ? "👤 Contato" : last.attachments.length ? `📎 ${last.attachments[0].name}` : "");
-    return { id: person.id, name: person.name || person.email, email: person.email, role: person.role, avatar: avatarUrl(person.id, photos.find(item => item.userId === person.id)?.avatarFileId),
-      unread: count, archived: !!pref?.archived, muted: !!pref?.muted, blocked: !!pref?.blocked, lastSeen: presence.seen.get(person.id) ?? null,
+    return { id: person.id, self: isSelf, name: isSelf ? "Mensagens salvas" : person.name || person.email, email: person.email, role: person.role, avatar: avatarUrl(person.id, photos.find(item => item.userId === person.id)?.avatarFileId),
+      unread: isSelf ? 0 : count, archived: !!pref?.archived, muted: !!pref?.muted, blocked: !!pref?.blocked, lastSeen: isSelf ? null : presence.seen.get(person.id) ?? null,
       last: last ? { body: preview, createdAt: last.createdAt, mine: last.senderId === context.userId } : null };
-  }).sort((a, b) => (b.last?.createdAt?.toString() ?? "").localeCompare(a.last?.createdAt?.toString() ?? "") || a.name.localeCompare(b.name, "pt-BR"));
+  }).sort((a, b) => Number(b.self) - Number(a.self) || (b.last?.createdAt?.toString() ?? "").localeCompare(a.last?.createdAt?.toString() ?? "") || a.name.localeCompare(b.name, "pt-BR"));
   // O selo de não lidas ignora conversas silenciadas e arquivadas.
   return Response.json({ me: context.userId, admin: context.admin, presenceHidden: presence.hidden, people: list, unread: list.filter(item => !item.archived && !item.muted).reduce((total, item) => total + item.unread, 0) }, { headers: noStore });
 }
@@ -85,7 +89,8 @@ export async function POST(request: Request) {
   let forwarded = false;
   let forwardedFromName: string | null = null;
   const people = await organizationPeople(context.organizationId);
-  if (!people.some(person => person.id === to) || to === context.userId) return new Response("Escolha alguém da organização.", { status: 400 });
+  if (!people.some(person => person.id === to)) return new Response("Escolha alguém da organização.", { status: 400 });
+  const toSelf = to === context.userId;
   // Encaminhar: o servidor copia texto, anexos e contato da mensagem original, que a pessoa precisa ter enviado ou recebido.
   if (typeof body.forwardOf === "string") {
     const [original] = await db.select().from(directMessages).where(and(eq(directMessages.id, body.forwardOf), eq(directMessages.organizationId, context.organizationId), isNull(directMessages.deletedAt), notExpired(), or(eq(directMessages.senderId, context.userId), eq(directMessages.recipientId, context.userId)))).limit(1);
@@ -108,7 +113,8 @@ export async function POST(request: Request) {
   }
   const id = randomUUID();
   const expiresAt = state.autoDeleteSeconds ? new Date(Date.now() + state.autoDeleteSeconds * 1000) : null;
-  await db.insert(directMessages).values({ id, organizationId: context.organizationId, senderId: context.userId, recipientId: to, body: text, attachments, replyToId, forwarded, forwardedFromName, sharedUserId, expiresAt });
+  // Mensagens salvas já nascem lidas.
+  await db.insert(directMessages).values({ id, organizationId: context.organizationId, senderId: context.userId, recipientId: to, body: text, attachments, replyToId, forwarded, forwardedFromName, sharedUserId, expiresAt, readAt: toSelf ? new Date() : null });
   // Mensagem nova tira a conversa das arquivadas, para quem envia e para quem recebe.
   await db.update(messageThreads).set({ archived: false, updatedAt: new Date() }).where(and(eq(messageThreads.organizationId, context.organizationId), eq(messageThreads.archived, true),
     or(and(eq(messageThreads.userId, context.userId), eq(messageThreads.otherId, to)), and(eq(messageThreads.userId, to), eq(messageThreads.otherId, context.userId)))));
