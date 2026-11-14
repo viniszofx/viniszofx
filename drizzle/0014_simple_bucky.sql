@@ -1,0 +1,1 @@
+ALTER TABLE "app_user_profiles" ADD COLUMN "avatar_file_id" text;

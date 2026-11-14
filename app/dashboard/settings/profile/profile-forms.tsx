@@ -1,7 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { RiCameraLine, RiDeleteBinLine } from "@remixicon/react";
+import { AvatarCropper } from "@/components/ui/avatar-cropper";
 import { Button } from "@/components/ui/button";
 
 type SessionRow = { id: string; token: string; createdAt: string | Date; expiresAt: string | Date; userAgent?: string | null; ipAddress?: string | null };
@@ -18,6 +20,14 @@ async function authRequest<T>(path: string, body?: Record<string, unknown>): Pro
   const result = await response.json().catch(() => null) as { message?: string; error?: string } | null;
   if (!response.ok) throw new Error(result?.message || result?.error || "A autenticação não concluiu a operação.");
   return result as T;
+}
+
+/** Nome legível do aparelho a partir do navegador informado na sessão. */
+function deviceLabel(agent?: string | null) {
+  if (!agent) return "Dispositivo conectado";
+  const browser = /Edg\//.test(agent) ? "Edge" : /OPR\//.test(agent) ? "Opera" : /Firefox\//.test(agent) ? "Firefox" : /SamsungBrowser/.test(agent) ? "Samsung Internet" : /Chrome\//.test(agent) ? "Chrome" : /Safari\//.test(agent) ? "Safari" : "Navegador";
+  const system = /iPhone/.test(agent) ? "iPhone" : /iPad/.test(agent) ? "iPad" : /Android/.test(agent) ? "Android" : /Windows/.test(agent) ? "Windows" : /Mac OS X|Macintosh/.test(agent) ? "macOS" : /Linux/.test(agent) ? "Linux" : "";
+  return system ? `${browser} no ${system}` : browser;
 }
 
 async function listAuthSessions() {
@@ -37,6 +47,11 @@ export function ProfileForms({ name: initialName, email, image, username: initia
   const [sessions, setSessions] = useState<SessionRow[]>([]);
   const [sessionMessage, setSessionMessage] = useState<string | null>(null);
   const [loadingSessions, setLoadingSessions] = useState(true);
+  const [currentToken, setCurrentToken] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState(image ?? null);
+  const [cropping, setCropping] = useState<File | null>(null);
+  const [avatarMessage, setAvatarMessage] = useState<{ error: boolean; text: string } | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let active = true;
@@ -45,6 +60,7 @@ export function ProfileForms({ name: initialName, email, image, username: initia
       setSessions(data);
       setLoadingSessions(false);
     }).catch(() => { if (active) { setSessionMessage("Não foi possível carregar as sessões."); setLoadingSessions(false); } });
+    authRequest<{ session?: { token?: string } } | null>("get-session").then((data) => { if (active) setCurrentToken(data?.session?.token ?? null); }).catch(() => undefined);
     return () => { active = false; };
   }, []);
 
@@ -94,15 +110,58 @@ export function ProfileForms({ name: initialName, email, image, username: initia
     setSessionMessage("Sessão encerrada.");
   }
 
+  function pickPhoto(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { setAvatarMessage({ error: true, text: "Escolha um arquivo de imagem." }); return; }
+    if (file.size > 15 * 1024 * 1024) { setAvatarMessage({ error: true, text: "A imagem pode ter até 15 MB." }); return; }
+    setAvatarMessage(null); setCropping(file);
+  }
+
+  async function uploadPhoto(blob: Blob) {
+    const form = new FormData();
+    form.append("file", new File([blob], "avatar.jpg", { type: "image/jpeg" }));
+    const response = await fetch("/api/profile/avatar", { method: "POST", body: form });
+    const payload = await response.json().catch(() => ({})) as { url?: string; error?: string };
+    if (!response.ok || !payload.url) throw new Error(payload.error || "Não foi possível salvar a foto.");
+    setAvatar(payload.url); setCropping(null);
+    setAvatarMessage({ error: false, text: "Foto atualizada." });
+    router.refresh();
+  }
+
+  async function removePhoto() {
+    setAvatarMessage(null);
+    const response = await fetch("/api/profile/avatar", { method: "DELETE" }).catch(() => null);
+    if (!response?.ok) { setAvatarMessage({ error: true, text: "Não foi possível remover a foto." }); return; }
+    setAvatar(null); setAvatarMessage({ error: false, text: "Foto removida." });
+    router.refresh();
+  }
+
+  async function revokeOthers() {
+    setSessionMessage(null);
+    try { await authRequest("revoke-other-sessions", {}); }
+    catch { setSessionMessage("Não foi possível desconectar os outros aparelhos."); return; }
+    setSessions((current) => current.filter((row) => row.token === currentToken));
+    setSessionMessage("Os outros aparelhos foram desconectados.");
+  }
+
   const initials = name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("") || "?";
   return <div className="grid gap-6">
     <section className="overflow-hidden border bg-card shadow-sm" aria-labelledby="profile-info">
       <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-7 sm:px-8">
         <div className="flex items-center gap-4">
-          {image ? <img src={image} alt="" className="size-16 border-2 border-background object-cover shadow-sm" /> : <div className="flex size-16 items-center justify-center border-2 border-background bg-primary/15 font-heading text-xl font-semibold text-primary shadow-sm" aria-hidden="true">{initials}</div>}
-          <div className="min-w-0"><p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Sua conta</p><h2 id="profile-info" className="mt-1 truncate font-heading text-xl font-semibold">{name || "Seu perfil"}</h2><p className="truncate text-sm text-muted-foreground">{email}</p></div>
+          <button type="button" onClick={() => fileInput.current?.click()} className="group relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-background shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={avatar ? "Trocar foto de perfil" : "Adicionar foto de perfil"}>
+            {avatar ? <img src={avatar} alt="" className="size-full object-cover" /> : <span className="flex size-full items-center justify-center bg-primary/15 font-heading text-xl font-semibold text-primary">{initials}</span>}
+            <span className="absolute inset-0 flex items-center justify-center bg-black/45 text-white opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"><RiCameraLine className="size-5" /></span>
+          </button>
+          <input ref={fileInput} type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={pickPhoto} />
+          <div className="min-w-0 flex-1"><p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Sua conta</p><h2 id="profile-info" className="mt-1 truncate font-heading text-xl font-semibold">{name || "Seu perfil"}</h2><p className="truncate text-sm text-muted-foreground">{email}</p>
+            <div className="mt-2 flex flex-wrap items-center gap-2"><Button type="button" variant="outline" size="sm" onClick={() => fileInput.current?.click()}><RiCameraLine />{avatar ? "Trocar foto" : "Adicionar foto"}</Button>{avatar && <Button type="button" variant="ghost" size="sm" onClick={() => void removePhoto()}><RiDeleteBinLine />Remover</Button>}{avatarMessage && <span role={avatarMessage.error ? "alert" : "status"} className={avatarMessage.error ? "text-xs text-destructive" : "text-xs text-muted-foreground"}>{avatarMessage.text}</span>}</div>
+          </div>
         </div>
       </div>
+      {cropping && <AvatarCropper file={cropping} onCancel={() => setCropping(null)} onDone={uploadPhoto} />}
       <form onSubmit={updateProfile} className="space-y-5 p-6 sm:p-8">
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2"><label htmlFor="profile-name" className="block text-sm font-medium">Nome completo</label><input id="profile-name" value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} autoComplete="name" required className={fieldClass} /></div>
@@ -121,8 +180,8 @@ export function ProfileForms({ name: initialName, email, image, username: initia
         <div className="grid gap-5 sm:grid-cols-2"><div className="space-y-2"><label htmlFor="new-password" className="block text-sm font-medium">Nova senha</label><input id="new-password" name="newPassword" type="password" autoComplete="new-password" minLength={8} required className={fieldClass} /></div><div className="space-y-2"><label htmlFor="confirm-password" className="block text-sm font-medium">Confirme a nova senha</label><input id="confirm-password" name="confirmPassword" type="password" autoComplete="new-password" minLength={8} required className={fieldClass} /></div></div>
         <div className="flex flex-wrap items-center gap-4"><Button type="submit" disabled={savingPassword}>{savingPassword ? "Alterando…" : "Alterar senha"}</Button>{passwordMessage && <p role={passwordMessage.error ? "alert" : "status"} className={passwordMessage.error ? "text-sm text-destructive" : "text-sm text-muted-foreground"}>{passwordMessage.text}</p>}</div>
       </form>
-      <div className="mt-8 border-t pt-6"><div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><h3 className="font-heading text-lg font-semibold">Sessões ativas</h3><p className="text-sm text-muted-foreground">Dispositivos que acessaram sua conta.</p></div><span className="border bg-muted px-2.5 py-1 text-xs text-muted-foreground">{sessions.length} {sessions.length === 1 ? "sessão" : "sessões"}</span></div>
-        {loadingSessions ? <p className="text-sm text-muted-foreground">Carregando sessões…</p> : sessions.length === 0 ? <p className="text-sm text-muted-foreground">Nenhuma sessão encontrada.</p> : <ul className="divide-y border">{sessions.map((session) => <li key={session.id} className="flex flex-wrap items-center justify-between gap-3 p-4"><div className="min-w-0"><p className="truncate text-sm font-medium">{session.userAgent?.split(/[;(]/)[0] || "Dispositivo conectado"}</p><p className="mt-1 text-xs text-muted-foreground">{session.ipAddress || "IP indisponível"} · expira {new Date(session.expiresAt).toLocaleDateString("pt-BR")}</p></div><Button type="button" variant="outline" size="sm" onClick={() => void revokeSession(session.token)}>Encerrar</Button></li>)}</ul>}
+      <div className="mt-8 border-t pt-6"><div className="mb-4 flex flex-wrap items-end justify-between gap-2"><div><h3 className="font-heading text-lg font-semibold">Sessões ativas</h3><p className="text-sm text-muted-foreground">Dispositivos que acessaram sua conta.</p></div><div className="flex items-center gap-2"><span className="border bg-muted px-2.5 py-1 text-xs text-muted-foreground">{sessions.length} {sessions.length === 1 ? "sessão" : "sessões"}</span>{sessions.length > 1 && <Button type="button" variant="outline" size="sm" onClick={() => void revokeOthers()}>Desconectar os outros</Button>}</div></div>
+        {loadingSessions ? <p className="text-sm text-muted-foreground">Carregando sessões…</p> : sessions.length === 0 ? <p className="text-sm text-muted-foreground">Nenhuma sessão encontrada.</p> : <ul className="divide-y border">{sessions.map((session) => <li key={session.id} className="flex flex-wrap items-center justify-between gap-3 p-4"><div className="min-w-0"><p className="flex items-center gap-2 truncate text-sm font-medium">{deviceLabel(session.userAgent)}{session.token === currentToken && <span className="border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[11px] font-medium text-primary">Este aparelho</span>}</p><p className="mt-1 text-xs text-muted-foreground">{session.ipAddress || "IP indisponível"} · desde {new Date(session.createdAt).toLocaleDateString("pt-BR")} · expira {new Date(session.expiresAt).toLocaleDateString("pt-BR")}</p></div>{session.token !== currentToken && <Button type="button" variant="outline" size="sm" onClick={() => void revokeSession(session.token)}>Encerrar</Button>}</li>)}</ul>}
         {sessionMessage && <p role="status" className="mt-3 text-sm text-muted-foreground">{sessionMessage}</p>}
       </div>
     </section>

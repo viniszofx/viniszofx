@@ -19,6 +19,6 @@ export default async function ProfileSettingsPage() {
       <h1 className="text-2xl font-semibold">Perfil</h1>
       <p className="mt-1 text-sm text-muted-foreground">Seus dados de acesso e identificação no painel.</p>
     </div>
-    <div className="max-w-4xl"><ProfileForms name={data.user.name ?? ""} email={data.user.email} image={data.user.image} username={profile?.username ?? ""} bio={profile?.bio ?? ""} /></div>
+    <div className="max-w-4xl"><ProfileForms name={data.user.name ?? ""} email={data.user.email} image={profile?.avatarFileId ? `/api/profile/avatar/${data.user.id}?v=${profile.avatarFileId.slice(0, 8)}` : data.user.image} username={profile?.username ?? ""} bio={profile?.bio ?? ""} /></div>
   </main>;
 }

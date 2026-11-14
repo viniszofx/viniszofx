@@ -17,7 +17,7 @@ import { notifyError, notifySuccess } from "@/lib/ui/notifications";
 import { cn } from "@/lib/utils";
 import { NoOrganization } from "./no-organization";
 
-type Person = { id: string; name: string; email: string; role: string; unread: number; archived: boolean; muted: boolean; blocked: boolean; last: { body: string; createdAt: string; mine: boolean } | null };
+type Person = { id: string; name: string; email: string; role: string; avatar: string | null; unread: number; archived: boolean; muted: boolean; blocked: boolean; last: { body: string; createdAt: string; mine: boolean } | null };
 type Attachment = { fileId: string; name: string; type: string; size: number };
 type Message = {
   id: string; body: string; createdAt: string; mine: boolean; readAt: string | null; editedAt: string | null; forwarded: boolean; deleted: boolean;
@@ -34,6 +34,12 @@ const time = (value: string) => {
   return date.toLocaleString("pt-BR", today ? { timeStyle: "short" } : { dateStyle: "short", timeStyle: "short" });
 };
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]?.toUpperCase()).join("") || "?";
+
+/** Foto de perfil com as iniciais quando a pessoa não tem foto. */
+function Face({ person, className }: { person: { name: string; avatar?: string | null }; className: string }) {
+  return person.avatar ? <img src={person.avatar} alt="" className={`${className} shrink-0 rounded-full object-cover`} />
+    : <span className={`${className} grid shrink-0 place-items-center rounded-full bg-primary/15 text-xs font-semibold text-primary`}>{initials(person.name)}</span>;
+}
 const isImage = (type: string) => /^image\/(png|jpe?g|gif|webp|avif)$/.test(type);
 const fileUrl = (messageId: string, fileId: string) => `/api/org/messages/attachments/${messageId}/${fileId}`;
 const bytes = (size: number) => size > 1048576 ? `${(size / 1048576).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} MB` : `${Math.max(1, Math.round(size / 1024))} KB`;
@@ -270,7 +276,7 @@ export function MessagesPage() {
         </div>
         {error && <p role="status" className="border-b bg-muted/40 px-3 py-2 text-xs text-muted-foreground">A atualização falhou. {error}</p>}
         <ul className="min-h-0 flex-1 divide-y overflow-y-auto">{list.map(item => <li key={item.id}><button type="button" aria-current={selected === item.id ? "true" : undefined} onClick={() => open(item.id)} className={cn("flex w-full items-center gap-3 px-3 py-3 text-left outline-none hover:bg-muted/50 focus-visible:bg-muted", selected === item.id && "bg-muted")}>
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-primary/15 text-xs font-semibold text-primary">{initials(item.name)}</span>
+          <Face person={item} className="size-10" />
           <span className="min-w-0 flex-1"><span className="flex items-center gap-1"><span className="truncate text-sm font-medium">{item.name}</span>{item.muted && <RiNotificationOffLine className="size-3.5 shrink-0 text-muted-foreground" aria-label="Silenciada" />}{item.blocked && <RiForbidLine className="size-3.5 shrink-0 text-destructive" aria-label="Bloqueada" />}</span>
             <span className="block truncate text-xs text-muted-foreground">{item.last ? `${item.last.mine ? "Você: " : ""}${item.last.body}` : item.role === "external" ? "Externo" : "Membro"}</span></span>
           <span className="flex shrink-0 flex-col items-end gap-1">{item.last && <span className="text-[10px] text-muted-foreground">{time(item.last.createdAt)}</span>}{item.unread > 0 && <span className={cn("grid min-w-5 place-items-center rounded-full px-1.5 text-[10px] font-semibold", item.muted ? "bg-muted-foreground/30 text-foreground" : "bg-primary text-primary-foreground")}>{item.unread}</span>}</span>
@@ -285,7 +291,7 @@ export function MessagesPage() {
         {!person ? <p className="m-auto p-6 text-sm text-muted-foreground">Escolha uma conversa ou comece uma nova.</p> : <>
           <header className="flex items-center gap-2 border-b px-3 py-2">
             <Button variant="ghost" size="icon-sm" className="md:hidden" aria-label="Voltar às conversas" onClick={() => setSelected("")}><RiArrowLeftSLine /></Button>
-            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-primary/15 text-xs font-semibold text-primary">{initials(person.name)}</span>
+            <Face person={person} className="size-9" />
             <div className="min-w-0 flex-1"><h2 className="truncate font-semibold">{person.name}</h2><p className="truncate text-xs text-muted-foreground">{person.email}</p></div>
             <Button variant="ghost" size="icon-sm" aria-label="Buscar na conversa" title="Buscar na conversa" onClick={() => { setFindOpen(value => !value); setFind(""); }}><RiSearchLine /></Button>
             <Dropdown trigger={<Button variant="ghost" size="icon-sm" aria-label="Mais ações da conversa" title="Mais" />} label={<RiMoreLine />} align="end">
@@ -339,7 +345,7 @@ function PeoplePicker({ title, description, people, onPick, onClose }: { title: 
   return <Dialog open onOpenChange={value => { if (!value) onClose(); }}><DialogContent className="sm:max-w-md">
     <DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription>
     <Input autoFocus aria-label="Buscar pessoa" placeholder="Buscar pessoa" value={query} onChange={event => setQuery(event.target.value)} />
-    <ul className="max-h-80 divide-y overflow-y-auto border">{visible.map(item => <li key={item.id}><button type="button" onClick={() => onPick(item.id)} className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-muted/50"><span className="grid size-8 place-items-center rounded-full bg-primary/15 text-xs font-semibold text-primary">{initials(item.name)}</span><span className="min-w-0"><span className="block truncate text-sm font-medium">{item.name}</span><span className="block truncate text-xs text-muted-foreground">{item.email}</span></span></button></li>)}
+    <ul className="max-h-80 divide-y overflow-y-auto border">{visible.map(item => <li key={item.id}><button type="button" onClick={() => onPick(item.id)} className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-muted/50"><Face person={item} className="size-8" /><span className="min-w-0"><span className="block truncate text-sm font-medium">{item.name}</span><span className="block truncate text-xs text-muted-foreground">{item.email}</span></span></button></li>)}
       {!visible.length && <li className="p-3 text-sm text-muted-foreground">Ninguém encontrado.</li>}</ul>
   </DialogContent></Dialog>;
 }

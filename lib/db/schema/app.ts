@@ -64,6 +64,8 @@ export const userProfiles = pgTable("app_user_profiles", {
   userId: text("user_id").primaryKey(),
   username: text("username").notNull().default(""),
   bio: text("bio").notNull().default(""),
+  // Foto de perfil no storage da própria conta.
+  avatarFileId: text("avatar_file_id"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [uniqueIndex("app_user_profiles_username_unique").on(table.username).where(sql`${table.username} <> ''`)]);
 

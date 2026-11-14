@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, ilike, isNull, lt, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { directMessages, messageThreads } from "@/lib/db/schema/app";
+import { directMessages, messageThreads, userProfiles } from "@/lib/db/schema/app";
 import { currentOrganization, organizationPeople, readOnly, unauthorized } from "@/lib/organizations/current";
 import { between, parseAttachments, present, threadState } from "@/lib/organizations/messages";
 
@@ -41,13 +41,15 @@ export async function GET(request: Request) {
     senderId: directMessages.senderId, recipientId: directMessages.recipientId, body: directMessages.body, createdAt: directMessages.createdAt, deletedAt: directMessages.deletedAt, attachments: directMessages.attachments,
   }).from(directMessages).where(and(eq(directMessages.organizationId, context.organizationId), mine))
     .orderBy(sql`least(${directMessages.senderId}, ${directMessages.recipientId})`, sql`greatest(${directMessages.senderId}, ${directMessages.recipientId})`, desc(directMessages.createdAt));
+  const photos = others.length ? await db.select({ userId: userProfiles.userId, avatarFileId: userProfiles.avatarFileId }).from(userProfiles).where(and(inArray(userProfiles.userId, others.map(person => person.id)), isNotNull(userProfiles.avatarFileId))) : [];
   const prefs = await db.select().from(messageThreads).where(and(eq(messageThreads.organizationId, context.organizationId), eq(messageThreads.userId, context.userId)));
   const list = others.map(person => {
     const last = latest.find(item => item.senderId === person.id || item.recipientId === person.id);
     const pref = prefs.find(item => item.otherId === person.id);
     const count = unread.find(item => item.senderId === person.id)?.count ?? 0;
     const preview = !last ? "" : last.deletedAt ? "Mensagem apagada" : last.body || (last.attachments.length ? `📎 ${last.attachments[0].name}` : "");
-    return { id: person.id, name: person.name || person.email, email: person.email, role: person.role,
+    const photo = photos.find(item => item.userId === person.id)?.avatarFileId;
+    return { id: person.id, name: person.name || person.email, email: person.email, role: person.role, avatar: photo ? `/api/profile/avatar/${person.id}?v=${photo.slice(0, 8)}` : null,
       unread: count, archived: !!pref?.archived, muted: !!pref?.muted, blocked: !!pref?.blocked,
       last: last ? { body: preview, createdAt: last.createdAt, mine: last.senderId === context.userId } : null };
   }).sort((a, b) => (b.last?.createdAt?.toString() ?? "").localeCompare(a.last?.createdAt?.toString() ?? "") || a.name.localeCompare(b.name, "pt-BR"));
