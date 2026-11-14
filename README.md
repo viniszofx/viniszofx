@@ -1,4 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vinicius Souza · viniccius.com.br
+
+Site, blog e painel de trabalho de **Vinicius Souza**, analista de sistemas e desenvolvedor full stack em Corumbá, MS, com atendimento remoto.
+
+## Sobre mim
+
+Sou formado em Análise e Desenvolvimento de Sistemas pelo Instituto Federal de Mato Grosso do Sul (IFMS). Desenvolvo sistemas web, APIs e automações, do levantamento de requisitos à entrega, conectando interface, regras de negócio e dados em ferramentas que ajudam pessoas a organizar e executar o próprio trabalho.
+
+Uso inteligência artificial todos os dias como ferramenta, com consciência: a IA acelera partes repetitivas, testes e revisão, mas o desenho da solução, as regras de negócio e a revisão final de cada linha são humanos. Dados de clientes não vão para modelos de IA sem autorização, e o código e os acessos ficam com quem contrata.
+
+**O que faço**
+
+- Sistemas web sob medida: painéis, cadastros, fluxos de aprovação e portais
+- Automação de processos, com IA onde ela economiza tempo de verdade
+- APIs e integrações com ERPs, pagamentos, WhatsApp e serviços de terceiros
+- IA aplicada ao negócio: assistentes internos, busca em documentos, avaliação de custo e risco
+- Apps e PWA para quem trabalha em campo
+- Manutenção e evolução de sistemas existentes
+
+**Tecnologias**
+
+| Área | Ferramentas |
+| --- | --- |
+| Interfaces | React, Next.js, TypeScript, Tailwind CSS, shadcn/ui |
+| Aplicações e APIs | Node.js, PHP / Laravel, Java / Spring Boot, C# / ASP.NET Core |
+| Dados e infraestrutura | PostgreSQL, MySQL, MongoDB, Docker, Linux, Git |
+
+**Alguns projetos públicos**
+
+- [Workspace](https://github.com/viniszofx/viniszofx): notas com editor por blocos e quadros com listas, cards e anexos (este repositório)
+- [Areco](https://github.com/viniszofx/areco-service): gestão de produtos com ASP.NET Core, React e PostgreSQL
+- [Ticket Management](https://github.com/viniszofx/api-spring): API REST de tickets com Spring Boot, PostgreSQL e Docker
+- [E-ticket](https://github.com/viniszofx/eticket): sistema de chamados em Laravel, feito em dupla no IFMS
+
+**Contato**
+
+- Site: [viniccius.com.br](https://www.viniccius.com.br) (o botão de conversa da página inicial chega direto para mim)
+- E-mail: [contato@viniccius.com.br](mailto:contato@viniccius.com.br)
+- GitHub: [@viniszofx](https://github.com/viniszofx)
+- LinkedIn: [viniszofx](https://www.linkedin.com/in/viniszofx/)
+
+## Sobre o projeto
+
+Next.js 16 (App Router), React 19, Tailwind CSS 4, Drizzle ORM e Postgres. Em produção roda na Vercel com Neon (banco, Neon Auth e Object Storage); no desenvolvimento, Postgres e RustFS no Docker.
+
+- **Site público** (`/`): página de serviços com o assistente de contato, que gera leads.
+- **Blog** (`/blog`): posts com SEO e espaços de publicidade.
+- **Painel** (`/dashboard`): ordens, viagens, frota, cadastros, inventário, mural e mensagens da organização, notas, quadros, Drive com editores de DOCX, planilhas e PDF, diagramas, quadro branco e o funil de leads. Cada função pode ser ligada ou desligada em Sistema › Módulos.
 
 ## Blog, busca e publicidade
 
@@ -73,7 +120,7 @@ Em **Neon Console → projeto → branch usada pela Vercel → Auth → Configur
 
 ## Autenticação e storage
 
-O portfólio em `/` e os posts publicados em `/blog` são públicos. `/login` e `/api/auth/*` são acessíveis para permitir a entrada; todas as páginas em `/dashboard/*` exigem uma sessão válida do Neon Auth. Configure as variáveis de `.env.example` no ambiente de execução. Enquanto `neon_auth.user` estiver vazia, `/login` apresenta o formulário de criação da primeira conta. Depois disso, apresenta o login e a rota de cadastro por e-mail recusa novos registros.
+O portfólio em `/` e os posts publicados em `/blog` são públicos. `/login` e `/api/auth/*` são acessíveis para permitir a entrada; todas as páginas em `/dashboard/*` exigem uma sessão válida do Neon Auth. Configure as variáveis de `.env.example` no ambiente de execução. Enquanto `neon_auth.user` estiver vazia, `/login` oferece **Criar conta e organização**, que abre o onboarding (conta, empresa e endereço). Depois disso, apresenta o login e a rota de cadastro por e-mail recusa novos registros, a menos que `ALLOW_SIGNUP=true`.
 
 `DATABASE_URL` é uma credencial exclusiva do servidor. Nunca use `NEXT_PUBLIC_` no nome dessa variável. `JWKS_URL` pode ser mantida para integrações futuras, mas a autenticação atual usa `NEON_AUTH_BASE_URL` ou `AUTH_NEON_URL` e não lê a JWKS diretamente.
 
@@ -107,7 +154,7 @@ O blog público está em `/blog`. A gestão de posts fica em `/dashboard/blog`: 
 
 Os posts e metadados dos arquivos ficam nas tabelas `app_blog_posts` e `app_blog_assets`. Os arquivos são enviados para o bucket **`post`** do Neon Object Storage, configurável por `NEON_POST_BUCKET` (padrão `post`), separado do bucket `workplace`. A API entrega os arquivos de posts publicados publicamente e exige sessão do autor para rascunhos. O limite é de 20 MB por arquivo.
 
-No rodapé do menu lateral, o botão de monitor oferece **Light**, **Dark** e **System**. A preferência é salva no navegador; System acompanha mudanças do tema do dispositivo. O menu e a busca também funcionam no celular.
+O botão de tema fica no cabeçalho e oferece **Claro**, **Escuro** e **Sistema**. A escolha fica no navegador e num cookie lido pelo servidor, então a página já abre no tema certo; Sistema acompanha o tema do aparelho. O menu e a busca também funcionam no celular.
 
 ## Boards
 
