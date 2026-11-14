@@ -4,14 +4,22 @@ import { db, isLocalAuth } from "@/lib/db";
 import { authUsers, localAuthUser } from "@/lib/db/schema/auth";
 import { organizationMembers, organizations, platformAdmins } from "@/lib/db/schema/app";
 
+/** Primeira conta cadastrada (vira a administração). Se a consulta falhar, ninguém vira admin e a página não quebra. */
+async function firstAccount() {
+  if (isLocalAuth) return db.select({ id: localAuthUser.id }).from(localAuthUser).orderBy(asc(localAuthUser.createdAt)).limit(1);
+  try { return await db.select({ id: authUsers.id }).from(authUsers).orderBy(asc(authUsers.createdAt)).limit(1); }
+  catch (error) {
+    console.error("Neon Auth: não foi possível ler a primeira conta.", error);
+    return [];
+  }
+}
+
 export async function platformAdminId() {
   const [current] = await db.select({ userId: platformAdmins.userId }).from(platformAdmins)
     .where(eq(platformAdmins.slot, "primary")).limit(1);
   if (current) return current.userId;
 
-  const [firstUser] = isLocalAuth
-    ? await db.select({ id: localAuthUser.id }).from(localAuthUser).orderBy(asc(localAuthUser.createdAt)).limit(1)
-    : await db.select({ id: authUsers.id }).from(authUsers).orderBy(asc(authUsers.createdAt)).limit(1);
+  const [firstUser] = await firstAccount();
   if (!firstUser) return null;
 
   await db.insert(platformAdmins).values({ slot: "primary", userId: firstUser.id }).onConflictDoNothing();

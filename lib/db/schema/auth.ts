@@ -6,7 +6,8 @@ export const authUsers = neonAuth.table("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),
-  createdAt: timestamp("created_at").notNull(),
+  // Neon Auth (better-auth) usa nomes de coluna em camelCase.
+  createdAt: timestamp("createdAt").notNull(),
 });
 
 // Better Auth tables used only by the local Docker development mode.
