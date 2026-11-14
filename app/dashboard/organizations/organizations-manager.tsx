@@ -6,7 +6,7 @@ import { RiArrowRightLine, RiBuilding2Line, RiGroupLine } from "@remixicon/react
 import { Button } from "@/components/ui/button";
 
 type OrganizationRow = { id: string; name: string; slug: string; status: "active" | "suspended"; createdAt: Date | string; memberCount: number };
-const inputClass = "h-11 w-full border border-input bg-background px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const inputClass = "h-11 w-full border border-input bg-background px-3 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 async function request<T>(url: string, method: string, body?: Record<string, unknown>) {
   const response = await fetch(url, { method, headers: body ? { "Content-Type": "application/json" } : undefined, body: body ? JSON.stringify(body) : undefined });

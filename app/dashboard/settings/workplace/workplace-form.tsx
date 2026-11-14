@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { saveWorkplaceSettings, type WorkplaceActionState } from "./actions";
 
 const initialState: WorkplaceActionState = { status: "idle", message: "" };
-const fieldClass = "w-full border border-input bg-background px-3 py-2 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const fieldClass = "w-full border border-input bg-background px-3 py-2 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 function SubmitButton() {
   const { pending } = useFormStatus();

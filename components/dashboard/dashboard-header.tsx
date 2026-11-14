@@ -31,7 +31,7 @@ export function DashboardHeader({ menuButton }: { menuButton: ReactNode }) {
     <div className="flex min-w-0 items-center gap-2">{menuButton}<Link href="/dashboard" className="flex items-center gap-2 text-sm font-semibold focus-visible:outline-ring"><span className="flex size-6 items-center justify-center border border-sidebar-primary text-xs font-bold text-sidebar-primary">V</span><span className="truncate">Viniccius</span><span className="hidden border-l pl-2 text-xs font-normal text-muted-foreground lg:inline">Console</span></Link></div>
     <form role="search" onSubmit={submit} className="order-last col-span-2 flex h-8 min-w-0 items-center gap-2 border bg-background px-2.5 md:order-none md:col-span-1">
       <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-      <input type="search" aria-label="Busca global" placeholder="Buscar…" value={search} onChange={event => setSearch(event.target.value)} className="min-w-0 flex-1 bg-transparent text-xs outline-none placeholder:text-muted-foreground" />
+      <input type="search" aria-label="Busca global" placeholder="Buscar…" value={search} onChange={event => setSearch(event.target.value)} className="min-w-0 flex-1 bg-transparent text-base sm:text-xs outline-none placeholder:text-muted-foreground" />
       <kbd className="hidden text-[10px] text-muted-foreground sm:block">Enter</kbd>
     </form>
     <div className="flex items-center justify-end gap-2"><ThemeSelector compact /><Link href="/" target="_blank" className="hidden items-center gap-1 border px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent hover:text-foreground sm:inline-flex"><External className="size-3.5" />Ver site</Link><Menu.Root>

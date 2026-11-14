@@ -160,8 +160,8 @@ export function TodosPage() {
           {selected !== "done" && <li className="flex items-start gap-3 px-4 py-3 sm:px-5" onFocus={() => setAdding(true)} onBlur={event => { if (event.currentTarget.contains(event.relatedTarget as Node)) return; setAdding(false); if (draft.title.trim()) addTodo(); }}>
             <span aria-hidden="true" className="mt-px size-5 shrink-0 rounded-full border-2 border-muted-foreground/30" />
             <form className="min-w-0 flex-1" onSubmit={event => { event.preventDefault(); if (addTodo()) addRef.current?.focus(); }}>
-              <input ref={addRef} aria-label="Nova tarefa" placeholder="Nova tarefa" maxLength={160} value={draft.title} className="w-full bg-transparent text-sm leading-5 outline-none placeholder:text-muted-foreground" onChange={event => setDraft({ ...draft, title: event.target.value })} onKeyDown={cancelAdd} />
-              {(adding || !!draft.title) && <input aria-label="Notas" placeholder="Notas" maxLength={2000} value={draft.notes} className="mt-0.5 w-full bg-transparent text-xs text-muted-foreground outline-none" onChange={event => setDraft({ ...draft, notes: event.target.value })} onKeyDown={cancelAdd} />}
+              <input ref={addRef} aria-label="Nova tarefa" placeholder="Nova tarefa" maxLength={160} value={draft.title} className="w-full bg-transparent text-base sm:text-sm leading-5 outline-none placeholder:text-muted-foreground" onChange={event => setDraft({ ...draft, title: event.target.value })} onKeyDown={cancelAdd} />
+              {(adding || !!draft.title) && <input aria-label="Notas" placeholder="Notas" maxLength={2000} value={draft.notes} className="mt-0.5 w-full bg-transparent text-base sm:text-xs text-muted-foreground outline-none" onChange={event => setDraft({ ...draft, notes: event.target.value })} onKeyDown={cancelAdd} />}
               <button type="submit" hidden tabIndex={-1}>Adicionar</button>
             </form>
           </li>}

@@ -151,7 +151,7 @@ export function LeadWidget() {
             inputMode={step === "email" ? "email" : step === "phone" ? "tel" : "text"} maxLength={step === "message" ? 4000 : 254}
             value={input} onChange={event => setInput(step === "phone" ? formatPhone(event.target.value) : event.target.value)}
             onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); answer(); } }}
-            className="max-h-32 min-h-9 flex-1 resize-none bg-transparent py-1.5 text-sm outline-none [field-sizing:content] placeholder:text-muted-foreground disabled:cursor-not-allowed" />
+            className="max-h-32 min-h-9 flex-1 resize-none bg-transparent py-1.5 text-base outline-none sm:text-sm [field-sizing:content] placeholder:text-muted-foreground disabled:cursor-not-allowed" />
           {step === "phone" && !input && !typing && <button type="button" onClick={() => answer()} className="h-9 shrink-0 rounded-full px-3 text-sm text-muted-foreground hover:text-foreground">Pular</button>}
           <button type="submit" aria-label="Enviar resposta" disabled={!inputStep || typing || (!input.trim() && step !== "phone")} className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground outline-none transition-opacity hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"><RiArrowUpLine className="size-5" /></button>
         </div>

@@ -62,7 +62,7 @@ export function LoginForm({ initialMode }: { initialMode: AuthMode }) {
     }
   }
 
-  const inputClassName = "h-12 w-full bg-muted/60 px-4 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring";
+  const inputClassName = "h-12 w-full bg-muted/60 px-4 text-base sm:text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">

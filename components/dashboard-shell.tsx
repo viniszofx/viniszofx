@@ -237,7 +237,7 @@ function DesktopAppsGallery({ open, onOpenChange, isPlatformAdmin, disabledModul
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-5">
           <label className="flex h-10 items-center gap-2 border bg-background px-3">
             <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-            <input autoFocus type="search" aria-label="Buscar apps" placeholder="Buscar app..." value={filter} onChange={event => setFilter(event.target.value)} onKeyDown={event => { if (event.key === "Escape") setFilter(""); }} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+            <input autoFocus type="search" aria-label="Buscar apps" placeholder="Buscar app..." value={filter} onChange={event => setFilter(event.target.value)} onKeyDown={event => { if (event.key === "Escape") setFilter(""); }} className="min-w-0 flex-1 bg-transparent text-base sm:text-sm outline-none placeholder:text-muted-foreground" />
           </label>
           {groups.map(group => <section key={group.title} aria-label={group.title}>
             <h3 className="mb-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">{group.title}</h3>
@@ -289,7 +289,7 @@ function MobileMenuSheet({ isPlatformAdmin, disabledModules, onClose }: { isPlat
     <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
       <label className="flex h-9 items-center gap-2 border bg-background px-3">
         <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-        <input type="search" aria-label="Buscar no menu" placeholder="Buscar app…" value={filter} onChange={event => setFilter(event.target.value)} className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground" />
+        <input type="search" aria-label="Buscar no menu" placeholder="Buscar app…" value={filter} onChange={event => setFilter(event.target.value)} className="min-w-0 flex-1 bg-transparent text-base sm:text-sm outline-none placeholder:text-muted-foreground" />
       </label>
       {isDrive && <section aria-label="Seções do Drive">
         <h3 className="mb-2 px-1 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Drive</h3>

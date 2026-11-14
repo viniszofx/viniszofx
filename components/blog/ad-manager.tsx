@@ -20,7 +20,7 @@ function AdEditor({ initial }: { initial: AdSlotData }) {
   const [message, setMessage] = useState("");
   const input = useRef<HTMLInputElement>(null);
   const label = labels[ad.position];
-  const fieldClass = "h-9 w-full border bg-background px-3 text-sm outline-none focus-visible:border-primary";
+  const fieldClass = "h-9 w-full border bg-background px-3 text-base sm:text-sm outline-none focus-visible:border-primary";
 
   function update(changes: Partial<AdSlotData>) { setAd((current) => ({ ...current, ...changes })); setMessage(""); }
 
@@ -65,7 +65,7 @@ function AdEditor({ initial }: { initial: AdSlotData }) {
       <div className="grid gap-3">
         <label className="grid gap-1 text-xs font-medium">Anunciante <input className={fieldClass} value={ad.advertiser} maxLength={80} onChange={(event) => update({ advertiser: event.target.value })} placeholder="Nome ou marca" /></label>
         <label className="grid gap-1 text-xs font-medium">Título <input className={fieldClass} value={ad.headline} maxLength={120} onChange={(event) => update({ headline: event.target.value })} placeholder="Mensagem principal" /></label>
-        <label className="grid gap-1 text-xs font-medium">Texto de apoio <textarea className="min-h-20 w-full resize-y border bg-background px-3 py-2 text-sm outline-none focus-visible:border-primary" value={ad.description} maxLength={300} onChange={(event) => update({ description: event.target.value })} placeholder="Descrição opcional" /></label>
+        <label className="grid gap-1 text-xs font-medium">Texto de apoio <textarea className="min-h-20 w-full resize-y border bg-background px-3 py-2 text-base sm:text-sm outline-none focus-visible:border-primary" value={ad.description} maxLength={300} onChange={(event) => update({ description: event.target.value })} placeholder="Descrição opcional" /></label>
         <label className="grid gap-1 text-xs font-medium">Link de destino <input className={fieldClass} value={ad.targetUrl} maxLength={2048} type="url" onChange={(event) => update({ targetUrl: event.target.value })} placeholder="https://exemplo.com" /></label>
       </div>
       <div className="space-y-2"><p className="text-xs font-medium">Imagem (opcional)</p><div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border bg-muted/30">{ad.imageUrl ? <Image src={ad.imageUrl} alt="Prévia do anúncio" fill unoptimized sizes="224px" className="object-contain" /> : <span className="text-xs text-muted-foreground">Sem imagem</span>}</div><input ref={input} type="file" accept="image/png,image/jpeg,image/webp,image/avif" className="hidden" aria-label={`Imagem: ${label.title}`} onChange={(event) => { const file = event.target.files?.[0]; if (file) void upload(file); event.target.value = ""; }} /><div className="flex gap-2"><Button size="xs" variant="outline" disabled={busy} onClick={() => input.current?.click()}><AddImage />Enviar</Button>{ad.imageUrl && <Button size="xs" variant="ghost" disabled={busy} onClick={() => void removeImage()}><Trash />Remover</Button>}</div><p className="text-[11px] text-muted-foreground">PNG, JPEG, WebP ou AVIF, até 5 MB. Bucket post.</p></div>

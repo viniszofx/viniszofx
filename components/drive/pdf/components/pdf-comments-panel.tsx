@@ -74,7 +74,7 @@ export function PdfCommentsPanel({ threads, activeId, draft, busy, emptyHint, on
               if (event.key === "Escape") onDraftCancel();
               else if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) onDraftSubmit();
             }}
-            className="min-h-20 w-full resize-y rounded-md border bg-background p-2 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+            className="min-h-20 w-full resize-y rounded-md border bg-background p-2 text-base sm:text-sm outline-none focus:ring-2 focus:ring-primary/30" />
           <div className="flex justify-end gap-1">
             <Button type="button" variant="ghost" size="sm" disabled={busy} onClick={onDraftCancel}>Cancelar</Button>
             <Button type="button" size="sm" disabled={busy || !draft.text.trim()} onClick={onDraftSubmit}>{busy ? "Enviando…" : "Comentar"}</Button>
@@ -110,7 +110,7 @@ export function PdfCommentsPanel({ threads, activeId, draft, busy, emptyHint, on
                 <input aria-label="Responder" placeholder="Responder" value={replies[thread.id] ?? ""} disabled={busy}
                   onChange={(event) => setReplies((current) => ({ ...current, [thread.id]: event.target.value }))}
                   onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); void sendReply(thread.id); } }}
-                  className="h-8 w-0 min-w-0 flex-1 rounded-full border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+                  className="h-8 w-0 min-w-0 flex-1 rounded-full border bg-background px-3 text-base sm:text-sm outline-none focus:ring-2 focus:ring-primary/30" />
                 <Button type="button" size="sm" disabled={busy || !replies[thread.id]?.trim()} onClick={() => void sendReply(thread.id)}>Enviar</Button>
               </div>
             )}
