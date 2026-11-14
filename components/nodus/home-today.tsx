@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { postState, useOrgPosts, type OrgPost } from "./mural-page";
-import { journeyStore, orderStore, taskStore, todoStore } from "@/lib/nodus/stores";
+import { eventStore, journeyStore, orderStore, taskStore, todoStore } from "@/lib/nodus/stores";
 import { useLookup } from "@/lib/records/references";
 import { useModuleEnabled } from "@/lib/modules-context";
 
@@ -29,13 +29,17 @@ function MuralCarousel({ posts }: { posts: OrgPost[] }) {
   </section>;
 }
 
-export function HomeToday() {
+const greeting = () => { const hour = new Date().getHours(); return hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite"; };
+const eventTime = (value: string) => value.includes("T") ? value.slice(11, 16) : "";
+
+export function HomeToday({ name = "" }: { name?: string }) {
   const enabled = useModuleEnabled();
   const { feed } = useOrgPosts();
   const tasks = taskStore.useRecords();
   const orders = orderStore.useRecords();
   const journeys = journeyStore.useRecords(enabled("field"));
   const todos = todoStore.useRecords();
+  const events = eventStore.useRecords(enabled("calendar"));
   const lookup = useLookup();
   const day = today();
   const active = (feed?.posts ?? []).filter(post => postState(post).key === "active");
@@ -43,10 +47,24 @@ export function HomeToday() {
   const running = orders.records.filter(order => !["done", "canceled"].includes(order.status) && order.startDate <= day && (!order.endDate || order.endDate >= day));
   const myTodos = todos.records.filter(todo => !todo.done && !!(todo.endDate || todo.startDate) && (todo.endDate || todo.startDate) <= day).sort((a, b) => (a.endDate || a.startDate).localeCompare(b.endDate || b.startDate));
   const open = journeys.records.filter(journey => !journey.events.some(event => event.type === "end"));
+  const agenda = events.records.filter(event => event.start && event.start.slice(0, 10) <= day && (event.end || event.start).slice(0, 10) >= day).sort((a, b) => a.start.localeCompare(b.start));
+  const chips = [
+    enabled("calendar") && { href: "/dashboard/calendar", count: agenda.length, label: agenda.length === 1 ? "compromisso" : "compromissos" },
+    enabled("tasks") && { href: "/dashboard/tasks", count: due.length, label: due.length === 1 ? "tarefa" : "tarefas" },
+    enabled("todos") && { href: "/dashboard/todos", count: myTodos.length, label: "to-dos" },
+    enabled("orders") && { href: "/dashboard/orders", count: running.length, label: running.length === 1 ? "ordem em andamento" : "ordens em andamento" },
+    enabled("field") && { href: "/dashboard/journeys", count: open.length, label: "em campo" },
+  ].filter(chip => !!chip);
+  const firstName = name.trim().split(/\s+/)[0];
   return <section aria-labelledby="today" className="pt-7">
-    <h2 id="today" className="mb-3 text-sm font-semibold">Hoje</h2>
+    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div><p suppressHydrationWarning className="text-xs capitalize text-muted-foreground">{new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" })}</p>
+        <h2 id="today" suppressHydrationWarning className="text-lg font-semibold">{greeting()}{firstName && `, ${firstName}`}. Este é o seu dia.</h2></div>
+      {chips.length > 0 && <ul className="flex flex-wrap gap-2">{chips.map(chip => <li key={chip.href}><Link href={chip.href} className="inline-flex items-center gap-1.5 border bg-card px-2.5 py-1 text-xs hover:border-primary/40"><strong className="tabular-nums">{chip.count}</strong>{chip.label}</Link></li>)}</ul>}
+    </div>
     {enabled("mural") && active.length > 0 && <div className="mb-5"><MuralCarousel posts={active} /></div>}
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {enabled("calendar") && <Panel title="Agenda de hoje" href="/dashboard/calendar" empty={events.loaded ? "Nenhum compromisso hoje." : "Carregando…"} items={agenda.map(event => ({ id: event.id, text: `${eventTime(event.start) ? `${eventTime(event.start)} · ` : ""}${event.title}`, detail: event.location }))} />}
       {enabled("tasks") && <Panel title="Tarefas" href="/dashboard/tasks" empty={tasks.loaded ? "Nada pendente para hoje." : "Carregando…"} items={due.map(task => ({ id: task.id, text: task.title, detail: task.dueDate ? `Prazo ${new Date(`${task.dueDate}T12:00:00`).toLocaleDateString("pt-BR")}` : undefined, alert: !!task.dueDate && task.dueDate < day }))} />}
       {enabled("todos") && <Panel title="Meus to-dos" href="/dashboard/todos" empty={todos.loaded ? "Nenhum to-do para hoje." : "Carregando…"} items={myTodos.map(todo => ({ id: todo.id, text: todo.title, detail: todo.notes, alert: !!todo.endDate && todo.endDate < day }))} />}
       {enabled("orders") && <Panel title="Ordens em andamento" href="/dashboard/orders" empty={orders.loaded ? "Nenhuma ordem para hoje." : "Carregando…"} items={running.map(order => ({ id: order.id, text: `${order.code} · ${order.title}`, detail: lookup("clients", order.clientId) }))} />}

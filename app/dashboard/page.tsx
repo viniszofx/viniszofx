@@ -6,6 +6,7 @@ import { SetupGuide } from "@/components/nodus/setup-guide";
 import { hiddenHref } from "@/lib/modules";
 import { disabledModules } from "@/lib/modules-server";
 import { OrganizationPrompt } from "@/components/nodus/no-organization";
+import { auth } from "@/lib/auth/server";
 
 export const metadata: Metadata = { title: "Dashboard | Viniccius" };
 
@@ -45,13 +46,13 @@ const groups = [
 ] as const;
 
 export default async function DashboardPage() {
-  const disabled = await disabledModules();
+  const [disabled, { data }] = await Promise.all([disabledModules(), auth.getRawSession()]);
   const visibleGroups = groups.map(group => ({ ...group, items: group.items.filter(item => !hiddenHref(item.href, disabled)) })).filter(group => group.items.length);
   return <main className="w-full px-4 pb-12 pt-6 sm:px-7">
     <div className="border-b pb-5"><p className="mb-2 text-xs text-muted-foreground">Console / Visão geral</p><h1 className="text-2xl font-semibold">Visão geral</h1><p className="mt-1 text-sm text-muted-foreground">Acesse as áreas do seu painel.</p></div>
     {!(disabled.includes("mural") && disabled.includes("messages")) && <OrganizationPrompt />}
     <SetupGuide />
-    <HomeToday />
+    <HomeToday name={data?.user?.name ?? ""} />
     <div className="grid gap-x-12 gap-y-9 pt-7 xl:grid-cols-2">{visibleGroups.map((group, index) => <section key={group.title} aria-labelledby={`section-${index}`} className="min-w-0">
       <h2 id={`section-${index}`} className="mb-3 text-sm font-semibold">{group.title}</h2>
       <div className="border border-b-0 bg-card">{group.items.map(({ label, description, href, icon: Icon }) => <Link key={href} href={href} className="group flex items-center gap-3 border-b px-4 py-3 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
