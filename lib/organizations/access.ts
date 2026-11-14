@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { db, isLocalAuth } from "@/lib/db";
 import { authUsers, localAuthUser } from "@/lib/db/schema/auth";
 import { organizationMembers, organizations, platformAdmins } from "@/lib/db/schema/app";
@@ -71,7 +71,8 @@ export async function organizationMemberRows(organizationId: string) {
     email: isLocalAuth ? localAuthUser.email : authUsers.email,
   }).from(organizationMembers).innerJoin(
     isLocalAuth ? localAuthUser : authUsers,
-    eq(organizationMembers.userId, isLocalAuth ? localAuthUser.id : authUsers.id),
+    // No Neon Auth o id é uuid e o do membro é texto: compara como texto.
+    sql`${isLocalAuth ? localAuthUser.id : authUsers.id}::text = ${organizationMembers.userId}`,
   ).where(eq(organizationMembers.organizationId, organizationId)).orderBy(asc(organizationMembers.createdAt));
   return members;
 }

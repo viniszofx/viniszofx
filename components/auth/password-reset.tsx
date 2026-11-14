@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/client";
+import { authErrorMessage } from "@/lib/auth/errors";
 
 type ResetClient = {
   requestPasswordReset: (input: { email: string; redirectTo: string }) => Promise<{ error?: { message?: string } | null }>;
@@ -29,13 +30,13 @@ export function ForgotPasswordButton({ localAuth }: { localAuth: boolean }) {
     try {
       if (localAuth) {
         const response = await fetch("/api/password-help", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
-        if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "Não foi possível enviar o pedido.");
+        if (!response.ok) throw { status: response.status, message: (await response.json().catch(() => ({}))).error };
       } else {
         const result = await resetClient.requestPasswordReset({ email, redirectTo: `${location.origin}/reset-password` });
-        if (result.error) throw new Error(result.error.message || "Não foi possível enviar o e-mail.");
+        if (result.error) throw result.error;
       }
       setSent(true);
-    } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
+    } catch (cause) { setError(authErrorMessage(cause, "reset-request")); }
     finally { setBusy(false); }
   }
   return <>
@@ -67,9 +68,9 @@ export function ResetPasswordForm({ token }: { token: string }) {
     setBusy(true); setError("");
     try {
       const result = await resetClient.resetPassword({ newPassword: password, token });
-      if (result.error) throw new Error(result.error.message || "O link expirou ou já foi usado.");
+      if (result.error) throw result.error;
       setDone(true);
-    } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
+    } catch (cause) { setError(authErrorMessage(cause, "reset")); }
     finally { setBusy(false); }
   }
   if (!token) return <p role="alert" className="text-sm text-destructive">Link inválido. Peça um novo em “Esqueci a senha”.</p>;
@@ -95,9 +96,9 @@ export function SetPasswordDialog({ userId, name, onClose, onDone }: { userId: s
     event.preventDefault(); setBusy(true); setError("");
     try {
       const response = await fetch(`/api/admin/users/${encodeURIComponent(userId)}/password`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-      if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "Não foi possível alterar a senha.");
+      if (!response.ok) throw { status: response.status, message: (await response.json().catch(() => ({}))).error };
       setDone(true); onDone?.();
-    } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
+    } catch (cause) { setError(authErrorMessage(cause, "change")); }
     finally { setBusy(false); }
   }
   return <Dialog open onOpenChange={value => { if (!value && !busy) onClose(); }}><DialogContent className="sm:max-w-md">

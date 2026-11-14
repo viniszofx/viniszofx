@@ -45,9 +45,14 @@ const fileUrl = (messageId: string, fileId: string) => `/api/org/messages/attach
 const bytes = (size: number) => size > 1048576 ? `${(size / 1048576).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} MB` : `${Math.max(1, Math.round(size / 1024))} KB`;
 async function failure(response: Response) {
   if (response.status === 401) return "Entre em uma organização para acessar as mensagens.";
-  if (response.status === 403) return (await response.text()) || "Sua conta tem acesso somente para leitura.";
-  if (response.status === 404) return (await response.text()) || "Essa pessoa não está mais disponível nesta organização.";
-  return (await response.text()) || "Não foi possível concluir a solicitação. Tente novamente.";
+  // Só mostra o texto do servidor quando é uma frase nossa (não HTML de erro nem "Internal Server Error").
+  const text = (await response.text().catch(() => "")).trim();
+  const own = text && text.length < 300 && !text.startsWith("<") && !/internal server error|^error$/i.test(text) ? text : "";
+  if (response.status === 403) return own || "Sua conta tem acesso somente para leitura.";
+  if (response.status === 404) return own || "Essa pessoa não está mais disponível nesta organização.";
+  if (response.status === 413) return "O arquivo é grande demais para enviar.";
+  if (response.status >= 500) return "O servidor teve um problema ao buscar as mensagens. Tente de novo em instantes.";
+  return own || "Não foi possível concluir a solicitação. Tente novamente.";
 }
 /** Junta a página mais recente com as anteriores já carregadas, sem duplicar. */
 function merge(current: Message[], incoming: Message[]) {

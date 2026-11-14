@@ -4,18 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth/client";
+import { authErrorMessage } from "@/lib/auth/errors";
 
 type AuthMode = "sign-in" | "sign-up";
-
-function isInvalidOrigin(cause: unknown) {
-  if (cause && typeof cause === "object") {
-    const value = cause as { code?: unknown; message?: unknown };
-    return value.code === "INVALID_ORIGIN" || (typeof value.message === "string" && /invalid origin/i.test(value.message));
-  }
-  return false;
-}
-
-const originMessage = "Login indisponível neste domínio. Entre em contato com o administrador.";
 
 export function LoginForm({ initialMode }: { initialMode: AuthMode }) {
   const router = useRouter();
@@ -42,7 +33,7 @@ export function LoginForm({ initialMode }: { initialMode: AuthMode }) {
         ? await authClient.signUp.email({ name: String(form.get("name") ?? "").trim(), email, password })
         : await authClient.signIn.email({ email, password });
       if (result.error) {
-        setError(isInvalidOrigin(result.error) ? originMessage : result.error.message || "Não foi possível entrar. Confira seus dados.");
+        setError(authErrorMessage(result.error, mode));
         return;
       }
       if (mode === "sign-up") {
@@ -56,7 +47,8 @@ export function LoginForm({ initialMode }: { initialMode: AuthMode }) {
       }
       window.location.replace("/dashboard");
     } catch (cause) {
-      setError(isInvalidOrigin(cause) ? originMessage : "Não foi possível conectar ao serviço de autenticação. Tente novamente.");
+      // O Neon Auth lança exceção também para senha errada: a mensagem vem do código, não do catch.
+      setError(authErrorMessage(cause, mode));
     } finally {
       setIsSubmitting(false);
     }

@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import { auth } from "@/lib/auth/server";
 import { db, isLocalAuth } from "@/lib/db";
 import { authUsers, localAuthUser } from "@/lib/db/schema/auth";
@@ -39,7 +39,8 @@ export async function userNames(ids: string[]) {
 export async function organizationPeople(organizationId: string) {
   const table = isLocalAuth ? localAuthUser : authUsers;
   return db.select({ id: table.id, name: table.name, email: table.email, role: organizationMembers.role })
-    .from(organizationMembers).innerJoin(table, eq(organizationMembers.userId, table.id))
+    // No Neon Auth o id é uuid e o do membro é texto: compara como texto (sem isso o Postgres falha com text = uuid).
+    .from(organizationMembers).innerJoin(table, sql`${table.id}::text = ${organizationMembers.userId}`)
     .where(and(eq(organizationMembers.organizationId, organizationId), eq(organizationMembers.status, "active")))
     .orderBy(asc(table.name));
 }

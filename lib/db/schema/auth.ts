@@ -3,6 +3,7 @@ import { boolean, index, pgSchema, pgTable, text, timestamp, uniqueIndex } from 
 // Neon Auth owns this table. Keep it out of Drizzle Kit's migration schema.
 const neonAuth = pgSchema("neon_auth");
 export const authUsers = neonAuth.table("user", {
+  // No banco é uuid (docs do Neon Auth); lido aqui como texto. Em JOIN com colunas text use `${authUsers.id}::text`.
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull(),

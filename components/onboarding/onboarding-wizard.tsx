@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/client";
+import { authErrorMessage } from "@/lib/auth/errors";
 import { formatPhone } from "@/lib/employees/profile";
 import type { AddressFieldsValue } from "@/lib/format/address";
 
@@ -52,12 +53,12 @@ export function OnboardingWizard({ userName, firstAccount }: { userName: string 
     setBusy(true); setError("");
     try {
       const result = await authClient.signUp.email({ name: name.trim(), email, password });
-      if (result.error) throw new Error(result.error.message || "Não foi possível criar a conta.");
+      if (result.error) throw result.error;
       const session = await authClient.getSession();
-      if (!session.data?.user) throw new Error("Conta criada. Confirme o e-mail, se necessário, e entre para continuar.");
+      if (!session.data?.user) { setError("Conta criada. Confirme o e-mail, se necessário, e entre para continuar."); return; }
       setCompany(previous => ({ ...previous, responsible: previous.responsible || name.trim(), email: previous.email || email }));
       setStep("company");
-    } catch (cause) { setError(cause instanceof Error ? cause.message : "Não foi possível criar a conta."); }
+    } catch (cause) { setError(authErrorMessage(cause, "sign-up")); }
     finally { setBusy(false); }
   }
 
