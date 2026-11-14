@@ -5,6 +5,11 @@ export function LoadingBlock({ label, className }: { label: string; className?: 
   return <div role="status" aria-label={label} className={cn("h-40 animate-pulse bg-muted", className)} />;
 }
 
+/** Bloco cinza pulsante no lugar do conteúdo que ainda está carregando. */
+export function Skeleton({ className }: { className?: string }) {
+  return <span aria-hidden="true" className={cn("block animate-pulse bg-muted motion-reduce:animate-none", className)} />;
+}
+
 export function EmptyState({ children, className }: { children: ReactNode; className?: string }) {
   return <p className={cn("grid min-h-40 place-items-center text-center text-sm text-muted-foreground", className)}>{children}</p>;
 }

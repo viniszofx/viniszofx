@@ -7,6 +7,7 @@ import { hiddenHref } from "@/lib/modules";
 import { disabledModules } from "@/lib/modules-server";
 import { OrganizationPrompt } from "@/components/nodus/no-organization";
 import { auth } from "@/lib/auth/server";
+import { ModuleBoundary } from "@/components/ui/module-boundary";
 
 export const metadata: Metadata = { title: "Dashboard | Viniccius" };
 
@@ -48,15 +49,16 @@ const groups = [
 export default async function DashboardPage() {
   const [disabled, { data }] = await Promise.all([disabledModules(), auth.getRawSession()]);
   const visibleGroups = groups.map(group => ({ ...group, items: group.items.filter(item => !hiddenHref(item.href, disabled)) })).filter(group => group.items.length);
-  return <main className="w-full px-4 pb-12 pt-6 sm:px-7">
-    <div className="border-b pb-5"><p className="mb-2 text-xs text-muted-foreground">Console / Visão geral</p><h1 className="text-2xl font-semibold">Visão geral</h1><p className="mt-1 text-sm text-muted-foreground">Acesse as áreas do seu painel.</p></div>
-    {!(disabled.includes("mural") && disabled.includes("messages")) && <OrganizationPrompt />}
-    <SetupGuide />
-    <HomeToday name={data?.user?.name ?? ""} />
-    <div className="grid gap-x-12 gap-y-9 pt-7 xl:grid-cols-2">{visibleGroups.map((group, index) => <section key={group.title} aria-labelledby={`section-${index}`} className="min-w-0">
+  return <main className="w-full px-4 pb-12 pt-2 sm:px-7 md:pt-6">
+    <div className="max-md:sr-only md:border-b md:pb-5"><p className="mb-2 text-xs text-muted-foreground">Console / Visão geral</p><h1 className="text-2xl font-semibold">Visão geral</h1><p className="mt-1 text-sm text-muted-foreground">Acesse as áreas do seu painel.</p></div>
+    {/* Cada bloco isolado: se um quebrar, os outros continuam na tela. */}
+    {!(disabled.includes("mural") && disabled.includes("messages")) && <ModuleBoundary title="Organização" className="mt-5"><OrganizationPrompt /></ModuleBoundary>}
+    <ModuleBoundary title="Primeiros passos" className="mt-5"><SetupGuide /></ModuleBoundary>
+    <ModuleBoundary title="Seu dia" className="mt-5"><HomeToday name={data?.user?.name ?? ""} /></ModuleBoundary>
+    <div className="grid gap-x-12 gap-y-7 pt-7 md:gap-y-9 xl:grid-cols-2">{visibleGroups.map((group, index) => <section key={group.title} aria-labelledby={`section-${index}`} className="min-w-0">
       <h2 id={`section-${index}`} className="mb-3 text-sm font-semibold">{group.title}</h2>
-      <div className="border border-b-0 bg-card">{group.items.map(({ label, description, href, icon: Icon }) => <Link key={href} href={href} className="group flex items-center gap-3 border-b px-4 py-3 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
-        <Icon className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" aria-hidden="true" /><span className="min-w-0 flex-1"><strong className="block text-sm font-medium">{label}</strong><span className="block text-xs text-muted-foreground">{description}</span></span><ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:block md:border md:border-b-0 md:bg-card">{group.items.map(({ label, description, href, icon: Icon }) => <Link key={href} href={href} className="group flex min-w-0 flex-col items-center gap-1.5 border bg-card px-1 py-3 text-center outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring md:flex-row md:gap-3 md:border-0 md:border-b md:bg-transparent md:px-4 md:text-left">
+        <Icon className="size-5 shrink-0 text-primary md:size-4 md:text-muted-foreground md:group-hover:text-primary" aria-hidden="true" /><span className="w-full min-w-0 md:flex-1"><strong className="line-clamp-2 block text-xs leading-tight font-medium md:text-sm md:leading-normal">{label}</strong><span className="hidden text-xs text-muted-foreground md:block">{description}</span></span><ArrowRight className="hidden size-4 shrink-0 text-muted-foreground md:block" aria-hidden="true" />
       </Link>)}</div>
     </section>)}</div>
   </main>;
