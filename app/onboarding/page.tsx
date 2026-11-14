@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Criar conta | Viniccius", robots: { 
 export const dynamic = "force-dynamic";
 
 export default async function OnboardingRoute() {
-  const { data } = await auth.getSession();
+  const { data } = await auth.getRawSession();
   if (data?.user) {
     if (await canOnboard(data.user.id)) return <OnboardingWizard userName={data.user.name ?? ""} firstAccount={false} />;
     redirect(await hasMembership(data.user.id) ? "/dashboard" : "/access-required");
