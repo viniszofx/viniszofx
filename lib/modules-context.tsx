@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useCallback, useContext, type ReactNode } from "react";
 
 const ModulesContext = createContext<string[]>([]);
 
@@ -9,5 +9,6 @@ export function ModulesProvider({ disabled, children }: { disabled: string[]; ch
 }
 export function useModuleEnabled() {
   const disabled = useContext(ModulesContext);
-  return (key: string) => !disabled.includes(key);
+  // Estável enquanto a lista não muda (usado em dependências de useMemo).
+  return useCallback((key: string) => !disabled.includes(key), [disabled]);
 }
