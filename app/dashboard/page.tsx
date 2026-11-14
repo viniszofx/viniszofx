@@ -1,3 +1,5 @@
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { RiArrowRightSLine as ArrowRight, RiArticleLine as Article, RiAdvertisementLine as Advertisement, RiCarLine as Car, RiFileTextLine as FileText, RiGroupLine as Users, RiHotelLine as Hotel, RiLayoutGridLine as Grid, RiSettings3Line as Settings, RiSuitcaseLine as Suitcase, RiArchiveLine as Archive, RiCalendarLine as Calendar, RiCheckboxLine as Checkbox, RiClipboardLine as Clipboard, RiDashboard3Line as Dashboard, RiFlowChart as Flow, RiHardDrive2Line as HardDrive, RiInboxLine as Inbox, RiMapPinLine as MapPin, RiMegaphoneLine as Megaphone, RiWhatsappLine as WhatsApp, RiListCheck3 as TodoList, RiPencilRuler2Line as Whiteboard, RiBuilding2Line as Company, RiLifebuoyLine as Support } from "@remixicon/react";
@@ -57,7 +59,7 @@ export default async function DashboardPage() {
     <ModuleBoundary title="Seu dia" className="mt-5"><HomeToday name={data?.user?.name ?? ""} /></ModuleBoundary>
     <div className="grid gap-x-12 gap-y-7 pt-7 md:gap-y-9 xl:grid-cols-2">{visibleGroups.map((group, index) => <section key={group.title} aria-labelledby={`section-${index}`} className="min-w-0">
       <h2 id={`section-${index}`} className="mb-3 text-sm font-semibold">{group.title}</h2>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:block md:border md:border-b-0 md:bg-card">{group.items.map(({ label, description, href, icon: Icon }) => <Link key={href} href={href} className="group flex min-w-0 flex-col items-center gap-1.5 border bg-card px-1 py-3 text-center outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring md:flex-row md:gap-3 md:border-0 md:border-b md:bg-transparent md:px-4 md:text-left">
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:block md:divide-y md:overflow-hidden md:rounded-xl md:border md:glass-card">{group.items.map(({ label, description, href, icon: Icon }) => <Link key={href} href={href} className={cn(surfaceVariants(), "group flex min-w-0 flex-col items-center gap-1.5 px-1 py-3 text-center outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring md:flex-row md:gap-3 md:rounded-none md:border-0 md:bg-transparent md:px-4 md:text-left")}>
         <Icon className="size-5 shrink-0 text-primary md:size-4 md:text-muted-foreground md:group-hover:text-primary" aria-hidden="true" /><span className="w-full min-w-0 md:flex-1"><strong className="line-clamp-2 block text-xs leading-tight font-medium md:text-sm md:leading-normal">{label}</strong><span className="hidden text-xs text-muted-foreground md:block">{description}</span></span><ArrowRight className="hidden size-4 shrink-0 text-muted-foreground md:block" aria-hidden="true" />
       </Link>)}</div>
     </section>)}</div>

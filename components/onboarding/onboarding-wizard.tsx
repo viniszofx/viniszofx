@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useState, type FormEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { RiArrowLeftLine, RiArrowRightLine, RiBuilding2Line, RiCheckLine, RiLoader4Line, RiMapPin2Line, RiUserLine } from "@remixicon/react";
@@ -75,7 +77,7 @@ export function OnboardingWizard({ userName, firstAccount }: { userName: string 
 
   const alert = error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>;
   return <main className="flex min-h-svh items-center justify-center bg-muted/30 px-4 py-10 sm:px-6">
-    <section className="w-full max-w-xl border bg-card p-6 sm:p-9">
+    <section className={cn(surfaceVariants(), "w-full max-w-xl p-6 sm:p-9")}>
       <p className="mb-6 text-xs font-semibold uppercase tracking-widest text-primary">Viniccius</p>
       <Progress current={step} withAccount={!userName} />
       {step === "account" && <Shell title={firstAccount ? "Crie a primeira conta" : "Crie sua conta"} description={firstAccount ? "A primeira conta administra a aplicação. Em seguida você cria a organização." : "Depois da conta, você cria a organização da sua equipe."}>

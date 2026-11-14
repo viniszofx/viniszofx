@@ -1,3 +1,5 @@
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { attachmentId } from "@/lib/notes/types";
@@ -67,7 +69,7 @@ export function ArticleContent({ content, document, adMiddle }: { content: strin
 }
 
 export function AdSlot({ ad }: { ad: AdSlotData }) {
-  return <aside aria-label="Publicidade" data-ad-position={ad.position} className="my-9 border bg-card">
+  return <aside aria-label="Publicidade" data-ad-position={ad.position} className={cn(surfaceVariants(), "my-9")}>
     <p className="border-b px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Publicidade{ad.advertiser ? ` · ${ad.advertiser}` : ""}</p>
     <a href={ad.targetUrl} target="_blank" rel="sponsored noopener noreferrer" className="group flex flex-col gap-4 p-4 outline-none hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:flex-row sm:items-center sm:p-5">
       {ad.imageUrl && <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden bg-muted/20 sm:w-40"><Image src={ad.imageUrl} alt="" fill unoptimized sizes="160px" className="object-contain" /></div>}

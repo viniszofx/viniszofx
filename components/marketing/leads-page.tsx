@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { RiDeleteBinLine, RiDownloadLine, RiMailLine, RiPhoneLine, RiUserAddLine, RiWhatsappLine } from "@remixicon/react";
@@ -120,7 +122,7 @@ export function LeadsPage() {
     {due > 0 && <p className="border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm">{due} lead(s) com próximo contato vencido.</p>}
     <CatalogSearch label="Buscar leads" value={search} onChange={setSearch} />
     {error && !leads ? <p role="alert" className="text-sm text-destructive">{error}</p> : !leads ? <LoadingBlock label="Carregando leads" /> : !visible.length ? <p className="text-sm text-muted-foreground">{total ? "Nenhum lead encontrado." : "Ainda não chegou nenhum contato. O botão de conversa fica na página inicial do site."}</p>
-      : <ul className="divide-y border bg-card">{visible.map(lead => { const current = stage(lead.status); const late = lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status);
+      : <ul className={cn(surfaceVariants({ list: true }))}>{visible.map(lead => { const current = stage(lead.status); const late = lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status);
         return <li key={lead.id} className="flex flex-wrap items-start gap-3 px-4 py-3 sm:flex-nowrap sm:items-center">
           <button type="button" onClick={() => setOpenId(lead.id)} className="min-w-0 flex-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <span className="flex flex-wrap items-center gap-2"><strong className="truncate text-sm">{lead.name}</strong><Badge color={current.color}>{current.label}</Badge>{late && <span className="text-xs font-medium text-destructive">Contato vencido</span>}</span>

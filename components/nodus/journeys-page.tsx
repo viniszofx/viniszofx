@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Field, selectClass } from "@/components/ui/field";
 import { Badge, LoadingBlock } from "@/components/ui/feedback";
@@ -199,7 +201,7 @@ export function JourneysPage() {
         <p className="ml-auto text-sm text-muted-foreground">{list.length} jornada(s) · {Math.floor(totalMinutes / 60)}h{String(totalMinutes % 60).padStart(2, "0")} · {totalKm.toLocaleString("pt-BR")} km</p>
       </div>
       {!loaded ? <LoadingBlock label="Carregando jornadas" className="h-32" /> : <div className="grid gap-4 lg:grid-cols-2">{list.map(journey => { const open = !journey.events.some(event => event.type === "end"); const total = minutes(journey);
-        return <article key={journey.id} className="space-y-3 border bg-card p-4">
+        return <article key={journey.id} className={cn(surfaceVariants(), "space-y-3 p-4")}>
           <header className="flex items-start justify-between gap-3"><div><h3 className="font-semibold">{lookup("employees", journey.employeeId) || "Pessoa removida"}</h3><p className="text-xs text-muted-foreground">{new Date(`${journey.date}T12:00:00`).toLocaleDateString("pt-BR")} · {lookup("vehicles", journey.vehicleId) || journey.vehicleText || "sem veículo"}{journey.tripId && ` · viagem ${lookup("trips", journey.tripId)}`}</p></div>
             <div className="flex items-center gap-1"><Badge color={open ? "#f97316" : undefined}>{open ? "Em andamento" : duration(total)}</Badge><Button variant="ghost" size="icon-sm" aria-label="Editar jornada" onClick={() => setEditing(journey)}><Pencil /></Button><Button variant="ghost" size="icon-sm" aria-label="Excluir jornada" onClick={() => setDeleting(journey)}><Trash2 /></Button></div></header>
           {journey.events.filter(event => event.type === "arrival").length > 0 && <p className="text-xs"><Flag className="mr-1 inline size-3" />{journey.events.filter(event => event.type === "arrival").map(event => event.place || "local").join(" → ")}</p>}

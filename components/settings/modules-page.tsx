@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RiCheckboxCircleLine, RiCloseCircleLine, RiForbidLine } from "@remixicon/react";
@@ -33,7 +35,7 @@ export function ModulesPage({ initial }: { initial: string[] }) {
     <p className="text-sm text-muted-foreground">{active} de {appModules.length} módulos ativos. Desligado, o módulo some do menu, do Início e dos atalhos, a página e as APIs ficam indisponíveis, e os dados continuam guardados.</p>
     {sections.map(section => <section key={section} aria-labelledby={`modules-${section}`}>
       <h2 id={`modules-${section}`} className="mb-2 px-1 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">{section}</h2>
-      <ul className="divide-y border bg-card">{appModules.filter(module => module.section === section).map(module => {
+      <ul className={cn(surfaceVariants({ list: true }))}>{appModules.filter(module => module.section === section).map(module => {
         const enabled = !disabled.includes(module.key);
         return <li key={module.key} className="flex items-center justify-between gap-4 px-5 py-3.5">
           <div className="min-w-0"><p className="flex flex-wrap items-center gap-2 text-sm font-medium">{module.name}<span className={`inline-flex items-center gap-1 text-xs font-normal ${enabled ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>{enabled ? <RiCheckboxCircleLine className="size-3.5" /> : <RiCloseCircleLine className="size-3.5" />}{enabled ? "Ativo" : "Inativo"}</span></p><p className="mt-0.5 text-xs text-muted-foreground">{module.description}{module.off && " · Desligado por padrão"}</p></div>

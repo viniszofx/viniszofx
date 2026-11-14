@@ -1,3 +1,5 @@
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { RiBankCardLine, RiBarChartBoxLine, RiExchangeDollarLine, RiLockLine, RiReceiptLine, RiTimeLine } from "@remixicon/react";
 import { CatalogLayout } from "@/components/listing/catalog";
 
@@ -14,7 +16,7 @@ export type PlannedFeature = keyof typeof plannedFeatures;
 export function PlannedPage({ feature }: { feature: PlannedFeature }) {
   const { title, description, stage, icon: Icon, items } = plannedFeatures[feature];
   return <CatalogLayout section="Financeiro" title={title} description={description}>
-    <section className="max-w-xl space-y-4 border bg-card p-6">
+    <section className={cn(surfaceVariants(), "max-w-xl space-y-4 p-6")}>
       <div className="flex items-center gap-3"><span className="grid size-10 place-items-center bg-primary/10"><Icon className="size-5 text-primary" aria-hidden="true" /></span><div><p className="text-xs uppercase tracking-widest text-primary">{stage}</p><h2 className="font-semibold">Em preparo</h2></div></div>
       <p className="text-sm text-muted-foreground">Este módulo faz parte do plano do Financeiro e ainda não está disponível. Previsto:</p>
       <ul className="list-disc space-y-1 pl-5 text-sm">{items.map(item => <li key={item}>{item}</li>)}</ul>

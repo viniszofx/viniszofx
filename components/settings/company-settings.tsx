@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useState, type FormEvent } from "react";
 import { AddressFields } from "@/components/ui/address-fields";
 import { Button } from "@/components/ui/button";
@@ -25,7 +27,7 @@ function CompanyForm({ initial }: { initial: CompanyFields }) {
     saveCompany(value); setMessage("Ajustes salvos.");
   }
   return <form onSubmit={submit} className="max-w-3xl space-y-7">
-    <section className="space-y-4 border bg-card p-5" aria-labelledby="company-identity">
+    <section className={cn(surfaceVariants(), "space-y-4 p-5")} aria-labelledby="company-identity">
       <div><h2 id="company-identity" className="text-sm font-semibold">Identificação</h2><p className="text-xs text-muted-foreground">Aparece no cabeçalho das ordens de serviço impressas.</p></div>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Nome da empresa" className="sm:col-span-2"><Input maxLength={200} value={value.name} onChange={event => patch({ name: event.target.value })} /></Field>
@@ -35,11 +37,11 @@ function CompanyForm({ initial }: { initial: CompanyFields }) {
         <Field label="E-mail"><Input type="email" maxLength={254} value={value.email} onChange={event => patch({ email: event.target.value })} /></Field>
       </div>
     </section>
-    <section className="space-y-2 border bg-card p-5">
+    <section className={cn(surfaceVariants(), "space-y-2 p-5")}>
       <AddressFields value={value} onChange={patch} title="Endereço de origem" />
       <p className="text-xs text-muted-foreground">Ponto de partida e de retorno no cálculo de distância e tempo das viagens.</p>
     </section>
-    <section className="space-y-4 border bg-card p-5" aria-labelledby="company-services">
+    <section className={cn(surfaceVariants(), "space-y-4 p-5")} aria-labelledby="company-services">
       <div><h2 id="company-services" className="text-sm font-semibold">Serviços</h2><p className="text-xs text-muted-foreground">Cores usadas no calendário, nas ordens e nas viagens.</p></div>
       <ul className="grid gap-3 sm:grid-cols-2">{services.map(service => {
         const color = value.serviceColors[service.value] || service.color;

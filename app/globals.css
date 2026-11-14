@@ -32,6 +32,7 @@
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
   --radius: 0.875rem;
+  --glass-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --sidebar: oklch(0.985 0.001 106.423);
   --sidebar-foreground: oklch(0.147 0.004 49.25);
   --sidebar-primary: oklch(0.609 0.126 221.723);
@@ -165,6 +166,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Luz ambiente na cor do app (como no Nodus): dá ao vidro fosco algo para desfocar. Fica numa camada presa
+     à tela (position: fixed), porque o Safari do iPhone ignora background-attachment: fixed. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(55rem 40rem at 0% 0%, color-mix(in oklch, var(--primary) 20%, transparent), transparent 70%),
+      radial-gradient(40rem 45rem at 5% 75%, color-mix(in oklch, oklch(0.68 0.16 300) 14%, transparent), transparent 70%),
+      radial-gradient(50rem 36rem at 100% 100%, color-mix(in oklch, oklch(0.72 0.12 190) 12%, transparent), transparent 70%),
+      radial-gradient(40rem 30rem at 85% 5%, color-mix(in oklch, var(--primary) 8%, transparent), transparent 70%);
   }
   html {
     @apply font-sans;
@@ -419,6 +434,7 @@
   background-color: var(--card);
   @supports (backdrop-filter: blur(1px)) {
     background-color: color-mix(in oklch, var(--card) 66%, transparent);
+    background-image: var(--glass-grain);
     backdrop-filter: blur(32px) saturate(1.6);
   }
   @media (prefers-reduced-transparency: reduce) { background-color: var(--card); backdrop-filter: none; }
@@ -444,6 +460,7 @@
   background-color: var(--card);
   @supports (backdrop-filter: blur(1px)) {
     background-color: color-mix(in oklch, var(--card) 74%, transparent);
+    background-image: var(--glass-grain);
     backdrop-filter: blur(24px) saturate(1.5);
     box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 50%, transparent), 0 1px 2px 0 rgb(0 0 0 / 0.05);
     @variant dark { background-color: color-mix(in oklch, var(--card) 72%, transparent); box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 6%, transparent), 0 1px 2px 0 rgb(0 0 0 / 0.3); }
@@ -453,9 +470,16 @@
 @utility glass-surface {
   background-color: var(--popover);
   @supports (backdrop-filter: blur(1px)) {
-    background-color: color-mix(in oklch, var(--popover) 82%, transparent);
-    backdrop-filter: blur(28px) saturate(1.5);
-    @variant dark { background-color: color-mix(in oklch, var(--popover) 78%, transparent); }
+    background-color: color-mix(in oklch, oklch(0.96 0.003 286) 78%, transparent);
+    background-image: var(--glass-grain);
+    backdrop-filter: blur(40px) saturate(1.5);
+    border-color: color-mix(in oklch, white 55%, transparent);
+    box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 70%, transparent), 0 12px 40px -12px rgb(0 0 0 / 0.25);
+    @variant dark {
+      background-color: color-mix(in oklch, var(--popover) 78%, transparent);
+      border-color: color-mix(in oklch, white 12%, transparent);
+      box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 10%, transparent), 0 12px 40px -12px rgb(0 0 0 / 0.6);
+    }
   }
   @media (prefers-reduced-transparency: reduce) { background-color: var(--popover); backdrop-filter: none; }
 }

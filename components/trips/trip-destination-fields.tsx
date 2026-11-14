@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
 import { RiAddLine, RiArrowDownLine, RiArrowUpLine, RiDeleteBinLine, RiLoader4Line } from "@remixicon/react";
@@ -92,7 +94,7 @@ export function TripRouteEstimate({ value, onChange }: { value: TripFields; onCh
   return <CollapsibleFields title="Distância e tempo"><div className="space-y-3 text-sm">
     <p><strong>Origem:</strong> {!loaded ? "Carregando…" : addressText(company) || <>não cadastrada. <Link href="/dashboard/settings/company" className="underline">Cadastrar endereço da empresa</Link></>}</p>
     <div><strong>Visitas na ordem da rota:</strong>{destinations.length ? <ol className="mt-1 list-inside list-decimal space-y-1">{destinations.map((destination, index) => <li key={index}>{addressText(destination) || "Endereço incompleto"}</li>)}</ol> : <p>Adicione ao menos uma visita.</p>}</div>
-    {estimate && current && <div className="grid gap-2 border bg-card p-4 sm:grid-cols-2">
+    {estimate && current && <div className={cn(surfaceVariants(), "grid gap-2 p-4 sm:grid-cols-2")}>
       <p><strong>Distância total:</strong> {estimate.distanceKm.toLocaleString("pt-BR")} km</p>
       <p><strong>Tempo total:</strong> {formatDuration(estimate.durationMinutes)}</p>
       <p className="text-xs text-muted-foreground sm:col-span-2">{estimate.roundTrip ? "Inclui o retorno da última visita à origem." : "Percurso da origem até a última visita, sem retorno."}</p>

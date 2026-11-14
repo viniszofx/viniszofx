@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { LoadingBlock } from "@/components/ui/feedback";
@@ -21,7 +23,7 @@ function TextPreview({ blob }: { blob: Blob }) {
     return () => { active = false; };
   }, [blob]);
   if (text === undefined) return <LoadingBlock label="Abrindo arquivo" />;
-  return <pre className="min-h-0 flex-1 overflow-auto whitespace-pre-wrap break-words border bg-card p-4 font-mono text-xs">{text}{blob.size > 2 * 1024 * 1024 && "\n\n… (prévia limitada aos primeiros 2 MB)"}</pre>;
+  return <pre className={cn(surfaceVariants(), "min-h-0 flex-1 overflow-auto whitespace-pre-wrap break-words p-4 font-mono text-xs")}>{text}{blob.size > 2 * 1024 * 1024 && "\n\n… (prévia limitada aos primeiros 2 MB)"}</pre>;
 }
 
 function MediaPreview({ name, blob, kind }: { name: string; blob: Blob; kind: "image" | "video" | "audio" }) {

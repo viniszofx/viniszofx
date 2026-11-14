@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { RiFileCopyLine, RiRefreshLine } from "@remixicon/react";
@@ -11,7 +13,7 @@ function Row({ label, value, alert = false }: { label: string; value: string; al
   return <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-5 py-3 text-sm"><dt className="text-muted-foreground">{label}</dt><dd className={alert ? "font-medium text-destructive" : "font-medium"}>{value}</dd></div>;
 }
 function Section({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
-  return <section className="border bg-card"><div className="border-b px-5 py-4"><h2 className="text-sm font-semibold">{title}</h2>{description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}</div>{children}</section>;
+  return <section className={cn(surfaceVariants())}><div className="border-b px-5 py-4"><h2 className="text-sm font-semibold">{title}</h2>{description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}</div>{children}</section>;
 }
 
 // Reúne o que costuma resolver um chamado (Nodus: Suporte). Aqui não há fila

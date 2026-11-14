@@ -4,6 +4,7 @@ import { type ReactNode, useCallback, useEffect, useRef, useState } from "react"
 import { RiArrowLeftSLine, RiArrowRightSLine, RiAttachment2, RiCloseLine, RiLinkM, RiLockLine, RiMailFill, RiMoreFill, RiNotification3Fill, RiNotificationOffFill, RiSearchLine } from "@remixicon/react";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { avatarGradient, initials, lastSeenLabel } from "./people";
 import { fileUrl, isImage, type Message } from "./dialogs";
 
@@ -43,10 +44,9 @@ export function SharedContent({ peerId }: { peerId: string }) {
   if (!messages || !available.length) return null;
 
   return <section aria-label="Compartilhado na conversa" className="grid gap-3">
-    {available.length > 1 && <div role="tablist" aria-label="Tipo de conteúdo" className="flex justify-self-center rounded-full bg-foreground/6 p-1">
-      {available.map(([value, label]) => <button key={value} type="button" role="tab" aria-selected={kind === value} onClick={() => setChosen(value)}
-        className={`rounded-full px-4 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring ${kind === value ? "bg-card shadow-sm" : "text-muted-foreground"}`}>{label}</button>)}
-    </div>}
+    {available.length > 1 && <Tabs value={kind} onValueChange={value => setChosen(value as Kind)} className="justify-self-center">
+      <TabsList aria-label="Tipo de conteúdo">{available.map(([value, label]) => <TabsTrigger key={value} value={value}>{label}</TabsTrigger>)}</TabsList>
+    </Tabs>}
     {available.length === 1 && <h3 className="text-sm font-semibold">{available[0][1]}</h3>}
 
     {kind === "media" && <div className="grid grid-cols-3 gap-1 overflow-hidden rounded-xl">

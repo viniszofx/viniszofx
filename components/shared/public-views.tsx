@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { RiCheckboxLine, RiFlag2Line, RiTimeLine } from "@remixicon/react";
 import { labelColor } from "@/components/boards/card-extras";
@@ -23,9 +25,9 @@ export function PublicBoardPage({ token }: { token: string }) {
   if (!data) return <main className="p-8 text-sm" role="status">Carregando quadro…</main>;
   return <main className="flex min-h-svh flex-col gap-6 px-4 py-6 sm:px-6" style={data.color ? { backgroundColor: `color-mix(in srgb, ${data.color} 20%, var(--background))` } : undefined}>
     <header><p className="text-xs text-muted-foreground">Quadro compartilhado · somente leitura</p><h1 className="mt-1 text-3xl font-semibold">{data.title}</h1>{data.description && <p className="mt-2 max-w-2xl whitespace-pre-wrap text-sm text-muted-foreground">{data.description}</p>}</header>
-    <div className="flex min-w-0 items-start gap-4 overflow-x-auto pb-4">{data.lists.map(list => <section key={list.id} aria-label={`Lista ${list.title}`} className="w-72 shrink-0 border bg-card p-3" style={list.color ? { borderTop: `3px solid ${list.color}` } : undefined}>
+    <div className="flex min-w-0 items-start gap-4 overflow-x-auto pb-4">{data.lists.map(list => <section key={list.id} aria-label={`Lista ${list.title}`} className={cn(surfaceVariants(), "w-72 shrink-0 p-3")} style={list.color ? { borderTop: `3px solid ${list.color}` } : undefined}>
       <h2 className="mb-3 text-sm font-semibold">{list.title} <span className="text-xs text-muted-foreground">{list.cards.length}</span></h2>
-      <div className="flex flex-col gap-3">{list.cards.map(card => <article key={card.id} className="border bg-background p-3" style={card.color ? { borderLeft: `4px solid ${card.color}` } : undefined}>
+      <div className="flex flex-col gap-3">{list.cards.map(card => <article key={card.id} className="border bg-background p-3 rounded-lg" style={card.color ? { borderLeft: `4px solid ${card.color}` } : undefined}>
         <p className={`break-words text-sm font-medium ${card.completed ? "text-muted-foreground line-through" : ""}`}>{card.title}</p>
         {!!card.labels.length && <div className="mt-2 flex flex-wrap gap-1">{card.labels.map(label => <span key={label.id} className="px-1.5 py-0.5 text-[10px] font-medium text-white" style={{ background: labelColor(label.color) }}>{label.name}</span>)}</div>}
         {card.description && <p className="mt-2 line-clamp-3 whitespace-pre-wrap text-xs text-muted-foreground">{card.description}</p>}

@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { RiArrowLeftLine, RiDownloadLine, RiFolderLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
@@ -45,7 +47,7 @@ export function SharedFilePage({ token }: { token: string }) {
     </header>
     <div className="flex min-h-0 flex-1 flex-col gap-3 p-3">
       {error ? <p role="alert" className="grid flex-1 place-items-center text-sm text-muted-foreground">{error}</p>
-        : info?.kind === "folder" ? <ul className="mx-auto w-full max-w-3xl divide-y border bg-card">{info.items?.map(item => <li key={item.id}><button type="button" onClick={() => setStack(value => [...value, item])} className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted">{item.kind === "folder" ? <RiFolderLine className="size-5" /> : <ItemIcon item={item} className="size-5" />}<span className="flex-1 truncate">{item.name}</span><span className="text-xs text-muted-foreground">{item.kind === "folder" ? "Pasta" : formatBytes(item.size)}</span></button></li>)}</ul>
+        : info?.kind === "folder" ? <ul className={cn(surfaceVariants({ list: true }), "mx-auto w-full max-w-3xl")}>{info.items?.map(item => <li key={item.id}><button type="button" onClick={() => setStack(value => [...value, item])} className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-muted">{item.kind === "folder" ? <RiFolderLine className="size-5" /> : <ItemIcon item={item} className="size-5" />}<span className="flex-1 truncate">{item.name}</span><span className="text-xs text-muted-foreground">{item.kind === "folder" ? "Pasta" : formatBytes(item.size)}</span></button></li>)}</ul>
         : file ? <FileContent name={file.name} blob={file.blob} />
         : <div role="status" aria-label="Abrindo arquivo" className="h-40 animate-pulse bg-muted" />}
     </div>

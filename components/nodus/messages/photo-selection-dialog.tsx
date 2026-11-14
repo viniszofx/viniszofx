@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { RiAddLine, RiCloseLine, RiImageLine, RiSendPlane2Fill } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export type SelectedPhoto = { id: string; file: File; url: string };
 
@@ -51,7 +52,7 @@ export function PhotoSelectionDialog({ photos, caption, error, sending, onCaptio
         {photos.length < 25 && <Button type="button" variant="outline" size="icon" className="size-16 shrink-0 rounded-lg" aria-label="Adicionar mais fotos" disabled={sending} onClick={() => input.current?.click()}><RiAddLine /></Button>}
       </div>}
       <input ref={input} type="file" accept="image/*" multiple hidden onChange={(event) => { const files = [...(event.target.files ?? [])]; event.target.value = ""; onAdd(files); }} />
-      {hasPhotos && <textarea value={caption} maxLength={4000} rows={2} disabled={sending} placeholder="Adicionar legenda (opcional)" aria-label="Legenda das fotos" onChange={(event) => onCaptionChange(event.target.value)} className="max-h-24 min-h-14 resize-none rounded-xl border bg-background px-3 py-2 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm" />}
+      {hasPhotos && <Textarea value={caption} maxLength={4000} rows={2} disabled={sending} placeholder="Adicionar legenda (opcional)" aria-label="Legenda das fotos" onChange={(event) => onCaptionChange(event.target.value)} className="max-h-24 min-h-14 resize-none" />}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {hasPhotos && <div className="flex items-center justify-between gap-3 max-md:pb-[env(safe-area-inset-bottom)]">
         <span className="text-xs text-muted-foreground">A legenda acompanha a primeira foto.</span>

@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/feedback";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { notifyError, notifySuccess } from "@/lib/ui/notifications";
-import { cn } from "@/lib/utils";
 import { Avatar, type ChatPerson } from "./people";
 
 export type Attachment = { fileId: string; name: string; type: string; size: number };
@@ -66,7 +67,7 @@ export function ReportDialog({ peerId, name, message, onClose }: { peerId: strin
     <DialogDescription>A administração da organização recebe a denúncia. A outra pessoa não é avisada.</DialogDescription>
     {preview && <blockquote className="glass-float line-clamp-3 rounded-lg border-l-2 border-primary px-3 py-2 text-sm">{preview}</blockquote>}
     <fieldset className="grid gap-1"><legend className="mb-1 text-sm font-medium">Motivo</legend>{reasons.map(([value, label]) => <label key={value} className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm hover:bg-muted/60"><input type="radio" name="reason" value={value} checked={reason === value} onChange={() => setReason(value)} className="accent-primary" />{label}</label>)}</fieldset>
-    <label className="grid gap-1.5 text-sm"><span className="font-medium">Detalhes <span className="font-normal text-muted-foreground">(opcional)</span></span><textarea value={details} onChange={event => setDetails(event.target.value)} maxLength={1000} rows={3} className="resize-none rounded-xl border bg-background px-3 py-2 text-base outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm" /></label>
+    <label className="grid gap-1.5 text-sm"><span className="font-medium">Detalhes <span className="font-normal text-muted-foreground">(opcional)</span></span><Textarea value={details} onChange={event => setDetails(event.target.value)} maxLength={1000} rows={3} className="resize-none" /></label>
     <div className="flex justify-end gap-2"><Button variant="outline" disabled={busy} onClick={onClose}>Cancelar</Button><Button variant="destructive" disabled={!reason || busy} onClick={() => void send()}>{busy ? "Enviando…" : "Denunciar"}</Button></div>
   </DialogContent></Dialog>;
 }
@@ -102,7 +103,9 @@ export function ReportsList() {
   }
   const visible = (reports ?? []).filter(report => filter === "all" || report.status === "open");
   return <div className="grid gap-3">
-    <div className="flex w-fit gap-1 rounded-full bg-foreground/6 p-1 text-xs" role="tablist">{([["open", `Abertas (${(reports ?? []).filter(item => item.status === "open").length})`], ["all", "Todas"]] as const).map(([value, label]) => <button key={value} type="button" role="tab" aria-selected={filter === value} onClick={() => setFilter(value)} className={cn("rounded-full px-3 py-1.5 font-medium", filter === value ? "bg-card shadow-sm" : "text-muted-foreground")}>{label}</button>)}</div>
+    <Tabs value={filter} onValueChange={value => setFilter(value as "open" | "all")}><TabsList>
+      <TabsTrigger value="open">Abertas ({(reports ?? []).filter(item => item.status === "open").length})</TabsTrigger><TabsTrigger value="all">Todas</TabsTrigger>
+    </TabsList></Tabs>
     {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : !reports ? <div className="space-y-2"><Skeleton className="h-20 rounded-xl" /><Skeleton className="h-20 rounded-xl" /></div>
       : !visible.length ? <p className="py-8 text-center text-sm text-muted-foreground">{filter === "open" ? "Nenhuma denúncia aberta." : "Nenhuma denúncia."}</p>
       : <ul className="max-h-[60dvh] space-y-2 overflow-y-auto">{visible.map(report => <li key={report.id} className="glass-card space-y-1.5 rounded-xl border p-3 text-sm">

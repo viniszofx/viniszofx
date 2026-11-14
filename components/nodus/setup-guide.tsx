@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
 import { RiArrowRightSLine, RiBuildingLine, RiCarLine, RiCheckLine, RiCloseLine, RiFileList3Line, RiPlaneLine, RiSparklingLine, RiTeamLine, RiUserStarLine } from "@remixicon/react";
@@ -33,7 +35,7 @@ export function SetupGuide() {
   const completed = visible.filter(step => step.done).length;
   if (hidden || loading || completed === visible.length) return null;
   const next = visible.find(step => !step.done);
-  return <section aria-labelledby="setup-guide-title" className="mt-7 border bg-card">
+  return <section aria-labelledby="setup-guide-title" className={cn(surfaceVariants(), "mt-7")}>
     <div className="flex flex-wrap items-start justify-between gap-4 p-5">
       <div className="flex min-w-0 gap-4"><span className="grid size-10 shrink-0 place-items-center bg-primary text-primary-foreground"><RiSparklingLine className="size-5" /></span><div className="min-w-0"><h2 id="setup-guide-title" className="font-semibold">Primeiros passos</h2><p className="text-sm text-muted-foreground">Deixe o painel pronto para a equipe trabalhar.</p></div></div>
       <div className="flex items-center gap-3"><div className="w-36"><p className="mb-1.5 text-right text-xs text-muted-foreground"><span className="font-semibold text-foreground">{completed}</span> de {visible.length} concluídos</p><div role="progressbar" aria-label="Progresso dos primeiros passos" aria-valuemin={0} aria-valuemax={visible.length} aria-valuenow={completed} className="h-1.5 bg-muted"><div className="h-full bg-primary" style={{ width: `${Math.round(completed / visible.length * 100)}%` }} /></div></div>

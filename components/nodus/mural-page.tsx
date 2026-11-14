@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { RiAddLine as Plus, RiBarChartHorizontalLine, RiChat3Line, RiCloseLine, RiDeleteBinLine as Trash2, RiImageAddLine, RiLoader4Line, RiPencilLine as Pencil, RiSendPlaneLine } from "@remixicon/react";
 import { CatalogLayout, CatalogSearch } from "@/components/listing/catalog";
@@ -193,7 +195,7 @@ export function MuralPage() {
       {!noOrganization && <Field label="Situação" className="min-w-44"><Select value={filter} placeholder="Todos" options={[{ value: "active", label: "No mural" }, { value: "scheduled", label: "Programados" }, { value: "draft", label: "Rascunhos" }, { value: "expired", label: "Encerrados" }]} onChange={event => setFilter(event.target.value)} /></Field>}</div>}
     {noOrganization ? <NoOrganization feature="O mural" /> : error && !feed ? <p role="alert" className="text-sm text-destructive">{error}</p> : !feed ? <LoadingBlock label="Carregando mural" /> : <ul className="space-y-4">{posts.map(post => {
       const state = postState(post); const mine = post.authorId === feed.me || feed.admin; const expanded = open.includes(post.id);
-      return <li key={post.id} className="space-y-3 overflow-hidden border bg-card p-5">
+      return <li key={post.id} className={cn(surfaceVariants(), "space-y-3 overflow-hidden p-5")}>
         {post.cover && <img src={post.cover} alt="" loading="lazy" className="-mx-5 -mt-5 mb-1 aspect-[3/1] w-[calc(100%+2.5rem)] max-w-none object-cover" />}
         <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0"><h2 className="break-words text-lg font-semibold">{post.title}</h2><p className="text-xs text-muted-foreground">{post.authorName} · {when(post.publishAt ?? post.createdAt)}{post.expiresAt && ` · até ${when(post.expiresAt)}`}</p></div>
           <div className="flex items-center gap-1"><Badge color={state.key === "active" ? "#16a34a" : undefined}>{state.label}</Badge>{mine && feed.canWrite && <><Button variant="ghost" size="icon-sm" aria-label={`Editar ${post.title}`} onClick={() => setEditing(post)}><Pencil /></Button><Button variant="ghost" size="icon-sm" aria-label={`Excluir ${post.title}`} onClick={() => setDeleting(post)}><Trash2 /></Button></>}</div></div>

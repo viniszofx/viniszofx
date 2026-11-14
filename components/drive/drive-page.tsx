@@ -1,4 +1,5 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
 import { useCallback, useRef, useState, type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
 import { RiDeleteBinLine, RiDownloadLine, RiEyeLine, RiFileCopyLine, RiFileExcel2Line, RiFilePdf2Line, RiFileWord2Line, RiFolderAddLine, RiFolderTransferLine, RiFolderUploadLine, RiLink, RiPencilLine, RiUploadLine } from "@remixicon/react";
@@ -197,7 +198,7 @@ export function DrivePage({ view, folderId }: { view: DriveView; folderId: strin
     <header><p className="text-xs uppercase tracking-widest text-primary">Ferramentas</p><h1 className="mt-2 font-heading text-3xl font-semibold">Drive</h1></header>
     <input ref={uploadInput} type="file" multiple className="sr-only" aria-label="Enviar arquivos" onChange={event => { void upload([...(event.target.files ?? [])]); event.target.value = ""; }} />
     <input ref={element => { if (element) element.setAttribute("webkitdirectory", ""); folderInput.current = element; }} type="file" multiple className="sr-only" aria-label="Enviar pasta" onChange={event => { void uploadFolder([...(event.target.files ?? [])]); event.target.value = ""; }} />
-    <div className="flex min-h-[min(70svh,42rem)] min-w-0 flex-1 flex-col overflow-hidden border bg-card md:flex-row">
+    <div className={cn(surfaceVariants(), "flex min-h-[min(70svh,42rem)] min-w-0 flex-1 flex-col overflow-hidden md:flex-row")}>
       <DriveSidebar view={view} usedBytes={records.reduce((sum, item) => sum + (item.file?.size ?? 0), 0)} files={records.filter(item => item.kind === "file").length} onSelect={next => go(next)} rootDrop={{ highlighted: drag.isDropTarget(""), props: drag.dropTarget("") }} />
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <DriveToolbar actions={actions} createActions={createActions} canAdd={canAdd} selectedCount={selectedItems.length} onUpload={() => uploadInput.current?.click()} onUploadFolder={() => folderInput.current?.click()} onClear={() => setSelectedIds([])}

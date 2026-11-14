@@ -1,4 +1,6 @@
 "use client";
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type KeyboardEvent } from "react";
 import { RiAddLine, RiArrowLeftSLine, RiCalendarScheduleFill, RiCalendarTodoFill, RiCheckDoubleLine, RiCheckLine, RiDeleteBinLine, RiInboxFill, RiInformationLine, RiPencilLine } from "@remixicon/react";
 import { CatalogLayout } from "@/components/listing/catalog";
@@ -145,7 +147,7 @@ export function TodosPage() {
           </button>;
         })}</div>
         <section aria-labelledby="my-lists-title"><h2 id="my-lists-title" className="mb-2 px-1 text-sm font-semibold">Minhas listas</h2>
-          <ul className="divide-y border bg-card">{listRow("inbox", INBOX, pendingIn(""))}{lists.map(list => listRow(list.id, list, pendingIn(list.id)))}</ul>
+          <ul className={cn(surfaceVariants({ list: true }))}>{listRow("inbox", INBOX, pendingIn(""))}{lists.map(list => listRow(list.id, list, pendingIn(list.id)))}</ul>
           <Button type="button" variant="ghost" size="sm" className="mt-2 text-primary" onClick={() => setListDialog("new")}><RiAddLine />Nova lista</Button>
         </section>
       </aside>

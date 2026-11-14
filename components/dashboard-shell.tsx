@@ -1,5 +1,6 @@
 "use client";
 
+import { surfaceVariants } from "@/components/ui/card";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -182,14 +183,14 @@ function DashboardNavigation({ onNavigate, onHide, onOpenApps, isPlatformAdmin, 
       <p className="px-3 pb-1 pt-2 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Principal</p>
       {primary.map(link => { const Icon = link.icon; const active = isActive(pathname, link);
         return <Link key={link.href} href={link.href} onClick={onNavigate} aria-current={active ? "page" : undefined}
-          className={cn("flex min-w-0 items-center gap-3 border-l-2 px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "border-sidebar-primary bg-sidebar-accent font-medium text-sidebar-foreground" : "border-transparent text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
+          className={cn("flex min-w-0 items-center gap-3 rounded-lg px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "bg-primary/10 font-medium text-primary" : "text-muted-foreground hover:bg-foreground/5 hover:text-sidebar-foreground")}>
           <Icon className={cn("size-4 shrink-0", active && "text-sidebar-primary")} aria-hidden="true" /><span className="truncate">{link.label}</span>
         </Link>;
       })}
       <div className="mt-3 flex items-center justify-between px-3 pb-1 pt-2"><h3 className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Favoritos</h3><Button type="button" variant="ghost" size="xs" className="h-7 px-2 text-muted-foreground" onClick={() => setEditingShortcuts(true)}>Editar</Button></div>
       {shortcuts.map(link => { const Icon = link.icon; const active = isActive(pathname, link);
         return <Link key={link.href} href={link.href} onClick={onNavigate} aria-current={active ? "page" : undefined}
-          className={cn("flex min-w-0 items-center gap-3 border-l-2 px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "border-sidebar-primary bg-sidebar-accent font-medium text-sidebar-foreground" : "border-transparent text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground")}>
+          className={cn("flex min-w-0 items-center gap-3 rounded-lg px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring", active ? "bg-primary/10 font-medium text-primary" : "text-muted-foreground hover:bg-foreground/5 hover:text-sidebar-foreground")}>
           <Icon className={cn("size-4 shrink-0", active && "text-sidebar-primary")} aria-hidden="true" /><span className="truncate">{link.label}</span>
         </Link>;
       })}
@@ -212,7 +213,7 @@ function AppTile({ link, active, onNavigate }: { link: NavLink; active: boolean;
   // Galeria de apps (Nodus): ícone grande com o nome embaixo.
   return <Link href={link.href} onClick={onNavigate} aria-current={active ? "page" : undefined}
     className="group flex min-w-0 flex-col items-center gap-1.5 px-1 py-2 text-center outline-none focus-visible:ring-2 focus-visible:ring-ring">
-    <span className="grid size-12 place-items-center border bg-background text-sidebar-primary transition-transform group-active:scale-95 group-aria-[current=page]:border-sidebar-primary group-aria-[current=page]:bg-sidebar-primary group-aria-[current=page]:text-primary-foreground motion-reduce:transition-none">
+    <span className="grid size-12 place-items-center rounded-2xl glass-card border text-sidebar-primary transition-transform group-active:scale-95 group-aria-[current=page]:border-sidebar-primary group-aria-[current=page]:bg-sidebar-primary group-aria-[current=page]:text-primary-foreground motion-reduce:transition-none">
       <Icon className="size-6" aria-hidden="true" />
     </span>
     <span className="line-clamp-2 w-full text-[11px] leading-tight font-medium group-aria-[current=page]:text-sidebar-primary">{link.label}</span>
@@ -229,13 +230,13 @@ function DesktopAppsGallery({ open, onOpenChange, isPlatformAdmin, disabledModul
   return <Dialog.Root open={open} onOpenChange={onOpenChange}>
     <Dialog.Portal>
       <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/50 transition-opacity data-ending-style:opacity-0 data-starting-style:opacity-0" />
-      <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 flex max-h-[min(44rem,calc(100dvh-2rem))] w-[min(52rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col border bg-sidebar text-sidebar-foreground shadow-xl outline-none">
+      <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 flex max-h-[min(44rem,calc(100dvh-2rem))] w-[min(52rem,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-2xl border glass-surface text-sidebar-foreground shadow-xl outline-none">
         <header className="flex items-start justify-between gap-4 border-b p-5">
           <div><Dialog.Title className="text-lg font-semibold">Galeria de apps</Dialog.Title><Dialog.Description className="mt-1 text-sm text-muted-foreground">Pesquise e abra as áreas disponíveis. Edite os favoritos pelo menu lateral.</Dialog.Description></div>
           <Dialog.Close render={<Button type="button" variant="ghost" size="icon-sm" aria-label="Fechar galeria" />}><X aria-hidden="true" /></Dialog.Close>
         </header>
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto p-5">
-          <label className="flex h-10 items-center gap-2 border bg-background px-3">
+          <label className="flex h-10 items-center gap-2 border bg-background px-3 rounded-lg">
             <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
             <input autoFocus type="search" aria-label="Buscar apps" placeholder="Buscar app..." value={filter} onChange={event => setFilter(event.target.value)} onKeyDown={event => { if (event.key === "Escape") setFilter(""); }} className="min-w-0 flex-1 bg-transparent text-base sm:text-sm outline-none placeholder:text-muted-foreground" />
           </label>
@@ -274,20 +275,20 @@ function MobileMenuSheet({ isPlatformAdmin, disabledModules, onClose }: { isPlat
   const catalog = all.flatMap(group => group.links).filter(link => link.href !== "/dashboard" && link.href !== "/dashboard/messages");
   const shortcuts = shortcutHrefs.map(href => catalog.find(link => link.href === href)).filter((link): link is NavLink => !!link);
   return <Dialog.Popup id="dashboard-mobile-menu" style={offset ? { transform: `translateY(${offset}px)` } : undefined}
-    className="fixed inset-x-0 bottom-0 z-50 flex max-h-[88dvh] flex-col border-t bg-sidebar text-sidebar-foreground shadow-xl transition-transform duration-200 data-ending-style:translate-y-full data-starting-style:translate-y-full motion-reduce:transition-none md:hidden">
+    className="fixed inset-x-0 bottom-0 z-50 flex max-h-[88dvh] flex-col rounded-t-3xl border-t glass-surface text-sidebar-foreground shadow-xl transition-transform duration-200 data-ending-style:translate-y-full data-starting-style:translate-y-full motion-reduce:transition-none md:hidden">
     <div className="shrink-0 touch-none px-4 pt-2 pb-3"
       onPointerDown={event => { start.current = event.clientY; event.currentTarget.setPointerCapture(event.pointerId); }}
       onPointerMove={event => { if (start.current !== null) setOffset(Math.max(0, event.clientY - start.current)); }}
       onPointerUp={() => { if (offset > 90) onClose(); start.current = null; setOffset(0); }}
       onPointerCancel={() => { start.current = null; setOffset(0); }}>
-      <span aria-hidden="true" className="mx-auto mb-3 block h-1 w-10 bg-sidebar-foreground/25" />
+      <span aria-hidden="true" className="mx-auto mb-3 block h-1 w-10 rounded-full bg-sidebar-foreground/25" />
       <div className="flex items-center justify-between gap-2">
         <Dialog.Title className="text-sm font-semibold">Menu</Dialog.Title>
         <Dialog.Close render={<Button variant="ghost" size="icon-sm" aria-label="Fechar menu" />}><X aria-hidden="true" /></Dialog.Close>
       </div>
     </div>
     <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-      <label className="flex h-9 items-center gap-2 border bg-background px-3">
+      <label className="flex h-9 items-center gap-2 border bg-background px-3 rounded-lg">
         <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
         <input type="search" aria-label="Buscar no menu" placeholder="Buscar app…" value={filter} onChange={event => setFilter(event.target.value)} className="min-w-0 flex-1 bg-transparent text-base sm:text-sm outline-none placeholder:text-muted-foreground" />
       </label>
@@ -318,7 +319,7 @@ function ModuleGate({ disabledModules, children }: { disabledModules: string[]; 
   const pathname = usePathname();
   const blocked = disabledModuleFor(pathname, disabledModules);
   if (!blocked) return <>{children}</>;
-  return <main className="flex min-h-[60svh] items-center justify-center px-5 py-12"><section className="max-w-md border bg-card p-8 text-center">
+  return <main className="flex min-h-[60svh] items-center justify-center px-5 py-12"><section className={cn(surfaceVariants(), "max-w-md p-8 text-center")}>
     <span className="mx-auto grid size-12 place-items-center bg-muted text-muted-foreground"><Modules className="size-6" aria-hidden="true" /></span>
     <h1 className="mt-4 text-lg font-semibold">{blocked.name} está desativado</h1>
     <p className="mt-2 text-sm text-muted-foreground">A administração desligou este módulo em Sistema › Módulos. Os dados continuam guardados e voltam quando ele for reativado.</p>
@@ -357,7 +358,7 @@ function MobileTabBar({ menuOpen, messages }: { menuOpen: boolean; messages: boo
     { label: "Início", href: "/dashboard", icon: Home, active: pathname === "/dashboard" },
     { label: "Mensagens", href: "/dashboard/messages", icon: Chat, active: pathname.startsWith("/dashboard/messages"), badge: unread },
   ].filter(tab => messages || tab.href !== "/dashboard/messages");
-  return <nav aria-label="Navegação principal" className="fixed inset-x-0 bottom-0 z-30 border-t bg-sidebar pb-[env(safe-area-inset-bottom)] text-sidebar-foreground md:hidden print:hidden">
+  return <nav aria-label="Navegação principal" className="fixed inset-x-0 bottom-0 z-30 border-t glass-bar pb-[env(safe-area-inset-bottom)] text-sidebar-foreground md:hidden print:hidden">
     {driveTabs.length > 0 && <div className="mx-auto grid h-12 max-w-lg grid-cols-5 items-stretch border-b border-sidebar-border/60 px-2">
       {driveTabs.map(({ label, href, icon: Icon, active }) => <Link key={href} href={href} aria-current={active ? "page" : undefined} className="flex min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-[9px] font-medium leading-tight text-muted-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring aria-[current=page]:text-sidebar-primary">
         <Icon className="size-4" aria-hidden="true" /><span className="w-full truncate text-center">{label}</span>
@@ -442,7 +443,7 @@ export function DashboardShell({ children, isPlatformAdmin = false, disabledModu
           id="dashboard-sidebar"
           aria-label="Menu do dashboard"
           className={cn(
-            "relative hidden shrink-0 border-r bg-sidebar text-sidebar-foreground md:sticky md:top-[57px] md:h-[calc(100svh-57px)] md:w-(--sidebar-width)",
+            "relative hidden shrink-0 border-r glass-bar text-sidebar-foreground md:sticky md:top-[57px] md:h-[calc(100svh-57px)] md:w-(--sidebar-width)",
             desktopOpen ? "md:block" : "md:hidden",
           )}
         >

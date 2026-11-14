@@ -10,7 +10,7 @@ export function CardDescriptionEditor({ value, document, attachments, onChange, 
     const file = attachments.find(file => file.id === id);
     return file ? { ...file, noteId: "card", contentType: file.type, createdAt: "", blob: file.blob } : undefined;
   }, [attachments]);
-  return <AttachmentProvider resolve={resolve}><section aria-label="Descrição do card" className="min-w-0 border bg-background px-10 [&_.tiptap]:min-h-52! [&_.tiptap]:text-sm! [&_.tiptap]:py-4!">
+  return <AttachmentProvider resolve={resolve}><section aria-label="Descrição do card" className="min-w-0 border bg-background px-10 [&_.tiptap]:min-h-52! [&_.tiptap]:text-sm! [&_.tiptap]:py-4! rounded-lg">
     <RichTextEditor value={value} document={document} editable extendedMarkdown documentMode showActions={false} ariaLabel="Descrição" onChange={onChange} onDocumentChange={onDocumentChange} onReady={onReady} onInsertFile={onInsertFile} />
   </section></AttachmentProvider>;
 }

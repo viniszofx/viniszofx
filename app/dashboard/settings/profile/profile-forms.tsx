@@ -1,5 +1,7 @@
 "use client";
 
+import { surfaceVariants } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { RiCameraLine, RiDeleteBinLine } from "@remixicon/react";
@@ -148,7 +150,7 @@ export function ProfileForms({ name: initialName, email, image, username: initia
 
   const initials = name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("") || "?";
   return <div className="grid gap-6">
-    <section className="overflow-hidden border bg-card shadow-sm" aria-labelledby="profile-info">
+    <section className={cn(surfaceVariants(), "overflow-hidden shadow-sm")} aria-labelledby="profile-info">
       <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-7 sm:px-8">
         <div className="flex items-center gap-4">
           <button type="button" onClick={() => fileInput.current?.click()} className="group relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-background shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={avatar ? "Trocar foto de perfil" : "Adicionar foto de perfil"}>
@@ -165,15 +167,15 @@ export function ProfileForms({ name: initialName, email, image, username: initia
       <form onSubmit={updateProfile} className="space-y-5 p-6 sm:p-8">
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="space-y-2"><label htmlFor="profile-name" className="block text-sm font-medium">Nome completo</label><input id="profile-name" value={name} onChange={(event) => setName(event.target.value)} minLength={2} maxLength={80} autoComplete="name" required className={fieldClass} /></div>
-          <div className="space-y-2"><label htmlFor="profile-username" className="block text-sm font-medium">Nome de usuário</label><div className="flex h-11 items-center border border-input bg-background focus-within:ring-2 focus-within:ring-ring"><span className="pl-3 text-sm text-muted-foreground">@</span><input id="profile-username" value={username} onChange={(event) => setUsername(event.target.value)} minLength={3} maxLength={30} autoComplete="username" required className="h-full min-w-0 flex-1 bg-transparent px-2 text-base sm:text-sm outline-none" /></div><p className="text-xs text-muted-foreground">Letras minúsculas, números, ponto e sublinhado.</p></div>
+          <div className="space-y-2"><label htmlFor="profile-username" className="block text-sm font-medium">Nome de usuário</label><div className="flex h-11 items-center border border-input bg-background focus-within:ring-2 focus-within:ring-ring rounded-lg"><span className="pl-3 text-sm text-muted-foreground">@</span><input id="profile-username" value={username} onChange={(event) => setUsername(event.target.value)} minLength={3} maxLength={30} autoComplete="username" required className="h-full min-w-0 flex-1 bg-transparent px-2 text-base sm:text-sm outline-none" /></div><p className="text-xs text-muted-foreground">Letras minúsculas, números, ponto e sublinhado.</p></div>
         </div>
         <div className="space-y-2"><label htmlFor="profile-email" className="block text-sm font-medium">E-mail</label><input id="profile-email" type="email" value={email} readOnly className={`${fieldClass} cursor-default bg-muted/40 text-muted-foreground`} /><p className="text-xs text-muted-foreground">O e-mail é gerenciado pelo serviço de autenticação.</p></div>
-        <div className="space-y-2"><div className="flex items-center justify-between"><label htmlFor="profile-bio" className="block text-sm font-medium">Sobre você</label><span className="text-xs text-muted-foreground">{bio.length}/240</span></div><textarea id="profile-bio" value={bio} onChange={(event) => setBio(event.target.value.slice(0, 240))} rows={4} maxLength={240} placeholder="Conte um pouco sobre você..." className="w-full resize-y border border-input bg-background px-3 py-2.5 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" /></div>
+        <div className="space-y-2"><div className="flex items-center justify-between"><label htmlFor="profile-bio" className="block text-sm font-medium">Sobre você</label><span className="text-xs text-muted-foreground">{bio.length}/240</span></div><textarea id="profile-bio" value={bio} onChange={(event) => setBio(event.target.value.slice(0, 240))} rows={4} maxLength={240} placeholder="Conte um pouco sobre você..." className="w-full resize-y border border-input bg-background px-3 py-2.5 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg" /></div>
         <div className="flex flex-wrap items-center gap-4 border-t pt-5"><Button type="submit" disabled={savingProfile}>{savingProfile ? "Salvando…" : "Salvar alterações"}</Button>{profileMessage && <p role={profileMessage.error ? "alert" : "status"} className={profileMessage.error ? "text-sm text-destructive" : "text-sm text-muted-foreground"}>{profileMessage.text}</p>}</div>
       </form>
     </section>
 
-    <section className="border bg-card p-6 shadow-sm sm:p-8" aria-labelledby="profile-security">
+    <section className={cn(surfaceVariants(), "p-6 shadow-sm sm:p-8")} aria-labelledby="profile-security">
       <div className="mb-6"><p className="text-xs font-medium uppercase tracking-[0.16em] text-primary">Acesso</p><h2 id="profile-security" className="mt-1 font-heading text-xl font-semibold">Segurança</h2><p className="mt-1 text-sm text-muted-foreground">Atualize sua senha e acompanhe onde sua conta está conectada.</p></div>
       <form onSubmit={updatePassword} className="space-y-5">
         <div className="space-y-2"><label htmlFor="current-password" className="block text-sm font-medium">Senha atual</label><input id="current-password" name="currentPassword" type="password" autoComplete="current-password" required className={fieldClass} /></div>
