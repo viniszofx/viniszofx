@@ -11,7 +11,9 @@ import { fieldsOf, matchesText, type RecordStore, type StoredRecord } from "@/li
 import { useLookup, type Lookup } from "@/lib/records/references";
 
 export type CardView = { title: string; subtitle?: string; lines?: (string | false | undefined)[]; badge?: { label: string; color?: string }; accent?: string; body?: ReactNode };
-export type Filter<F> = { label: string; options: { value: string; label: string }[]; test: (record: StoredRecord<F>, value: string) => boolean };
+type FilterOption = { value: string; label: string };
+/** `options` pode vir dos próprios registros (ex.: carros que têm lançamentos). */
+export type Filter<F> = { label: string; options: FilterOption[] | ((records: StoredRecord<F>[], lookup: Lookup) => FilterOption[]); test: (record: StoredRecord<F>, value: string) => boolean };
 
 export type RecordsConfig<F extends object> = {
   store: RecordStore<F>;
@@ -26,6 +28,8 @@ export type RecordsConfig<F extends object> = {
   quickAction?: (record: StoredRecord<F>) => { label: string; run: () => void } | null;
   /** Ações extras no rodapé do card (ex.: imprimir a ordem). */
   cardActions?: (record: StoredRecord<F>) => ReactNode;
+  /** Resumo do que está filtrado (ex.: totais), acima dos cartões. */
+  summary?: (records: StoredRecord<F>[], lookup: Lookup) => ReactNode;
 };
 
 const dateFormat = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" });
@@ -50,8 +54,8 @@ export function RecordsPage<F extends object>({ config, initialId = "", extra }:
   return <CatalogLayout section={config.section} title={config.title} description={config.description} action={<Button disabled={!loaded} onClick={() => setEditing("new")}><Plus />{config.newLabel}</Button>}>
     {extra}
     <div className="flex flex-wrap items-end gap-4"><div className="min-w-60 flex-1"><CatalogSearch label={`Buscar ${config.title.toLocaleLowerCase("pt-BR")}`} value={search} onChange={setSearch} /></div>
-      {config.filter && <label className="grid gap-1 text-xs text-muted-foreground">{config.filter.label}<select className={`${selectClass} min-w-44`} value={filter} onChange={event => setFilter(event.target.value)}><option value="">Todos</option>{config.filter.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>}</div>
-    {!loaded ? <CatalogSkeleton label={`Carregando ${config.title.toLocaleLowerCase("pt-BR")}`} /> : <><p className="text-xs text-muted-foreground">{filtered.length} {filtered.length === 1 ? "registro" : "registros"}</p><div className={catalogGrid}>{filtered.map(record => {
+      {config.filter && <label className="grid gap-1 text-xs text-muted-foreground">{config.filter.label}<select className={`${selectClass} min-w-44`} value={filter} onChange={event => setFilter(event.target.value)}><option value="">Todos</option>{(typeof config.filter.options === "function" ? config.filter.options(records, lookup) : config.filter.options).map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>}</div>
+    {!loaded ? <CatalogSkeleton label={`Carregando ${config.title.toLocaleLowerCase("pt-BR")}`} /> : <>{config.summary && filtered.length > 0 && config.summary(filtered, lookup)}<p className="text-xs text-muted-foreground">{filtered.length} {filtered.length === 1 ? "registro" : "registros"}</p><div className={catalogGrid}>{filtered.map(record => {
       const view = config.card(record, lookup);
       const action = config.quickAction?.(record);
       return <CatalogTile key={record.id} style={view.accent ? { borderTop: `3px solid ${view.accent}` } : undefined}>

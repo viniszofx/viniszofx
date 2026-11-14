@@ -54,8 +54,13 @@ export const hotelStore = createRecordStore<HotelFields>("hotels", { created: "H
 
 export type MileageFields = {
   date: string; vehicleId: string; driverId: string; passengerIds: string[]; clientId: string; tripId: string;
-  initialKm: string; finalKm: string; fuelCost: string; tollCost: string; otherCost: string; notes: string;
+  initialKm: string; finalKm: string; fuelCost: string; tollCost: string; foodCost: string; hotelCost: string; otherCost: string; notes: string;
 };
+/** Categorias de custo do lançamento de KM (mesmas do Nodus). */
+export const mileageCosts = [
+  { name: "fuelCost", label: "Abastecimento" }, { name: "tollCost", label: "Pedágios" }, { name: "foodCost", label: "Alimentação" },
+  { name: "hotelCost", label: "Hotel" }, { name: "otherCost", label: "Diversos" },
+] as const;
 export const mileageStore = createRecordStore<MileageFields>("mileage", { created: "Lançamento registrado", updated: "Lançamento atualizado", deleted: "Lançamento excluído", plural: "os lançamentos de KM" });
 
 export type JourneyEventType = "start" | "arrival" | "departure" | "photo" | "end";
