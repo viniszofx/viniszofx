@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { postState, useOrgPosts } from "./mural-page";
+import { postState, useOrgPosts, type OrgPost } from "./mural-page";
 import { journeyStore, orderStore, taskStore, todoStore } from "@/lib/nodus/stores";
 import { useLookup } from "@/lib/records/references";
 import { useModuleEnabled } from "@/lib/modules-context";
@@ -12,6 +12,20 @@ function Panel({ title, href, empty, items }: { title: string; href: string; emp
     <header className="flex items-center justify-between border-b px-4 py-2"><h3 className="text-sm font-semibold">{title}</h3><Link href={href} className="text-xs text-primary hover:underline">Ver tudo</Link></header>
     <ul className="divide-y">{items.slice(0, 5).map(item => <li key={item.id} className="px-4 py-2 text-sm"><p className={item.alert ? "text-destructive" : undefined}>{item.text}</p>{item.detail && <p className="line-clamp-2 text-xs text-muted-foreground">{item.detail}</p>}</li>)}
       {!items.length && <li className="px-4 py-3 text-xs text-muted-foreground">{empty}</li>}</ul>
+  </section>;
+}
+
+/** Avisos ativos em cartões lado a lado (rolagem lateral no celular). */
+function MuralCarousel({ posts }: { posts: OrgPost[] }) {
+  return <section aria-labelledby="mural-today" className="min-w-0">
+    <div className="mb-2 flex items-center justify-between"><h3 id="mural-today" className="text-sm font-semibold">Mural</h3><Link href="/dashboard/announcements" className="text-xs text-primary hover:underline">Ver tudo</Link></div>
+    <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">{posts.slice(0, 8).map(post => <li key={post.id} className="w-72 shrink-0 snap-start sm:w-80">
+      <Link href="/dashboard/announcements" className="flex h-full flex-col overflow-hidden border bg-card transition-colors hover:border-primary/40">
+        {post.cover ? <img src={post.cover} alt="" loading="lazy" className="aspect-[2/1] w-full object-cover" /> : <div className="aspect-[2/1] w-full bg-gradient-to-br from-primary/20 via-primary/5 to-transparent" aria-hidden="true" />}
+        <div className="flex flex-1 flex-col gap-1 p-3"><p className="line-clamp-2 text-sm font-semibold">{post.title}</p>{post.body && <p className="line-clamp-2 text-xs text-muted-foreground">{post.body}</p>}
+          <p className="mt-auto pt-1 text-[11px] text-muted-foreground">{post.authorName}{post.poll && " · enquete"}{post.poll && !post.poll.mine.length && <span className="ml-1 font-medium text-primary">vote</span>}</p></div>
+      </Link>
+    </li>)}</ul>
   </section>;
 }
 
@@ -31,8 +45,8 @@ export function HomeToday() {
   const open = journeys.records.filter(journey => !journey.events.some(event => event.type === "end"));
   return <section aria-labelledby="today" className="pt-7">
     <h2 id="today" className="mb-3 text-sm font-semibold">Hoje</h2>
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-      {enabled("mural") && <Panel title="Mural" href="/dashboard/announcements" empty={feed ? "Nenhum aviso ativo." : "Carregando…"} items={active.map(item => ({ id: item.id, text: item.title, detail: item.body }))} />}
+    {enabled("mural") && active.length > 0 && <div className="mb-5"><MuralCarousel posts={active} /></div>}
+    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       {enabled("tasks") && <Panel title="Tarefas" href="/dashboard/tasks" empty={tasks.loaded ? "Nada pendente para hoje." : "Carregando…"} items={due.map(task => ({ id: task.id, text: task.title, detail: task.dueDate ? `Prazo ${new Date(`${task.dueDate}T12:00:00`).toLocaleDateString("pt-BR")}` : undefined, alert: !!task.dueDate && task.dueDate < day }))} />}
       {enabled("todos") && <Panel title="Meus to-dos" href="/dashboard/todos" empty={todos.loaded ? "Nenhum to-do para hoje." : "Carregando…"} items={myTodos.map(todo => ({ id: todo.id, text: todo.title, detail: todo.notes, alert: !!todo.endDate && todo.endDate < day }))} />}
       {enabled("orders") && <Panel title="Ordens em andamento" href="/dashboard/orders" empty={orders.loaded ? "Nenhuma ordem para hoje." : "Carregando…"} items={running.map(order => ({ id: order.id, text: `${order.code} · ${order.title}`, detail: lookup("clients", order.clientId) }))} />}

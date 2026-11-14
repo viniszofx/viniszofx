@@ -154,9 +154,23 @@ export const orgPosts = pgTable("app_org_posts", {
   status: text("status").$type<"draft" | "published">().notNull().default("published"),
   publishAt: timestamp("publish_at", { withTimezone: true }),
   expiresAt: timestamp("expires_at", { withTimezone: true }),
+  // Capa: imagem no storage de quem a enviou.
+  coverFileId: text("cover_file_id"),
+  coverOwnerId: text("cover_owner_id"),
+  // Enquete opcional; os votos ficam em app_org_post_votes.
+  poll: jsonb("poll").$type<PostPoll | null>(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [index("app_org_posts_org_idx").on(table.organizationId, table.createdAt)]);
+
+export type PostPoll = { question: string; options: { id: string; label: string }[]; multiple: boolean; closesAt: string | null };
+
+export const orgPostVotes = pgTable("app_org_post_votes", {
+  postId: text("post_id").notNull().references(() => orgPosts.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  optionId: text("option_id").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [primaryKey({ columns: [table.postId, table.userId, table.optionId] })]);
 
 export const orgPostComments = pgTable("app_org_post_comments", {
   id: text("id").primaryKey(),
