@@ -22,6 +22,4 @@ export function Select({ options, placeholder, className, ...props }: ComponentP
   </select>;
 }
 
-export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
-  return <textarea className={cn(textareaClass, className)} {...props} />;
-}
+export { Textarea } from "./textarea";

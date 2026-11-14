@@ -15,6 +15,7 @@ import { fieldsOf, matchesText, type StoredRecord } from "@/lib/records/store";
 import { inventoryItemStore, inventoryLocationStore, inventoryStore, movementStore, stockBalances, type Inventory, type InventoryItemFields, type InventoryLocationFields, type MovementFields } from "@/lib/nodus/stores";
 import { NameDialog } from "@/components/ui/name-dialog";
 import { notifyError } from "@/lib/ui/notifications";
+import { today } from "@/lib/format/date";
 
 const itemFields: FieldDef[] = [
   { name: "name", label: "Nome", type: "text", required: true, wide: true },
@@ -26,7 +27,6 @@ const itemFields: FieldDef[] = [
 const locationFields: FieldDef[] = [{ name: "name", label: "Nome", type: "text", required: true, wide: true }, { name: "notes", label: "Observações", type: "textarea", rows: 3 }];
 const movementLabels: Record<MovementFields["type"], string> = { in: "Entrada", out: "Saída", transfer: "Transferência" };
 const tabs = [{ value: "stock", label: "Saldos" }, { value: "items", label: "Itens" }, { value: "locations", label: "Locais" }, { value: "movements", label: "Movimentações" }] as const;
-const today = () => new Date().toISOString().slice(0, 10);
 const number = (value: number) => value.toLocaleString("pt-BR", { maximumFractionDigits: 3 });
 
 export function InventoryPage() {

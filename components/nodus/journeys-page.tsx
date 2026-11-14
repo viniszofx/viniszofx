@@ -15,10 +15,10 @@ import { useReferenceOptions, useLookup } from "@/lib/records/references";
 import { fieldsOf, newId } from "@/lib/records/store";
 import { journeyStore, type Journey, type JourneyEvent, type JourneyEventType } from "@/lib/nodus/stores";
 import { notifyError } from "@/lib/ui/notifications";
+import { today } from "@/lib/format/date";
 
 const labels: Record<JourneyEventType, string> = { start: "Início do dia", arrival: "Chegada", departure: "Saída", photo: "Foto", end: "Fim do dia" };
 const photoKinds = [{ value: "service", label: "Serviço" }, { value: "receipt", label: "Comprovante" }, { value: "incident", label: "Ocorrência" }, { value: "odometer", label: "Hodômetro" }] as const;
-const today = () => { const date = new Date(); return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; };
 const time = (value: string) => new Date(value).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
 
 function position(): Promise<Partial<JourneyEvent>> {

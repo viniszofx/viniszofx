@@ -9,8 +9,8 @@ import { useLookup } from "@/lib/records/references";
 import { useModuleEnabled } from "@/lib/modules-context";
 import { Skeleton } from "@/components/ui/feedback";
 import { ModuleBoundary, ModuleError } from "@/components/ui/module-boundary";
+import { today } from "@/lib/format/date";
 
-const today = () => { const date = new Date(); return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; };
 const greeting = () => { const hour = new Date().getHours(); return hour < 12 ? "Bom dia" : hour < 18 ? "Boa tarde" : "Boa noite"; };
 const eventTime = (value: string) => value.includes("T") ? value.slice(11, 16) : "";
 

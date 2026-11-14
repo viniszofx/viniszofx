@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { renderTodoListIcon, todoListColors, todoListIcons, type TodoListFields } from "@/lib/nodus/todo-lists";
 import { todoListStore, todoStore, type Todo, type TodoFields, type TodoList } from "@/lib/nodus/stores";
 import { fieldsOf } from "@/lib/records/store";
+import { today } from "@/lib/format/date";
 
 // Tarefas pessoais em listas, como no app Lembretes (Nodus: Início › Tarefas).
 type Smart = "today" | "scheduled" | "all" | "done";
@@ -27,7 +28,6 @@ const smartLists: { key: Smart; label: string; color: string; icon: ComponentTyp
 ];
 const dateFormatter = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 const formatDate = (value: string) => dateFormatter.format(new Date(`${value}T12:00:00`));
-const today = () => new Date().toLocaleDateString("sv-SE");
 const due = (todo: TodoFields) => todo.endDate || todo.startDate;
 const shortUrl = (url: string) => { const text = url.replace(/^https?:\/\/(www\.)?/, ""); return text.length > 40 ? `${text.slice(0, 40)}…` : text; };
 

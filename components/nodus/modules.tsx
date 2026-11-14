@@ -7,8 +7,8 @@ import {
 } from "@/lib/nodus/stores";
 import { fieldsOf } from "@/lib/records/store";
 import { OrderPrintButton } from "./order-print";
+import { today } from "@/lib/format/date";
 
-const today = () => { const date = new Date(); return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; };
 const statusColor: Record<OrderFields["status"], string> = { open: "#2563eb", scheduled: "#7c3aed", in_progress: "#f97316", done: "#16a34a", canceled: "#6b7280" };
 
 export const ordersConfig: RecordsConfig<OrderFields> = {

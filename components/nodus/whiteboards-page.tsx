@@ -16,6 +16,7 @@ import { fetchStoredFile, uploadStoredFile } from "@/lib/storage/collections";
 import { fileLimit } from "@/lib/storage/file-refs";
 import { notifyError } from "@/lib/ui/notifications";
 import type { WhiteboardHandle } from "./excalidraw-canvas";
+import { dataUrl } from "@/lib/browser/data-url";
 
 const ExcalidrawCanvas = dynamic(() => import("./excalidraw-canvas"), { ssr: false, loading: () => <LoadingBlock label="Carregando o quadro" className="p-6" /> });
 
@@ -25,7 +26,6 @@ function download(blob: Blob, name: string) {
   Object.assign(document.createElement("a"), { href: url, download: name }).click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-const dataUrl = (blob: Blob) => new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(reader.error); reader.readAsDataURL(blob); });
 
 /** Catálogo de quadros brancos (Nodus: Quadro branco, com o Excalidraw). */
 export function WhiteboardsPage() {

@@ -1,19 +1,12 @@
 import { getAttachment, listAttachments } from "./storage";
 import { attachmentUrl, type Note } from "./types";
+import { dataUrl } from "@/lib/browser/data-url";
 
 const filename = (title: string) => (title || "Sem título").replace(/[\\/:*?"<>|\r\n]/g, "-").replace(/[. ]+$/g, "").slice(0, 100) || "anotacao";
 export function downloadBlob(blob: Blob, name: string) {
   const url = URL.createObjectURL(blob), anchor = document.createElement("a");
   anchor.href = url; anchor.download = name; anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 60_000);
-}
-function dataUrl(blob: Blob) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(blob);
-  });
 }
 export async function exportNote(note: Note, format: "md" | "json") {
   const metadata = await listAttachments(note.id);

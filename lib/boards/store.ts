@@ -4,6 +4,7 @@ import type { BoardStatus } from "./status";
 import { useSyncExternalStore } from "react";
 import { notifySuccess, notifyError } from "@/lib/ui/notifications";
 import { readCollection, writeCollection } from "@/lib/storage/collections";
+import { newId } from "@/lib/records/store";
 
 export type CardAttachment = { id: string; name: string; type: string; size: number; blob: Blob };
 export type CoverPosition = { x: number; y: number };
@@ -83,7 +84,7 @@ export function saveBoard(board: Board, notice?: string) {
 }
 export function deleteBoard(id: string) { persist(snapshot.boards.filter(board => board.id !== id), "Board excluído"); }
 export function retryBoards() { if (unsaved) persist(snapshot.boards); else void load(); }
-export function newId() { return typeof crypto.randomUUID === "function" ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), byte => byte.toString(16).padStart(2, "0")).join(""); }
+export { newId };
 export function reorder<T>(items: T[], from: number, to: number) { const next = [...items]; const [item] = next.splice(from, 1); next.splice(to, 0, item); return next; }
 
 export function defaultLists(): BoardList[] { return ["Stage", "Progress", "Done"].map(title => ({ id: newId(), title, color: "", cards: [] })); }

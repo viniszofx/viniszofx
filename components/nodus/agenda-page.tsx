@@ -8,10 +8,10 @@ import { CatalogLayout } from "@/components/listing/catalog";
 import { useReferenceOptions } from "@/lib/records/references";
 import { newId } from "@/lib/records/store";
 import { notifyError, notifySuccess } from "@/lib/ui/notifications";
+import { today } from "@/lib/format/date";
 
 type Job = { id: string; number: string; clientId: string; client: string; location: string; description: string; employeeIds: string[]; otherTeam: string; vehicleId: string; vehicle: string };
 const defaultClosing = "📌 Verifiquem os materiais necessários antes de sair\n📄 Peçam os projetos impressos com antecedência";
-const today = () => { const date = new Date(); return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`; };
 const emptyJob = (): Job => ({ id: newId(), number: "", clientId: "", client: "", location: "", description: "", employeeIds: [], otherTeam: "", vehicleId: "", vehicle: "" });
 
 function joinTeam(names: string[]) {

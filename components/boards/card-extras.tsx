@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Field, Select, Textarea } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { newId, type CardExtras, type CardLabel } from "@/lib/boards/store";
+import { today } from "@/lib/format/date";
 
 // Etiquetas, prazo, prioridade, checklists, campos e comentários do cartão (Nodus: card-tools).
 export const labelColors = [
@@ -12,7 +13,6 @@ export const labelColors = [
   { value: "green", label: "Verde", color: "#16a34a" }, { value: "purple", label: "Roxo", color: "#9333ea" }, { value: "red", label: "Vermelho", color: "#dc2626" },
 ] as const;
 export const labelColor = (value: string) => labelColors.find(item => item.value === value)?.color ?? "#64748b";
-const today = () => new Date().toLocaleDateString("sv-SE");
 
 /** Resumo exibido no cartão do quadro. */
 export function CardBadges({ card }: { card: CardExtras & { completed?: boolean } }) {
