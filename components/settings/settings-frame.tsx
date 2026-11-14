@@ -41,7 +41,7 @@ export function SettingsFrame({ groups, title, description, actions, menu = fals
         {groups.map(group => (
           <div key={group.title}>
             <p className="mb-1.5 truncate px-4 text-[13px] text-muted-foreground uppercase">{group.title}</p>
-            <ul className="overflow-hidden rounded-2xl bg-card shadow-sm">
+            <ul className="overflow-hidden rounded-2xl border glass-card shadow-sm">
               {group.items.map(item => {
                 const Icon = icons[item.icon];
                 const current = isCurrent(pathname, item.href);
@@ -61,8 +61,8 @@ export function SettingsFrame({ groups, title, description, actions, menu = fals
         ))}
       </nav>}
 
-      <div className={`flex flex-col md:min-h-[70dvh] md:flex-row md:overflow-hidden md:rounded-xl md:border md:bg-card md:shadow-sm ${listOpen ? "max-md:hidden" : ""}`}>
-        <aside className="hidden shrink-0 bg-muted/50 p-3 md:block md:w-60 md:border-r">
+      <div className={`flex flex-col md:min-h-[70dvh] md:flex-row md:overflow-hidden md:rounded-xl md:border md:glass-card md:shadow-sm ${listOpen ? "max-md:hidden" : ""}`}>
+        <aside className="hidden shrink-0 bg-foreground/[0.03] p-3 md:block md:w-60 md:border-r">
           <nav aria-label="Seções dos ajustes" className="flex flex-col gap-4">
             {groups.map(group => (
               <div key={group.title}>

@@ -406,7 +406,8 @@ export function DashboardShell({ children, isPlatformAdmin = false, disabledModu
     <div
       style={{ "--sidebar-width": `${width}px` } as CSSProperties}
       className={cn(
-        "dashboard-shell flex min-h-svh flex-col bg-background",
+        // Sem fundo próprio: a luz ambiente do body (globals.css) aparece por trás do vidro.
+        "dashboard-shell flex min-h-svh flex-col",
         isResizing && "cursor-col-resize select-none",
       )}
     >
