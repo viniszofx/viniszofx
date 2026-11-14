@@ -32,7 +32,7 @@ export function CreateOrganizationDialog({ onClose }: { onClose: () => void }) {
     <DialogTitle>Criar organização</DialogTitle>
     <DialogDescription>Você entra como membro. Os dados vão para Configurações › Empresa e podem ser mudados depois.</DialogDescription>
     <form onSubmit={event => void submit(event)} className="grid gap-4 sm:grid-cols-2">
-      <Field label="Nome da organização" required className="sm:col-span-2"><Input autoFocus required maxLength={80} placeholder="Ex.: Eureka Instalações" value={company.name} onChange={event => patch({ name: event.target.value })} /></Field>
+      <Field label="Nome da organização" required className="sm:col-span-2"><Input autoFocus required maxLength={80} placeholder="Ex.: Nome da sua empresa" value={company.name} onChange={event => patch({ name: event.target.value })} /></Field>
       <Field label="CNPJ/CPF"><Input maxLength={24} value={company.document} onChange={event => patch({ document: event.target.value })} /></Field>
       <Field label="Responsável"><Input maxLength={200} value={company.responsible} onChange={event => patch({ responsible: event.target.value })} /></Field>
       <Field label="Telefone"><Input type="tel" value={company.phone} onChange={event => patch({ phone: formatPhone(event.target.value) })} /></Field>

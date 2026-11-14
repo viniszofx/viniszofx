@@ -1,6 +1,6 @@
 # Módulos do painel
 
-Funções trazidas do Eureka/Nodus para a área privada (`/dashboard`). Os dados são por conta e ficam no Postgres, uma tabela por coleção, servidas por `/api/data/[kind]`.
+Funções trazidas do Nodus para a área privada (`/dashboard`). Os dados são por conta e ficam no Postgres, uma tabela por coleção, servidas por `/api/data/[kind]`.
 
 ## Mapa
 

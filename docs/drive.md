@@ -123,4 +123,4 @@ Componentes genéricos usados aqui e no resto do painel ficam em `components/ui/
 
 ## Origem
 
-Portado do Drive do Eureka/Nodus (branch `dev`), trocando o que dependia de servidor: o PDF de DOCX (lá via LibreOffice) passou para o motor do editor, e a API própria do Drive passou para as coleções `/api/data`. Ainda não há pastas compartilhadas com pessoas nem as abas Compartilhados/Público, porque os dados são por conta.
+Portado do Drive do Nodus (branch `dev`), trocando o que dependia de servidor: o PDF de DOCX (lá via LibreOffice) passou para o motor do editor, e a API própria do Drive passou para as coleções `/api/data`. Ainda não há pastas compartilhadas com pessoas nem as abas Compartilhados/Público, porque os dados são por conta.

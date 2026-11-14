@@ -92,7 +92,7 @@ export function OnboardingWizard({ userName, firstAccount }: { userName: string 
       </Shell>}
       {step === "company" && <Shell title="Crie sua organização" description={<>Olá{name ? `, ${name.split(" ")[0]}` : ""}! Dê um nome ao espaço que vai reunir sua equipe. Os dados aparecem nas ordens impressas e podem ser mudados depois em Configurações › Empresa.</>}>
         <form onSubmit={event => { event.preventDefault(); if (company.name.trim().length < 2) return setError("Informe o nome da organização."); if (company.email && !/^\S+@\S+\.\S+$/.test(company.email)) return setError("Informe um e-mail válido."); setStep("address"); }} className="grid gap-4 sm:grid-cols-2">
-          <Field label="Nome da organização" required className="sm:col-span-2"><Input autoFocus required maxLength={80} placeholder="Ex.: Eureka Instalações" value={company.name} onChange={event => patch({ name: event.target.value })} /></Field>
+          <Field label="Nome da organização" required className="sm:col-span-2"><Input autoFocus required maxLength={80} placeholder="Ex.: Nome da sua empresa" value={company.name} onChange={event => patch({ name: event.target.value })} /></Field>
           <Field label="CNPJ/CPF"><Input maxLength={24} value={company.document} onChange={event => patch({ document: event.target.value })} /></Field>
           <Field label="Responsável"><Input maxLength={200} value={company.responsible} onChange={event => patch({ responsible: event.target.value })} /></Field>
           <Field label="Telefone"><Input type="tel" value={company.phone} onChange={event => patch({ phone: formatPhone(event.target.value) })} /></Field>

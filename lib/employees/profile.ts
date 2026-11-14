@@ -1,4 +1,4 @@
-// Campos trabalhistas do colaborador, portados do cadastro do Eureka/Nodus.
+// Campos trabalhistas do colaborador, portados do cadastro do Nodus.
 // Tudo é opcional para manter os registros antigos válidos.
 
 export type EmployeeDependent = { id: string; name: string; relationship: string; birthDate: string; cpf: string; incomeTax: boolean; familyAllowance: boolean };
