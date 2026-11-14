@@ -172,10 +172,27 @@ export const directMessages = pgTable("app_direct_messages", {
   body: text("body").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   readAt: timestamp("read_at", { withTimezone: true }),
+  // Resposta (citação), edição, exclusão, encaminhamento e anexos.
+  replyToId: text("reply_to_id"),
+  editedAt: timestamp("edited_at", { withTimezone: true }),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
+  forwarded: boolean("forwarded").notNull().default(false),
+  attachments: jsonb("attachments").$type<{ fileId: string; name: string; type: string; size: number; ownerId?: string }[]>().notNull().default([]),
 }, (table) => [
   index("app_direct_messages_pair_idx").on(table.organizationId, table.senderId, table.recipientId, table.createdAt),
   index("app_direct_messages_unread_idx").on(table.recipientId, table.readAt),
 ]);
+
+// Preferências de cada pessoa para cada conversa: arquivar, silenciar e bloquear.
+export const messageThreads = pgTable("app_message_threads", {
+  organizationId: text("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  otherId: text("other_id").notNull(),
+  archived: boolean("archived").notNull().default(false),
+  muted: boolean("muted").notNull().default(false),
+  blocked: boolean("blocked").notNull().default(false),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [primaryKey({ columns: [table.organizationId, table.userId, table.otherId] })]);
 
 // Módulos desligados pela administração (Sistema › Módulos). Ausente = ligado.
 export const moduleSettings = pgTable("app_modules", {

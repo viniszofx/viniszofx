@@ -92,6 +92,13 @@
       "when": 1794600213064,
       "tag": "0012_curvy_beyonder",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794620208252,
+      "tag": "0013_zippy_synch",
+      "breakpoints": true
     }
   ]
 }
