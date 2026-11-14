@@ -8,6 +8,7 @@ import { RiSearchLine as Search, RiUserLine as UserRound, RiSettings3Line as Set
 import { Button } from "@/components/ui/button";
 import { DashboardMenuPopup, menuItemClass } from "./menu-popup";
 import { ThemeSelector } from "./theme-selector";
+import { clearCopies } from "@/components/nodus/messages/offline";
 import { authClient } from "@/lib/auth/client";
 import { notifyError } from "@/lib/ui/notifications";
 
@@ -22,6 +23,8 @@ export function DashboardHeader({ menuButton }: { menuButton: ReactNode }) {
     try {
       const result = await authClient.signOut();
       if (result.error) throw new Error(result.error.message);
+      // Cópias das conversas guardadas neste aparelho saem junto com a sessão.
+      clearCopies();
       window.location.replace("/login");
     } catch {
       notifyError("Não foi possível sair", "Tente novamente.");

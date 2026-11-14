@@ -193,10 +193,17 @@ export const directMessages = pgTable("app_direct_messages", {
   editedAt: timestamp("edited_at", { withTimezone: true }),
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
   forwarded: boolean("forwarded").notNull().default(false),
+  // Nome de quem escreveu a mensagem original (encaminhada).
+  forwardedFromName: text("forwarded_from_name"),
   attachments: jsonb("attachments").$type<{ fileId: string; name: string; type: string; size: number; ownerId?: string }[]>().notNull().default([]),
+  // Contato compartilhado: cartão com alguém da organização (nome e foto vêm do cadastro atual).
+  sharedUserId: text("shared_user_id"),
+  // Autoexclusão: fixada no envio, conforme a regra da conversa naquele momento.
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
 }, (table) => [
   index("app_direct_messages_pair_idx").on(table.organizationId, table.senderId, table.recipientId, table.createdAt),
   index("app_direct_messages_unread_idx").on(table.recipientId, table.readAt),
+  index("app_direct_messages_expires_idx").on(table.expiresAt),
 ]);
 
 // Preferências de cada pessoa para cada conversa: arquivar, silenciar e bloquear.
@@ -207,8 +214,56 @@ export const messageThreads = pgTable("app_message_threads", {
   archived: boolean("archived").notNull().default(false),
   muted: boolean("muted").notNull().default(false),
   blocked: boolean("blocked").notNull().default(false),
+  // Apagar conversa só para mim: esconde as mensagens até esta data; as novas aparecem normalmente.
+  clearedAt: timestamp("cleared_at", { withTimezone: true }),
+  // Conteúdo protegido: a outra pessoa não encaminha nem baixa o que esta pessoa envia.
+  protectContent: boolean("protect_content").notNull().default(false),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 }, (table) => [primaryKey({ columns: [table.organizationId, table.userId, table.otherId] })]);
+
+// Reação com emoji: uma por pessoa em cada mensagem.
+export const messageReactions = pgTable("app_message_reactions", {
+  messageId: text("message_id").notNull().references(() => directMessages.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  emoji: text("emoji").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [primaryKey({ columns: [table.messageId, table.userId] })]);
+
+// Regras que valem para as duas pessoas da conversa. O par fica em ordem (user_a < user_b).
+export const messagePolicies = pgTable("app_message_policies", {
+  organizationId: text("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  userA: text("user_a").notNull(),
+  userB: text("user_b").notNull(),
+  // Autoexclusão em segundos (null: desligada). Vale para mensagens enviadas depois de ligar.
+  autoDeleteSeconds: integer("auto_delete_seconds"),
+  updatedBy: text("updated_by"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [primaryKey({ columns: [table.organizationId, table.userA, table.userB] })]);
+
+// "Visto por último". Quem esconde o próprio também não vê o dos outros.
+export const messagePresence = pgTable("app_message_presence", {
+  organizationId: text("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  userId: text("user_id").notNull(),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  hidden: boolean("hidden").notNull().default(false),
+}, (table) => [primaryKey({ columns: [table.organizationId, table.userId] })]);
+
+// Denúncias de conversa ou mensagem, revisadas pela administração.
+export const messageReports = pgTable("app_message_reports", {
+  id: text("id").primaryKey(),
+  organizationId: text("organization_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+  reporterId: text("reporter_id").notNull(),
+  reportedId: text("reported_id").notNull(),
+  messageId: text("message_id"),
+  // Cópia do texto no momento da denúncia: a mensagem pode ser editada ou apagada depois.
+  messageBody: text("message_body"),
+  reason: text("reason").notNull(),
+  details: text("details"),
+  status: text("status").$type<"open" | "reviewed" | "dismissed">().notNull().default("open"),
+  reviewedBy: text("reviewed_by"),
+  reviewedAt: timestamp("reviewed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (table) => [index("app_message_reports_org_status_idx").on(table.organizationId, table.status, table.createdAt)]);
 
 // Módulos desligados pela administração (Sistema › Módulos). Ausente = ligado.
 export const moduleSettings = pgTable("app_modules", {

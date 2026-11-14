@@ -2,6 +2,7 @@ import { and, eq, or } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { directMessages } from "@/lib/db/schema/app";
 import { currentOrganization, unauthorized } from "@/lib/organizations/current";
+import { notExpired, threadState } from "@/lib/organizations/messages";
 import { getFile } from "@/lib/storage/server";
 
 export const runtime = "nodejs";
@@ -11,15 +12,18 @@ type Context = { params: Promise<{ messageId: string; fileId: string }> };
 export async function GET(_request: Request, context: Context) {
   const [organization, { messageId, fileId }] = await Promise.all([currentOrganization(), context.params]);
   if (!organization) return unauthorized();
-  const [message] = await db.select().from(directMessages).where(and(eq(directMessages.id, messageId), eq(directMessages.organizationId, organization.organizationId),
+  const [message] = await db.select().from(directMessages).where(and(eq(directMessages.id, messageId), eq(directMessages.organizationId, organization.organizationId), notExpired(),
     or(eq(directMessages.senderId, organization.userId), eq(directMessages.recipientId, organization.userId)))).limit(1);
   const attachment = message?.attachments.find(item => item.fileId === fileId);
   if (!message || !attachment) return new Response(null, { status: 404 });
+  const image = /^image\/(png|jpe?g|gif|webp|avif)$/.test(attachment.type);
+  // Conteúdo protegido por quem enviou: a foto aparece na conversa, mas arquivos não são baixados.
+  if (!image && message.senderId !== organization.userId && (await threadState(organization.organizationId, organization.userId, message.senderId)).peerProtects)
+    return new Response("Quem enviou protegeu o conteúdo: não dá para baixar.", { status: 403 });
   try {
     const object = await getFile(attachment.ownerId ?? message.senderId, fileId);
     const body = await object.Body?.transformToByteArray();
     if (!body) return new Response(null, { status: 404 });
-    const image = /^image\/(png|jpe?g|gif|webp|avif)$/.test(attachment.type);
     return new Response(new Uint8Array(body), { headers: {
       "Content-Type": image ? attachment.type : "application/octet-stream",
       "Content-Disposition": `${image ? "inline" : "attachment"}; filename*=UTF-8''${encodeURIComponent(attachment.name)}`,
