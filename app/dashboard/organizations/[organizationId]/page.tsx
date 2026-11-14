@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SettingsLayout } from "@/components/settings/settings-layout";
 import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { auth } from "@/lib/auth/server";
@@ -20,8 +21,7 @@ export default async function OrganizationPage({ params }: Context) {
   const [organization] = await db.select().from(organizations).where(eq(organizations.id, organizationId)).limit(1);
   if (!organization) notFound();
   const members = await organizationMemberRows(organizationId);
-  return <main className="w-full px-4 pb-12 pt-6 sm:px-7">
-    <div className="border-b pb-5"><Link href="/dashboard/organizations" className="mb-2 block text-xs text-muted-foreground hover:text-primary">Administração / Organizações</Link><h1 className="text-2xl font-semibold">{organization.name}</h1><p className="mt-1 text-sm text-muted-foreground">Adicione contas existentes e gerencie função e acesso.</p></div>
+  return <SettingsLayout title={organization.name} description="Adicione contas existentes e gerencie função e acesso de cada membro." actions={<Link href="/dashboard/organizations" className="text-sm text-primary hover:underline">Todas as organizações</Link>}>
     <OrganizationMembersManager organizationId={organization.id} initialMembers={members} localAuth={isLocalAuth} />
-  </main>;
+  </SettingsLayout>;
 }

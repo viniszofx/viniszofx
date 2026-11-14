@@ -74,8 +74,16 @@ export function ReportDialog({ peerId, name, message, onClose }: { peerId: strin
 type Report = { id: string; reason: string; details: string | null; messageBody: string | null; status: "open" | "reviewed" | "dismissed"; createdAt: string; reporterName: string; reportedName: string; reviewerName: string | null };
 const statusLabels: Record<Report["status"], string> = { open: "Aberta", reviewed: "Revisada", dismissed: "Descartada" };
 
-/** Denúncias da organização, para a administração revisar. */
+/** Denúncias da organização, para a administração revisar (diálogo das Mensagens). */
 export function ReportsDialog({ onClose }: { onClose: () => void }) {
+  return <Dialog open onOpenChange={value => { if (!value) onClose(); }}><DialogContent className="sm:max-w-2xl">
+    <DialogTitle>Denúncias</DialogTitle><DialogDescription>Conversas e mensagens denunciadas na organização.</DialogDescription>
+    <ReportsList />
+  </DialogContent></Dialog>;
+}
+
+/** Lista de denúncias com filtro e ações de revisão (também em Ajustes › Denúncias). */
+export function ReportsList() {
   const [reports, setReports] = useState<Report[] | null>(null);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<"open" | "all">("open");
@@ -93,8 +101,7 @@ export function ReportsDialog({ onClose }: { onClose: () => void }) {
     void load();
   }
   const visible = (reports ?? []).filter(report => filter === "all" || report.status === "open");
-  return <Dialog open onOpenChange={value => { if (!value) onClose(); }}><DialogContent className="sm:max-w-2xl">
-    <DialogTitle>Denúncias</DialogTitle><DialogDescription>Conversas e mensagens denunciadas na organização.</DialogDescription>
+  return <div className="grid gap-3">
     <div className="flex w-fit gap-1 rounded-full bg-foreground/6 p-1 text-xs" role="tablist">{([["open", `Abertas (${(reports ?? []).filter(item => item.status === "open").length})`], ["all", "Todas"]] as const).map(([value, label]) => <button key={value} type="button" role="tab" aria-selected={filter === value} onClick={() => setFilter(value)} className={cn("rounded-full px-3 py-1.5 font-medium", filter === value ? "bg-card shadow-sm" : "text-muted-foreground")}>{label}</button>)}</div>
     {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : !reports ? <div className="space-y-2"><Skeleton className="h-20 rounded-xl" /><Skeleton className="h-20 rounded-xl" /></div>
       : !visible.length ? <p className="py-8 text-center text-sm text-muted-foreground">{filter === "open" ? "Nenhuma denúncia aberta." : "Nenhuma denúncia."}</p>
@@ -106,7 +113,7 @@ export function ReportsDialog({ onClose }: { onClose: () => void }) {
         {report.reviewerName && <p className="text-xs text-muted-foreground">{statusLabels[report.status]} por {report.reviewerName}</p>}
         <div className="flex flex-wrap justify-end gap-2 pt-1">{report.status === "open" ? <><Button size="sm" variant="outline" onClick={() => void mark(report.id, "dismissed")}>Descartar</Button><Button size="sm" onClick={() => void mark(report.id, "reviewed")}>Marcar como revisada</Button></> : <Button size="sm" variant="outline" onClick={() => void mark(report.id, "open")}>Reabrir</Button>}</div>
       </li>)}</ul>}
-  </DialogContent></Dialog>;
+  </div>;
 }
 
 export const autoDeleteOptions: [number | null, string][] = [[null, "Desligado"], [86400, "1 dia"], [604800, "1 semana"], [2592000, "1 mês"]];

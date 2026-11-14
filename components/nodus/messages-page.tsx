@@ -783,17 +783,17 @@ export function MessagesPage() {
       <section aria-label="Mensagens da conversa" style={themeProps.style} className={`${themeProps.className} relative isolate min-h-0 min-w-0 flex-col ${selected ? "flex" : "hidden md:flex"}`}>
         <ChatBackdrop theme={chatTheme} step={wallStep} image={wallpaper} />
         {selected && peer ? <div ref={messageList} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          <header className="glass-bar sticky top-0 z-10 flex h-15 shrink-0 items-center gap-3 border-b px-4">
+          <header className="glass-bar sticky top-0 z-10 flex h-15 shrink-0 items-center gap-1.5 border-b px-2 sm:gap-3 sm:px-4">
             <Button type="button" variant="ghost" size="sm" className="-ml-1 gap-1 px-1.5 md:hidden" title="Voltar às conversas"
               aria-label={otherUnread ? `Voltar às conversas, ${otherUnread} não ${otherUnread === 1 ? "lida" : "lidas"}` : "Voltar às conversas"} onClick={() => setSelected(null)}>
               <RiArrowLeftLine />{otherUnread > 0 && <span aria-hidden="true" className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1 text-[11px] font-semibold text-primary-foreground tabular-nums">{otherUnread > 99 ? "99+" : otherUnread}</span>}
             </Button>
             {/* Nome e foto abrem a ficha da pessoa. */}
             <h2 className="min-w-0 flex-1">
-              <button type="button" onClick={() => setSheetOpen(true)} className="flex w-full min-w-0 items-center gap-3 rounded-lg text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
+              <button type="button" onClick={() => setSheetOpen(true)} className="flex w-full min-w-0 items-center gap-2 rounded-lg sm:gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <Avatar person={peer} presence />
                 <span className="min-w-0">
-                  <span className="flex items-center gap-1 truncate font-semibold">{peer.name}{thread?.muted && <RiNotificationOffLine aria-label="Silenciada" className="size-3.5 shrink-0 text-muted-foreground" />}</span>
+                  <span className="flex min-w-0 items-center gap-1 font-semibold"><span className="truncate">{peer.name}</span>{thread?.muted && <RiNotificationOffLine aria-label="Silenciada" className="size-3.5 shrink-0 text-muted-foreground" />}</span>
                   {!self && <span className="block truncate text-xs font-normal text-muted-foreground">{thread?.blocked ? "Bloqueado por você" : lastSeenLabel(peer.lastSeen ?? null)}</span>}
                 </span>
               </button>
@@ -912,14 +912,14 @@ export function MessagesPage() {
               ? <>Você bloqueou {peer.name}.<Button type="button" size="sm" variant="ghost" className="text-primary normal-case tracking-normal" onClick={() => void updateSettings({ blocked: false })}>Desbloquear</Button></>
               : "Não é possível enviar mensagens para esta pessoa."}
           </div>}
-          <form onSubmit={event => void send(event)} className={`sticky bottom-0 z-10 px-4 pt-4 pb-2 sm:pb-3 ${chatBlocked ? "hidden" : ""}`}>
+          <form onSubmit={event => void send(event)} className={`sticky bottom-0 z-10 px-2 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3 ${chatBlocked ? "hidden" : ""}`}>
             {(replyTo || editing) && <div className="chat-banner-enter glass-float mb-2 flex items-start justify-between gap-2 rounded-lg border-l-2 border-primary px-3 py-2 text-xs">
               <div className="min-w-0"><span className="font-semibold">{editing ? "Editando mensagem" : `Respondendo a ${replyTo?.mine ? "você" : peer.name}`}</span><p className="truncate text-muted-foreground">{editing ? editing.body : replyTo && previewOf(replyTo)}</p></div>
               <Button type="button" variant="ghost" size="icon-xs" aria-label="Cancelar" onClick={() => { setReplyTo(null); if (editing) { setEditing(null); setBody(""); } }}><RiCloseLine /></Button>
             </div>}
-            <div className="flex items-end gap-2">
+            <div className="flex items-end gap-1.5 sm:gap-2">
               <Popover open={attachOpen} onOpenChange={setAttachOpen}>
-                <PopoverTrigger render={<Button type="button" size="icon" variant="ghost" className="glass-float chat-action size-11 shrink-0 rounded-full border [&_svg]:size-6" aria-label="Anexar" title="Anexar" disabled={!!editing} />}><RiAddLine /></PopoverTrigger>
+                <PopoverTrigger render={<Button type="button" size="icon" variant="ghost" className="glass-float chat-action size-10 shrink-0 rounded-full border sm:size-11 [&_svg]:size-6" aria-label="Anexar" title="Anexar" disabled={!!editing} />}><RiAddLine /></PopoverTrigger>
                 <PopoverContent side="top" align="start" sideOffset={10} collisionPadding={12} className="w-48 p-1">
                   <PopoverTitle className="sr-only">Anexar</PopoverTitle>
                   <PopoverClose render={<Button type="button" variant="ghost" size="sm" className="w-full justify-start normal-case tracking-normal" />} onClick={() => setCameraOpen(true)}><RiCameraLine />Câmera</PopoverClose>
@@ -930,23 +930,23 @@ export function MessagesPage() {
               </Popover>
               <div className="glass-float flex min-w-0 flex-1 items-end gap-0.5 rounded-[1.375rem] border py-[3px] pr-1 pl-1 focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/20">
                 <textarea ref={messageInput} value={body} maxLength={5000} rows={1} placeholder="Mensagem" aria-label="Escrever mensagem"
-                  className="max-h-38 min-h-9 flex-1 resize-none overflow-hidden bg-transparent px-3 py-2 text-base leading-5 outline-none placeholder:text-muted-foreground sm:text-sm"
+                  className="max-h-38 min-h-9 w-0 min-w-0 flex-1 resize-none overflow-hidden bg-transparent px-2 py-2 text-base leading-5 outline-none placeholder:text-muted-foreground sm:px-3 sm:text-sm"
                   onChange={event => setBody(event.target.value)}
                   onKeyDown={event => {
                     if (event.key === "Escape") { setReplyTo(null); if (editing) { setEditing(null); setBody(""); } }
                     if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing && !touchKeyboard()) { event.preventDefault(); event.currentTarget.form?.requestSubmit(); }
                   }} />
                 <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
-                  <PopoverTrigger render={<Button type="button" size="icon" variant="ghost" className="chat-action size-9 shrink-0 rounded-full text-muted-foreground" aria-label="Inserir emoji" title="Inserir emoji" />}><RiEmotionHappyLine /></PopoverTrigger>
+                  <PopoverTrigger render={<Button type="button" size="icon" variant="ghost" className="chat-action size-8 shrink-0 rounded-full text-muted-foreground sm:size-9" aria-label="Inserir emoji" title="Inserir emoji" />}><RiEmotionHappyLine /></PopoverTrigger>
                   <PopoverContent side="top" align="end" sideOffset={10} collisionPadding={12} className="w-[19rem] p-2">
                     <PopoverTitle className="sr-only">Emoji</PopoverTitle>
                     <EmojiPicker onPick={insertEmoji} />
                   </PopoverContent>
                 </Popover>
-                {!/\S/.test(body) && !editing && <Button type="button" size="icon" variant="ghost" className="chat-emoji-enter chat-action size-9 shrink-0 rounded-full text-muted-foreground" aria-label="Tirar ou enviar foto" title="Foto" onClick={() => setCameraOpen(true)}><RiCameraLine /></Button>}
+                {!/\S/.test(body) && !editing && <Button type="button" size="icon" variant="ghost" className="chat-emoji-enter chat-action size-8 shrink-0 rounded-full text-muted-foreground max-[359px]:hidden sm:size-9" aria-label="Tirar ou enviar foto" title="Foto" onClick={() => setCameraOpen(true)}><RiCameraLine /></Button>}
               </div>
               {/* Tocar em enviar não tira o foco do campo: o teclado continua aberto para a próxima mensagem. */}
-              <Button type="submit" size="icon" className="chat-action size-11 shrink-0 rounded-full shadow-md [&_svg]:size-5" aria-label={editing ? "Salvar edição" : "Enviar mensagem"} disabled={!body.trim()}
+              <Button type="submit" size="icon" className="chat-action size-10 shrink-0 rounded-full shadow-md sm:size-11 [&_svg]:size-5" aria-label={editing ? "Salvar edição" : "Enviar mensagem"} disabled={!body.trim()}
                 onMouseDown={event => event.preventDefault()}><RiSendPlane2Fill /></Button>
             </div>
           </form>
