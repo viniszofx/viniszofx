@@ -80,7 +80,7 @@ function JourneysPanel() {
 function MuralCarousel({ posts }: { posts: OrgPost[] }) {
   return <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">{posts.slice(0, 8).map(post => <li key={post.id} className="w-64 shrink-0 snap-start sm:w-80">
     <Link href="/dashboard/announcements" className={cn(surfaceVariants(), "flex h-full flex-col overflow-hidden transition-colors hover:border-primary/40")}>
-      {post.cover ? <img src={post.cover} alt="" loading="lazy" className="aspect-[2/1] w-full object-cover" /> : <div className="aspect-[2/1] w-full bg-gradient-to-br from-primary/20 via-primary/5 to-transparent" aria-hidden="true" />}
+      {post.cover ? <img src={post.cover} alt="" loading="lazy" className="aspect-[2/1] w-full object-cover" /> : <div className="aspect-[2/1] w-full bg-muted" aria-hidden="true" />}
       <div className="flex flex-1 flex-col gap-1 p-3"><p className="line-clamp-2 text-sm font-semibold">{post.title}</p>{post.body && <p className="line-clamp-2 text-xs text-muted-foreground">{post.body}</p>}
         <p className="mt-auto pt-1 text-[11px] text-muted-foreground">{post.authorName}{post.poll && " · enquete"}{post.poll && !post.poll.mine.length && <span className="ml-1 font-medium text-primary">vote</span>}</p></div>
     </Link>

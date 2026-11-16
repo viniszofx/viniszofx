@@ -151,7 +151,7 @@ export function ProfileForms({ name: initialName, email, image, username: initia
   const initials = name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "").join("") || "?";
   return <div className="grid gap-6">
     <section className={cn(surfaceVariants(), "overflow-hidden shadow-sm")} aria-labelledby="profile-info">
-      <div className="border-b bg-gradient-to-r from-primary/10 via-primary/5 to-transparent px-6 py-7 sm:px-8">
+      <div className="border-b bg-muted/40 px-6 py-7 sm:px-8">
         <div className="flex items-center gap-4">
           <button type="button" onClick={() => fileInput.current?.click()} className="group relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-background shadow-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={avatar ? "Trocar foto de perfil" : "Adicionar foto de perfil"}>
             {avatar ? <img src={avatar} alt="" className="size-full object-cover" /> : <span className="flex size-full items-center justify-center bg-primary/15 font-heading text-xl font-semibold text-primary">{initials}</span>}

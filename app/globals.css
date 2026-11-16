@@ -32,7 +32,6 @@
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
   --radius: 0.875rem;
-  --glass-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --sidebar: oklch(0.985 0.001 106.423);
   --sidebar-foreground: oklch(0.147 0.004 49.25);
   --sidebar-primary: oklch(0.609 0.126 221.723);
@@ -41,7 +40,7 @@
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
-  --background: oklch(1 0 0);
+  --background: oklch(0.974 0.002 260);
   --foreground: oklch(0.147 0.004 49.25);
 }
 
@@ -167,8 +166,8 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Luz ambiente na cor do app (como no Nodus): dá ao vidro fosco algo para desfocar. Fica numa camada presa
-     à tela (position: fixed), porque o Safari do iPhone ignora background-attachment: fixed. */
+  /* Luz ambiente discreta: um brilho neutro vindo de cima, sem manchas de cor. Dá profundidade ao vidro
+     sem chamar atenção. Fica numa camada presa à tela (o Safari do iPhone ignora background-attachment: fixed). */
   body::before {
     content: "";
     position: fixed;
@@ -176,27 +175,20 @@
     z-index: -1;
     pointer-events: none;
     background-image:
-      radial-gradient(55rem 40rem at 0% 0%, color-mix(in oklch, var(--primary) 20%, transparent), transparent 70%),
-      radial-gradient(40rem 45rem at 5% 75%, color-mix(in oklch, oklch(0.68 0.16 300) 14%, transparent), transparent 70%),
-      radial-gradient(50rem 36rem at 100% 100%, color-mix(in oklch, oklch(0.72 0.12 190) 12%, transparent), transparent 70%),
-      radial-gradient(40rem 30rem at 85% 5%, color-mix(in oklch, var(--primary) 8%, transparent), transparent 70%);
+      radial-gradient(70rem 32rem at 50% -8rem, oklch(1 0 0 / 0.9), transparent 70%),
+      radial-gradient(48rem 28rem at 50% -10rem, color-mix(in oklch, var(--primary) 7%, transparent), transparent 70%);
   }
-  /* No escuro a luz some sobre o quase preto: cores vivas fixas, para o vidro ter o que desfocar.
-     Seletores escritos à mão: o @variant dark não funciona em pseudo-elementos (::before). */
+  /* Seletores escritos à mão: o @variant dark não funciona em pseudo-elementos (::before). */
   :root.dark body::before {
     background-image:
-      radial-gradient(50rem 38rem at 0% 0%, oklch(0.55 0.15 230 / 0.45), transparent 70%),
-      radial-gradient(42rem 46rem at 8% 80%, oklch(0.5 0.2 300 / 0.35), transparent 70%),
-      radial-gradient(52rem 38rem at 100% 100%, oklch(0.6 0.13 185 / 0.32), transparent 70%),
-      radial-gradient(40rem 30rem at 88% 6%, oklch(0.55 0.15 250 / 0.25), transparent 70%);
+      radial-gradient(70rem 32rem at 50% -8rem, oklch(1 0 0 / 0.06), transparent 70%),
+      radial-gradient(48rem 28rem at 50% -10rem, color-mix(in oklch, var(--primary) 12%, transparent), transparent 70%);
   }
   @media (prefers-color-scheme: dark) {
     :root:not(.light) body::before {
       background-image:
-        radial-gradient(50rem 38rem at 0% 0%, oklch(0.55 0.15 230 / 0.45), transparent 70%),
-        radial-gradient(42rem 46rem at 8% 80%, oklch(0.5 0.2 300 / 0.35), transparent 70%),
-        radial-gradient(52rem 38rem at 100% 100%, oklch(0.6 0.13 185 / 0.32), transparent 70%),
-        radial-gradient(40rem 30rem at 88% 6%, oklch(0.55 0.15 250 / 0.25), transparent 70%);
+        radial-gradient(70rem 32rem at 50% -8rem, oklch(1 0 0 / 0.06), transparent 70%),
+        radial-gradient(48rem 28rem at 50% -10rem, color-mix(in oklch, var(--primary) 12%, transparent), transparent 70%);
     }
   }
   html {
@@ -447,62 +439,58 @@
   .chat-action:not(:disabled):hover, .chat-action:not(:disabled):active, .chat-reaction:hover, .chat-reaction:active { transform: none; }
 }
 
-/* Vidro (mesmo do Nodus): barras, peças flutuantes sobre o fundo colorido do chat, cartões e menus. */
+/* Vidro: translúcido e desfocado, com borda fina e sombra curta. No claro, branco sobre o fundo cinza-claro;
+   no escuro, cinza-grafite. Sem suporte a backdrop-filter, ou com "reduzir transparência", fica opaco. */
 @utility glass-bar {
-  background-color: var(--card);
+  background-color: var(--background);
   @supports (backdrop-filter: blur(1px)) {
-    background-color: color-mix(in oklch, var(--card) 66%, transparent);
-    background-image: var(--glass-grain);
-    backdrop-filter: blur(32px) saturate(1.6);
-    @variant dark { background-color: color-mix(in oklch, var(--card) 50%, transparent); }
+    background-color: color-mix(in oklch, var(--background) 78%, transparent);
+    backdrop-filter: blur(20px) saturate(1.8);
+  }
+  @media (prefers-reduced-transparency: reduce) { background-color: var(--background); backdrop-filter: none; }
+}
+@utility glass-card {
+  background-color: var(--card);
+  border-color: oklch(0 0 0 / 0.07);
+  box-shadow: 0 1px 2px oklch(0 0 0 / 0.04), 0 2px 12px -6px oklch(0 0 0 / 0.08);
+  @supports (backdrop-filter: blur(1px)) {
+    background-color: color-mix(in oklch, var(--card) 82%, transparent);
+    backdrop-filter: blur(16px) saturate(1.6);
+  }
+  @variant dark {
+    border-color: oklch(1 0 0 / 0.08);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.3);
+    @supports (backdrop-filter: blur(1px)) { background-color: color-mix(in oklch, var(--card) 72%, transparent); }
   }
   @media (prefers-reduced-transparency: reduce) { background-color: var(--card); backdrop-filter: none; }
 }
 @utility glass-float {
   background-color: var(--card);
+  border-color: oklch(0 0 0 / 0.08);
+  box-shadow: 0 4px 16px -8px oklch(0 0 0 / 0.16);
   @supports (backdrop-filter: blur(1px)) {
-    background-color: color-mix(in oklch, var(--card) 78%, transparent);
-    background-image: linear-gradient(180deg, color-mix(in oklch, white 8%, transparent), transparent 70%);
-    backdrop-filter: blur(36px) saturate(1.3);
-    border-color: color-mix(in oklch, white 45%, transparent);
-    box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 45%, transparent), 0 10px 32px -14px rgb(0 0 0 / 0.25);
-    @variant dark {
-      background-color: color-mix(in oklch, var(--card) 74%, transparent);
-      background-image: none;
-      border-color: color-mix(in oklch, white 12%, transparent);
-      box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 12%, transparent), 0 10px 32px -14px rgb(0 0 0 / 0.6);
-    }
+    background-color: color-mix(in oklch, var(--card) 76%, transparent);
+    backdrop-filter: blur(24px) saturate(1.6);
   }
-  @media (prefers-reduced-transparency: reduce) { background-color: var(--card); background-image: none; backdrop-filter: none; }
-}
-@utility glass-card {
-  background-color: var(--card);
-  @supports (backdrop-filter: blur(1px)) {
-    background-color: color-mix(in oklch, var(--card) 74%, transparent);
-    background-image: var(--glass-grain);
-    backdrop-filter: blur(24px) saturate(1.5);
-    box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 50%, transparent), 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    @variant dark {
-      background-color: color-mix(in oklch, var(--card) 52%, transparent);
-      border-color: color-mix(in oklch, white 10%, transparent);
-      box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 9%, transparent), 0 8px 24px -12px rgb(0 0 0 / 0.5);
-    }
+  @variant dark {
+    border-color: oklch(1 0 0 / 0.1);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.05), 0 4px 16px -8px oklch(0 0 0 / 0.5);
+    @supports (backdrop-filter: blur(1px)) { background-color: color-mix(in oklch, var(--card) 70%, transparent); }
   }
   @media (prefers-reduced-transparency: reduce) { background-color: var(--card); backdrop-filter: none; }
 }
 @utility glass-surface {
   background-color: var(--popover);
+  border-color: oklch(0 0 0 / 0.08);
+  box-shadow: 0 0 0 0.5px oklch(0 0 0 / 0.04), 0 12px 32px -12px oklch(0 0 0 / 0.22);
   @supports (backdrop-filter: blur(1px)) {
-    background-color: color-mix(in oklch, oklch(0.96 0.003 286) 78%, transparent);
-    background-image: var(--glass-grain);
-    backdrop-filter: blur(40px) saturate(1.5);
-    border-color: color-mix(in oklch, white 55%, transparent);
-    box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 70%, transparent), 0 12px 40px -12px rgb(0 0 0 / 0.25);
-    @variant dark {
-      background-color: color-mix(in oklch, var(--popover) 78%, transparent);
-      border-color: color-mix(in oklch, white 12%, transparent);
-      box-shadow: inset 0 1px 0 0 color-mix(in oklch, white 10%, transparent), 0 12px 40px -12px rgb(0 0 0 / 0.6);
-    }
+    background-color: color-mix(in oklch, var(--popover) 86%, transparent);
+    backdrop-filter: blur(28px) saturate(1.8);
+  }
+  @variant dark {
+    border-color: oklch(1 0 0 / 0.1);
+    box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.05), 0 12px 32px -12px oklch(0 0 0 / 0.7);
+    @supports (backdrop-filter: blur(1px)) { background-color: color-mix(in oklch, var(--popover) 82%, transparent); }
   }
   @media (prefers-reduced-transparency: reduce) { background-color: var(--popover); backdrop-filter: none; }
 }

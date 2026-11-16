@@ -15,8 +15,13 @@ function readTheme(): Theme {
 function applyTheme() {
   const theme = readTheme();
   const dark = theme === "dark" || (theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-  document.documentElement.classList.toggle("dark", dark);
+  // A escolha explícita marca .dark ou .light; "Sistema" não marca nada e o CSS segue o aparelho.
+  // Sem o .light, escolher Claro num aparelho escuro não mudava nada (o CSS escuro do aparelho vencia).
+  document.documentElement.classList.toggle("dark", theme === "dark" || (theme === "system" && dark));
+  document.documentElement.classList.toggle("light", theme === "light");
   document.documentElement.style.colorScheme = dark ? "dark" : "light";
+  // O servidor lê o cookie para a primeira pintura já sair no tema certo.
+  document.cookie = `viniszofx-theme=${theme}; path=/; max-age=31536000; samesite=lax`;
 }
 function subscribe(listener: () => void) {
   const media = matchMedia("(prefers-color-scheme: dark)");
