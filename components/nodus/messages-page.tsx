@@ -645,7 +645,7 @@ export function MessagesPage() {
         {overview.admin && <Button type="button" variant="outline" size="sm" className="normal-case tracking-normal" onClick={() => setReportsOpen(true)}><RiAlarmWarningLine />Denúncias</Button>}
       </div>}
     </header>
-    <div className="glass-bar grid h-[calc(100dvh-5.5rem-1px-3.5rem-env(safe-area-inset-bottom))] grid-rows-[minmax(0,1fr)] overflow-hidden md:h-auto md:min-h-0 md:flex-1 md:grid-cols-[minmax(15rem,20rem)_minmax(0,1fr)] md:rounded-2xl md:border md:shadow-sm">
+    <div className="glass-bar grid h-[calc(100dvh-3.5rem-1px-3.5rem-env(safe-area-inset-bottom))] grid-rows-[minmax(0,1fr)] overflow-hidden md:h-auto md:min-h-0 md:flex-1 md:grid-cols-[minmax(15rem,20rem)_minmax(0,1fr)] md:rounded-2xl md:border md:shadow-sm">
       <section aria-label="Conversas" className={`relative min-h-0 min-w-0 flex-col border-r ${selected ? "hidden md:flex" : "flex"}`}>
         <div className="min-h-0 flex-1 overflow-y-auto bg-[radial-gradient(circle_at_0%_0%,color-mix(in_oklch,var(--primary)_9%,transparent),transparent_55%)]">
           {/* No celular: título centralizado e Nova mensagem redonda à direita, com a busca em pílula embaixo. */}

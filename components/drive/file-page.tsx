@@ -50,7 +50,7 @@ export function DriveFilePage({ itemId }: { itemId: string }) {
     {item.file && <span className="hidden shrink-0 text-xs text-muted-foreground xl:inline">{formatBytes(item.file.size)}</span>}
     <Button type="button" variant="ghost" size="sm" title={item.shareToken ? "Link ativo" : "Compartilhar"} onClick={() => setSharing(true)}><RiLink /><span className="max-xl:sr-only">{item.shareToken ? "Link ativo" : "Compartilhar"}</span></Button>
   </>;
-  return <section aria-label={item?.name ?? "Arquivo"} className="flex h-[calc(100dvh-97px-3.5rem-env(safe-area-inset-bottom))] min-w-0 flex-col bg-background md:h-[calc(100dvh-57px)]">
+  return <section aria-label={item?.name ?? "Arquivo"} className="flex h-[calc(100dvh-57px-3.5rem-env(safe-area-inset-bottom))] min-w-0 flex-col bg-background md:h-[calc(100dvh-57px)]">
     {!ownBar && <header className="flex min-h-12 flex-wrap items-center gap-2 border-b px-3 py-1.5">
       <Link href={back} className={buttonVariants({ variant: "ghost", size: "sm" })}><RiArrowLeftLine />Voltar</Link>
       <h1 className="min-w-0 flex-1 truncate text-sm font-semibold" title={item?.name}>{item?.name}</h1>

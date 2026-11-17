@@ -38,17 +38,17 @@ export function DashboardHeader({ menuButton }: { menuButton: ReactNode }) {
   }
   return <header className="sticky top-0 z-30 grid min-h-14 grid-cols-[1fr_auto] items-center gap-x-4 border-b glass-bar px-3 py-2 text-sidebar-foreground md:h-[57px] md:grid-cols-[1fr_minmax(15rem,32rem)_1fr] md:py-0">
     <div className="flex min-w-0 items-center gap-2">{menuButton}<Link href="/dashboard" className="flex items-center gap-2 text-sm font-semibold focus-visible:outline-ring"><span className="flex size-6 items-center justify-center rounded-md border border-sidebar-primary text-xs font-bold text-sidebar-primary">V</span><span className="truncate">Viniccius</span><span className="hidden border-l pl-2 text-xs font-normal text-muted-foreground lg:inline">Console</span></Link></div>
-    {/* A linha cresce de 0 até a altura do campo (grid-rows) e o campo desce junto; sem escala. */}
-    <div className={cn("order-last col-span-2 grid transition-[grid-template-rows] duration-250 ease-out motion-reduce:transition-none md:order-none md:col-span-1 md:block", searchOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]")}>
-      <div className="min-h-0 overflow-hidden md:overflow-visible">
-        <form id="dashboard-search" role="search" onSubmit={submit} onKeyDown={event => { if (event.key === "Escape") setSearchOpen(false); }}
-          className={cn("mt-2 flex h-9 min-w-0 items-center gap-2 rounded-full bg-foreground/6 px-3 transition-[translate,opacity,visibility] duration-250 ease-out motion-reduce:transition-none md:mt-0 md:visible md:translate-y-0 md:opacity-100",
-            searchOpen ? "translate-y-0 opacity-100" : "invisible -translate-y-3 opacity-0")}>
-          <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <input ref={input} type="search" aria-label="Busca global" placeholder="Buscar…" value={search} onChange={event => setSearch(event.target.value)} className="min-w-0 flex-1 bg-transparent text-base sm:text-xs outline-none placeholder:text-muted-foreground" />
-          <kbd className="hidden text-[10px] text-muted-foreground sm:block">Enter</kbd>
-        </form>
-      </div>
+    {/* Celular: o campo desce por baixo do cabeçalho, sobre o conteúdo (a altura das telas não muda).
+        Revela de cima para baixo (clip-path) com um leve deslocamento; sem escala. */}
+    <div className={cn("max-md:absolute max-md:inset-x-0 max-md:top-full max-md:border-b max-md:glass-bar max-md:px-3 max-md:py-2 max-md:transition-[clip-path,visibility] max-md:duration-250 max-md:ease-out motion-reduce:transition-none",
+      searchOpen ? "max-md:[clip-path:inset(0_0_0_0)]" : "max-md:invisible max-md:[clip-path:inset(0_0_100%_0)]")}>
+      <form id="dashboard-search" role="search" onSubmit={submit} onKeyDown={event => { if (event.key === "Escape") setSearchOpen(false); }}
+        className={cn("flex h-9 min-w-0 items-center gap-2 rounded-full bg-foreground/6 px-3 max-md:transition-[translate,opacity] max-md:duration-250 max-md:ease-out motion-reduce:transition-none",
+          !searchOpen && "max-md:-translate-y-3 max-md:opacity-0")}>
+        <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <input ref={input} type="search" aria-label="Busca global" placeholder="Buscar…" value={search} onChange={event => setSearch(event.target.value)} className="min-w-0 flex-1 bg-transparent text-base sm:text-xs outline-none placeholder:text-muted-foreground" />
+        <kbd className="hidden text-[10px] text-muted-foreground sm:block">Enter</kbd>
+      </form>
     </div>
     <div className="flex items-center justify-end gap-2">
       <Button variant="ghost" size="icon-sm" className="md:hidden" aria-label={searchOpen ? "Fechar busca" : "Buscar"} title={searchOpen ? "Fechar busca" : "Buscar"} aria-expanded={searchOpen} aria-controls="dashboard-search" onClick={() => setSearchOpen(open => !open)}>

@@ -121,7 +121,7 @@ export function WhiteboardEditor({ id }: { id: string }) {
     download(blob, `${name}.${format}`);
   }
   const label = { loading: "Abrindo…", saved: "Salvo", pending: "Alterações não salvas", saving: "Salvando…", error: "Erro ao salvar", large: "Grande demais para salvar (20 MB)" }[status];
-  return <div className="flex h-[calc(100dvh-97px-3.5rem-env(safe-area-inset-bottom))] min-w-0 flex-col md:h-[calc(100dvh-57px)]">
+  return <div className="flex h-[calc(100dvh-57px-3.5rem-env(safe-area-inset-bottom))] min-w-0 flex-col md:h-[calc(100dvh-57px)]">
     <header className="flex flex-wrap items-center gap-2 border-b px-3 py-2">
       <Link href="/dashboard/whiteboards" className="inline-flex items-center gap-1 px-2 text-sm text-muted-foreground hover:text-foreground"><RiArrowLeftLine className="size-4" />Quadro branco</Link>
       <h1 className="min-w-0 flex-1 truncate text-sm font-semibold">{board?.title ?? "Quadro"}</h1>
