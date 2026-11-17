@@ -3,10 +3,10 @@ import { useEffect, useRef, type ElementType, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 // Estado escondido por variante de dado (data-reveal=hidden); motion-reduce mostra sem animar.
-const revealClass = "transition-[opacity,transform,filter] duration-900 ease-[cubic-bezier(.2,.8,.2,1)] data-[reveal=hidden]:translate-y-7 data-[reveal=hidden]:scale-[.98] data-[reveal=hidden]:opacity-0 data-[reveal=hidden]:blur-md motion-reduce:transition-none motion-reduce:data-[reveal=hidden]:translate-y-0 motion-reduce:data-[reveal=hidden]:scale-100 motion-reduce:data-[reveal=hidden]:opacity-100 motion-reduce:data-[reveal=hidden]:blur-none";
+const revealClass = "transition-[opacity,translate] duration-500 ease-out data-[reveal=hidden]:translate-y-3 data-[reveal=hidden]:opacity-0 motion-reduce:transition-none motion-reduce:data-[reveal=hidden]:translate-y-0 motion-reduce:data-[reveal=hidden]:opacity-100";
 
 /**
- * Revela o conteúdo ao entrar na tela (aparece subindo, saindo do desfoque).
+ * Revela o conteúdo ao entrar na tela (sobe um pouco e aparece; sem desfoque nem escala).
  * Só esconde depois de montar no navegador, então sem JavaScript tudo aparece.
  */
 export function Reveal({ children, delay = 0, as: Tag = "div", className, ...rest }: { children: ReactNode; delay?: number; as?: ElementType; className?: string } & Record<string, unknown>) {

@@ -159,8 +159,7 @@ export function LeadWidget() {
       </form>
     </section>}
     <button type="button" aria-expanded={open} aria-label={open ? "Fechar conversa" : "Abrir conversa"} onClick={() => setOpen(value => !value)}
-      className="group relative grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_16px_40px_-12px_color-mix(in_srgb,var(--primary)_70%,transparent)] outline-none transition-transform duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none">
-      {!open && <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-full bg-primary/40 [animation-duration:2.5s] motion-reduce:hidden" />}
+      className="group relative grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg outline-none transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none">
       {open ? <RiCloseLine className="relative size-6" /> : <RiChat3Line className="relative size-6" />}
     </button>
   </div>;

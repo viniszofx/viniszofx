@@ -14,7 +14,7 @@ const sections = [
 export function SiteHeader({ authenticated, blog = true }: { authenticated: boolean; blog?: boolean }) {
   const links = blog ? [...sections, { href: "/blog", label: "Blog" }] : sections;
   return (
-    <header className="fixed inset-x-0 top-0 z-50 isolate bg-background/30 bg-linear-to-b from-white/20 to-white/5 shadow-[0_8px_32px_-12px_rgb(0_0_0/0.18)] backdrop-blur-2xl backdrop-saturate-150 dark:from-white/10 dark:to-white/0">
+    <header className="fixed inset-x-0 top-0 z-50 border-b glass-bar">
       <nav
         aria-label="Navegação principal"
         className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6"
@@ -22,18 +22,19 @@ export function SiteHeader({ authenticated, blog = true }: { authenticated: bool
         <Link
           href="/"
           aria-label="Vinicius Souza — página inicial"
-          className="shrink-0 whitespace-nowrap font-heading text-xl font-semibold tracking-wider text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
+          {/* Mesma marca do cabeçalho do painel. */}
+          <span aria-hidden="true" className="flex size-6 items-center justify-center rounded-md border border-primary text-xs font-bold text-primary">V</span>
           <span className="hidden sm:inline">Vinicius Souza</span>
-          <span className="sm:hidden">V</span>
         </Link>
         <div className="flex items-center gap-3 sm:gap-5">
           {/* Telas grandes: links em linha. */}
-          <ul className="hidden items-center gap-5 text-xs whitespace-nowrap lg:flex">
-            {links.map(link => <li key={link.href}><Link href={link.href} className="hover:text-primary">{link.label}</Link></li>)}
+          <ul className="hidden items-center gap-5 text-sm whitespace-nowrap text-muted-foreground lg:flex">
+            {links.map(link => <li key={link.href}><Link href={link.href} className="hover:text-foreground">{link.label}</Link></li>)}
           </ul>
           <ThemeSelector compact />
-          <Button nativeButton={false} render={<Link href={authenticated ? "/dashboard" : "/login"} />} variant="outline" size="sm" className="whitespace-nowrap">{authenticated ? "Ir ao app" : "Login"}</Button>
+          <Button nativeButton={false} render={<Link href={authenticated ? "/dashboard" : "/login"} />} variant="outline" size="sm" className="whitespace-nowrap normal-case tracking-normal">{authenticated ? "Ir ao app" : "Login"}</Button>
           <SiteMenu links={links} />
         </div>
       </nav>
