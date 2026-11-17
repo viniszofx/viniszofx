@@ -120,10 +120,10 @@ export function LeadWidget() {
   }
 
   const inputStep = step === "name" || step === "email" || step === "phone" || step === "message";
-  return <div className="fixed right-4 bottom-4 z-40 flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
+  return <div className="fixed right-4 bottom-4 z-40 [--primary:var(--color-cyan-500)] [--primary-foreground:var(--color-white)] [--ring:var(--color-cyan-400)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
     {open && <section role="dialog" aria-label="Conversa com o assistente" className={cn(glass, "flex h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] origin-bottom-right animate-rise-in flex-col overflow-hidden rounded-3xl motion-reduce:animate-none")}>
       <header className="flex items-center gap-3 border-b border-foreground/10 px-4 py-3">
-        <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-linear-to-br from-primary to-cyan-400 text-primary-foreground"><RiRobot2Line className="size-5" /><span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-card" /></span>
+        <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"><RiRobot2Line className="size-5" /><span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-card" /></span>
         <div className="min-w-0 flex-1"><h2 className="text-sm font-semibold">Assistente do Vinicius</h2><p className="text-xs text-muted-foreground">{typing ? "digitando…" : "Online · responde em instantes"}</p></div>
         <button type="button" aria-label="Recomeçar conversa" title="Recomeçar" className="grid size-8 place-items-center rounded-full text-muted-foreground outline-none hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring" onClick={restart}><RiRefreshLine className="size-4" /></button>
         <button type="button" aria-label="Fechar conversa" className="grid size-8 place-items-center rounded-full text-muted-foreground outline-none hover:bg-foreground/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring" onClick={() => setOpen(false)}><RiCloseLine className="size-5" /></button>
@@ -159,7 +159,7 @@ export function LeadWidget() {
       </form>
     </section>}
     <button type="button" aria-expanded={open} aria-label={open ? "Fechar conversa" : "Abrir conversa"} onClick={() => setOpen(value => !value)}
-      className="group relative grid size-14 place-items-center rounded-full bg-linear-to-br from-primary to-cyan-500 text-primary-foreground shadow-[0_16px_40px_-12px_color-mix(in_srgb,var(--primary)_70%,transparent)] outline-none transition-transform duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none">
+      className="group relative grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_16px_40px_-12px_color-mix(in_srgb,var(--primary)_70%,transparent)] outline-none transition-transform duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none">
       {!open && <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-full bg-primary/40 [animation-duration:2.5s] motion-reduce:hidden" />}
       {open ? <RiCloseLine className="relative size-6" /> : <RiChat3Line className="relative size-6" />}
     </button>
