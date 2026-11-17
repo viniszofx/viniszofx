@@ -3,7 +3,6 @@ import { surfaceVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useRef, useState, type ComponentType, type CSSProperties, type FormEvent, type KeyboardEvent } from "react";
 import { RiAddLine, RiArrowLeftSLine, RiCalendarScheduleFill, RiCalendarTodoFill, RiCheckDoubleLine, RiCheckLine, RiDeleteBinLine, RiInboxFill, RiInformationLine, RiPencilLine } from "@remixicon/react";
-import { CatalogLayout } from "@/components/listing/catalog";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -19,12 +18,13 @@ import { today } from "@/lib/format/date";
 type Smart = "today" | "scheduled" | "all" | "done";
 type Draft = { title: string; notes: string; startDate: string; endDate: string; listId: string };
 const emptyDraft: Draft = { title: "", notes: "", startDate: "", endDate: "", listId: "" };
-const INBOX = { name: "Tarefas", color: "#2563eb", icon: "list" };
-const smartLists: { key: Smart; label: string; color: string; icon: ComponentType<{ className?: string }> }[] = [
-  { key: "today", label: "Hoje", color: "#2563eb", icon: RiCalendarTodoFill },
-  { key: "scheduled", label: "Agendadas", color: "#ef4444", icon: RiCalendarScheduleFill },
-  { key: "all", label: "Todas", color: "#475569", icon: RiInboxFill },
-  { key: "done", label: "Concluídas", color: "#71717a", icon: RiCheckDoubleLine },
+// A lista padrão e as listas inteligentes usam o cobre do tema; só as listas criadas têm cor própria.
+const INBOX = { name: "Tarefas", color: "var(--primary)", ink: "var(--primary-foreground)", icon: "list" };
+const smartLists: { key: Smart; label: string; icon: ComponentType<{ className?: string }> }[] = [
+  { key: "today", label: "Hoje", icon: RiCalendarTodoFill },
+  { key: "scheduled", label: "Agendadas", icon: RiCalendarScheduleFill },
+  { key: "all", label: "Todas", icon: RiInboxFill },
+  { key: "done", label: "Concluídas", icon: RiCheckDoubleLine },
 ];
 const dateFormatter = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
 const formatDate = (value: string) => dateFormatter.format(new Date(`${value}T12:00:00`));
@@ -35,8 +35,8 @@ function TodoTitle({ title }: { title: string }) {
   return <>{title.split(/(https?:\/\/\S+)/g).map((part, index) => index % 2
     ? <a key={index} href={part} target="_blank" rel="noreferrer" className="text-primary underline-offset-2 hover:underline">{shortUrl(part)}</a> : part)}</>;
 }
-function ListBadge({ color, icon, className = "size-7" }: { color: string; icon: string; className?: string }) {
-  return <span aria-hidden="true" className={`grid shrink-0 place-items-center rounded-full text-white ${className}`} style={{ backgroundColor: color }}>{renderTodoListIcon(icon, "size-[55%]")}</span>;
+function ListBadge({ color, ink = "#fff", icon, className = "size-6" }: { color: string; ink?: string; icon: string; className?: string }) {
+  return <span aria-hidden="true" className={`grid shrink-0 place-items-center rounded-full ${className}`} style={{ backgroundColor: color, color: ink }}>{renderTodoListIcon(icon, "size-[55%]")}</span>;
 }
 
 function TodoListDialog({ list, onClose }: { list: TodoList | "new"; onClose: (createdId?: string) => void }) {
@@ -83,8 +83,8 @@ export function TodosPage() {
   };
   const smart = smartLists.find(item => item.key === selected);
   const custom = lists.find(list => list.id === selected);
-  const current = smart ? { name: smart.label, color: smart.color } : custom ?? (selected === "inbox" ? INBOX : { name: "Todas", color: "#475569" });
-  const listOf = (todo: Todo) => lists.find(list => list.id === todo.listId) ?? INBOX;
+  const current: { name: string; color?: string } = smart ? { name: smart.label } : custom ?? (selected === "inbox" ? INBOX : { name: "Todas" });
+  const listOf = (todo: Todo): { name: string; color: string; ink?: string } => lists.find(list => list.id === todo.listId) ?? INBOX;
   const pendingIn = (listId: string) => todos.filter(todo => !todo.done && (todo.listId || "") === listId).length;
   const inView = (todo: Todo) => smart ? smartFilter[smart.key](todo) : custom ? todo.listId === custom.id : selected === "inbox" ? !todo.listId : !todo.done;
   const visible = todos.filter(inView);
@@ -116,10 +116,10 @@ export function TodosPage() {
   function renderTodo(todo: Todo) {
     const late = !todo.done && !!todo.endDate && todo.endDate < now;
     const list = listOf(todo);
-    return <li key={todo.id} className="group flex items-start gap-3 px-4 py-3 hover:bg-muted/40 sm:items-center sm:px-5 sm:py-2.5">
+    return <li key={todo.id} className="group flex items-start gap-3 px-4 py-3 transition-colors hover:bg-muted/40 sm:items-center sm:px-5 sm:py-2.5">
       <span className="relative mt-px grid size-5 shrink-0 place-items-center sm:mt-0">
-        <input type="checkbox" className="peer absolute inset-0 cursor-pointer appearance-none rounded-full border-2 border-muted-foreground/40 outline-none checked:border-(--list) checked:bg-(--list) hover:border-(--list) focus-visible:ring-2 focus-visible:ring-ring" style={{ "--list": list.color } as CSSProperties} aria-label={`Concluir ${todo.title}`} checked={todo.done} onChange={() => toggle(todo)} />
-        <RiCheckLine aria-hidden="true" className="pointer-events-none relative size-3.5 text-white opacity-0 peer-checked:opacity-100" />
+        <input type="checkbox" className="peer absolute inset-0 cursor-pointer appearance-none rounded-full border-2 border-muted-foreground/40 outline-none checked:border-(--list) checked:bg-(--list) hover:border-(--list) focus-visible:ring-2 focus-visible:ring-ring" style={{ "--list": list.color, "--list-ink": list.ink ?? "#fff" } as CSSProperties} aria-label={`Concluir ${todo.title}`} checked={todo.done} onChange={() => toggle(todo)} />
+        <RiCheckLine aria-hidden="true" className="pointer-events-none relative size-3.5 text-(--list-ink) opacity-0 peer-checked:opacity-100" />
       </span>
       <div className="min-w-0 flex-1 sm:flex sm:items-center sm:gap-3">
         <div className="min-w-0 sm:flex-1">
@@ -129,38 +129,47 @@ export function TodosPage() {
         </div>
         {(todo.startDate || todo.endDate) && <span className={`mt-1 block text-xs tabular-nums sm:mt-0 sm:shrink-0 ${late ? "font-medium text-destructive" : "text-muted-foreground"}`}>{late && "Atrasada · "}{todo.startDate && todo.endDate && todo.startDate !== todo.endDate ? `${formatDate(todo.startDate)} – ${formatDate(todo.endDate)}` : formatDate(todo.endDate || todo.startDate)}</span>}
       </div>
-      <Button type="button" size="icon-sm" variant="ghost" className="shrink-0 text-primary group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:hover)]:opacity-0" aria-label={`Detalhes de ${todo.title}`} onClick={() => startEdit(todo)}><RiInformationLine /></Button>
+      <Button type="button" size="icon-sm" variant="ghost" className="shrink-0 text-muted-foreground group-focus-within:opacity-100 group-hover:opacity-100 [@media(hover:hover)]:opacity-0" aria-label={`Detalhes de ${todo.title}`} onClick={() => startEdit(todo)}><RiInformationLine /></Button>
     </li>;
   }
-  function listRow(key: string, list: { name: string; color: string; icon: string }, count: number) {
-    return <li key={key}><button type="button" aria-current={selected === key ? "true" : undefined} onClick={() => choose(key)} className={`flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm outline-none hover:bg-muted/60 focus-visible:bg-muted ${selected === key ? "md:bg-muted" : ""}`}><ListBadge color={list.color} icon={list.icon} /><span className="min-w-0 flex-1 truncate font-medium">{list.name}</span><span className="tabular-nums text-muted-foreground">{count}</span></button></li>;
+  const rowClass = (active: boolean) => cn("flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+    active ? "md:bg-primary/10 md:font-medium md:text-primary" : "hover:bg-muted");
+  function listRow(key: string, list: { name: string; color: string; ink?: string; icon: string }, count: number) {
+    return <li key={key}><button type="button" aria-current={selected === key ? "true" : undefined} onClick={() => choose(key)} className={rowClass(selected === key)}>
+      <ListBadge color={list.color} ink={list.ink} icon={list.icon} /><span className="min-w-0 flex-1 truncate">{list.name}</span><span className="text-xs tabular-nums text-muted-foreground">{count || ""}</span>
+    </button></li>;
   }
 
-  return <CatalogLayout section="Workspace" title="To-dos" description="Suas tarefas pessoais organizadas em listas.">
-    {!loaded ? <LoadingBlock label="Carregando tarefas" /> : <div className="grid w-full items-start gap-4 md:grid-cols-[minmax(0,1fr)_18rem]">
-      <aside aria-label="Listas" className={`space-y-4 md:order-2 ${detail ? "max-md:hidden" : ""}`}>
-        <div className="grid grid-cols-2 gap-2">{smartLists.map(({ key, label, color, icon: Icon }) => {
-          const active = selected === key;
-          return <button key={key} type="button" aria-current={active ? "true" : undefined} onClick={() => choose(key)} className={`grid gap-2 border p-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring ${active ? "border-transparent text-white" : "bg-card hover:bg-muted/40"}`} style={active ? { backgroundColor: color } : undefined}>
-            <span className="flex items-start justify-between gap-2"><span className={`grid size-8 place-items-center rounded-full text-white ${active ? "bg-white/25" : ""}`} style={active ? undefined : { backgroundColor: color }}><Icon className="size-4" /></span><span className="text-xl font-semibold tabular-nums">{todos.filter(smartFilter[key]).length}</span></span>
-            <span className={`text-sm font-medium ${active ? "" : "text-muted-foreground"}`}>{label}</span>
-          </button>;
-        })}</div>
-        <section aria-labelledby="my-lists-title"><h2 id="my-lists-title" className="mb-2 px-1 text-sm font-semibold">Minhas listas</h2>
-          <ul className={cn(surfaceVariants({ list: true }))}>{listRow("inbox", INBOX, pendingIn(""))}{lists.map(list => listRow(list.id, list, pendingIn(list.id)))}</ul>
-          <Button type="button" variant="ghost" size="sm" className="mt-2 text-primary" onClick={() => setListDialog("new")}><RiAddLine />Nova lista</Button>
+  // Mesmo modelo do Drive: um quadro de vidro com as listas à esquerda e as tarefas à direita.
+  // No celular, como em Mensagens: as listas ocupam a tela e a lista escolhida abre no lugar, com voltar.
+  return <main className="flex w-full max-w-none min-w-0 flex-col gap-4 md:min-h-[calc(100svh-57px)] md:px-6 md:py-4 lg:px-8">
+    <header className="max-md:hidden"><p className="text-xs uppercase tracking-widest text-primary">Workspace</p><h1 className="mt-2 font-heading text-3xl font-semibold">To-dos</h1></header>
+    <div className={cn(surfaceVariants(), "flex min-w-0 flex-col overflow-hidden md:min-h-[min(70svh,42rem)] md:flex-1 md:flex-row max-md:h-[calc(100dvh-3.5rem-1px-3.5rem-env(safe-area-inset-bottom))] max-md:rounded-none max-md:border-0")}>
+      {!loaded ? <div className="grid flex-1 place-items-center p-6"><LoadingBlock label="Carregando tarefas" /></div> : <>
+      <aside aria-label="Listas" className={cn("flex min-h-0 min-w-0 shrink-0 flex-col overflow-y-auto bg-foreground/[0.03] p-3 max-md:flex-1 md:w-64 md:border-r", detail && "max-md:hidden")}>
+        <nav aria-label="Listas inteligentes"><ul className="grid gap-0.5">{smartLists.map(({ key, label, icon: Icon }) => <li key={key}>
+          <button type="button" aria-current={selected === key ? "true" : undefined} onClick={() => choose(key)} className={rowClass(selected === key)}>
+            <Icon className={cn("size-4 shrink-0", selected === key ? "text-primary" : "text-muted-foreground")} /><span className="min-w-0 flex-1 truncate">{label}</span>
+            <span className="text-xs tabular-nums text-muted-foreground">{todos.filter(smartFilter[key]).length || ""}</span>
+          </button>
+        </li>)}</ul></nav>
+        <section aria-labelledby="my-lists-title" className="mt-4 border-t pt-3">
+          <div className="mb-1 flex items-center justify-between pl-2.5"><h2 id="my-lists-title" className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Minhas listas</h2>
+            <Button type="button" variant="ghost" size="icon-xs" aria-label="Nova lista" title="Nova lista" onClick={() => setListDialog("new")}><RiAddLine /></Button></div>
+          <ul className="grid gap-0.5">{listRow("inbox", INBOX, pendingIn(""))}{lists.map(list => listRow(list.id, list, pendingIn(list.id)))}</ul>
         </section>
       </aside>
-      <section aria-label={current.name} className={`min-w-0 border bg-card md:order-1 ${detail ? "" : "max-md:hidden"}`}>
-        <header className="flex items-center gap-2 border-b px-4 py-3 sm:px-5">
+      <section aria-label={current.name} className={cn("flex min-h-0 min-w-0 flex-1 flex-col", !detail && "max-md:hidden")}>
+        <header className="flex min-h-12 items-center gap-1 border-b px-2 py-1.5 sm:px-3">
           <Button type="button" variant="ghost" size="icon-sm" className="md:hidden" aria-label="Voltar às listas" onClick={() => setDetail(false)}><RiArrowLeftSLine /></Button>
-          <h2 className="min-w-0 flex-1 truncate text-2xl font-bold" style={{ color: current.color }}>{current.name}</h2>
-          {custom && <><Button type="button" variant="ghost" size="icon-sm" aria-label={`Editar lista ${custom.name}`} onClick={() => setListDialog(custom)}><RiPencilLine /></Button><Button type="button" variant="ghost" size="icon-sm" aria-label={`Excluir lista ${custom.name}`} onClick={() => setDeletingList(custom)}><RiDeleteBinLine /></Button></>}
+          <h2 className="min-w-0 flex-1 truncate px-2 font-heading text-lg font-semibold" style={current.color ? { color: current.color } : undefined}>{current.name}</h2>
+          {custom && <><Button type="button" variant="ghost" size="icon-sm" aria-label={`Editar lista ${custom.name}`} title="Editar lista" onClick={() => setListDialog(custom)}><RiPencilLine /></Button><Button type="button" variant="ghost" size="icon-sm" className="text-destructive hover:text-destructive" aria-label={`Excluir lista ${custom.name}`} title="Excluir lista" onClick={() => setDeletingList(custom)}><RiDeleteBinLine /></Button></>}
         </header>
+        <div className="min-h-0 flex-1 overflow-y-auto">
         <ul className="divide-y">
           {open.map(renderTodo)}
           {selected !== "done" && <li className="flex items-start gap-3 px-4 py-3 sm:px-5" onFocus={() => setAdding(true)} onBlur={event => { if (event.currentTarget.contains(event.relatedTarget as Node)) return; setAdding(false); if (draft.title.trim()) addTodo(); }}>
-            <span aria-hidden="true" className="mt-px size-5 shrink-0 rounded-full border-2 border-muted-foreground/30" />
+            <span aria-hidden="true" className="mt-px grid size-5 shrink-0 place-items-center text-muted-foreground"><RiAddLine className="size-4" /></span>
             <form className="min-w-0 flex-1" onSubmit={event => { event.preventDefault(); if (addTodo()) addRef.current?.focus(); }}>
               <input ref={addRef} aria-label="Nova tarefa" placeholder="Nova tarefa" maxLength={160} value={draft.title} className="w-full bg-transparent text-base sm:text-sm leading-5 outline-none placeholder:text-muted-foreground" onChange={event => setDraft({ ...draft, title: event.target.value })} onKeyDown={cancelAdd} />
               {(adding || !!draft.title) && <input aria-label="Notas" placeholder="Notas" maxLength={2000} value={draft.notes} className="mt-0.5 w-full bg-transparent text-base sm:text-xs text-muted-foreground outline-none" onChange={event => setDraft({ ...draft, notes: event.target.value })} onKeyDown={cancelAdd} />}
@@ -170,8 +179,10 @@ export function TodosPage() {
         </ul>
         {!open.length && selected === "done" && !done.length && <p className="px-5 py-6 text-sm text-muted-foreground">Nenhuma tarefa concluída.</p>}
         {done.length > 0 && <details open={selected === "done"} className="border-t"><summary className="cursor-pointer px-5 py-2 text-xs text-muted-foreground">{done.length} concluída(s)</summary><ul className="divide-y">{done.map(renderTodo)}</ul></details>}
+        </div>
       </section>
-    </div>}
+      </>}
+    </div>
     {editing && <Dialog open onOpenChange={value => { if (!value) setEditing(null); }}><DialogContent className="sm:max-w-lg"><DialogTitle>Detalhes</DialogTitle><DialogDescription className="sr-only">Título, notas, lista e datas da tarefa.</DialogDescription>
       <form onSubmit={saveEdit} className="grid gap-4">
         <Field label="Título" required><Input required autoFocus maxLength={160} value={editDraft.title} onChange={event => setEditDraft({ ...editDraft, title: event.target.value })} /></Field>
@@ -185,5 +196,5 @@ export function TodosPage() {
     {deleting && <ConfirmDialog title="Excluir tarefa?" description={`“${deleting.title}” será removida.`} onConfirm={() => todoStore.remove(deleting.id)} onClose={() => setDeleting(null)} />}
     {listDialog && <TodoListDialog list={listDialog} onClose={createdId => { setListDialog(null); if (createdId) choose(createdId); }} />}
     {deletingList && <ConfirmDialog title="Excluir lista?" description={`A lista “${deletingList.name}” e as ${pendingIn(deletingList.id)} tarefa(s) pendentes dela serão removidas.`} onConfirm={() => removeList(deletingList)} onClose={() => setDeletingList(null)} />}
-  </CatalogLayout>;
+  </main>;
 }
