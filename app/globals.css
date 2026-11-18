@@ -4,7 +4,8 @@
 
 /* Escuro: escolhido (.dark) ou do aparelho, a menos que a pessoa tenha escolhido claro (.light).
    Assim a primeira pintura já sai no tema certo, sem depender de JavaScript.
-   Páginas com .home-dark (a inicial) ficam sempre escuras, cabeçalho e fundo incluídos (via :has). */
+   Páginas com .home-dark (a inicial e o login) ficam sempre escuras, cabeçalho e fundo incluídos (via :has),
+   e o cabeçalho esconde a troca de tema. */
 @custom-variant dark {
   &:where(.dark, .dark *) { @slot; }
   &:where(:root:has(.home-dark), :root:has(.home-dark) *) { @slot; }

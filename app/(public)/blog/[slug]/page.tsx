@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { DiamondLines } from "@/components/marketing/art";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -44,7 +45,10 @@ export default async function BlogArticlePage({ params }: Props) {
     description, mainEntityOfPage: url, datePublished: post.publishedAt?.toISOString(),
     dateModified: post.updatedAt.toISOString(), author: { "@type": "Person", name: "Vinicius Souza" },
     ...(post.coverAssetId ? { image: siteUrl(blogAssetUrl(post.coverAssetId)) } : {}) };
-  return <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10 sm:px-6 sm:py-16">
+  return <main className="relative isolate w-full flex-1">
+    {/* Padrão 01 da marca no alto do artigo, discreto, sumindo para baixo. */}
+    <DiamondLines className="absolute inset-x-0 top-0 -z-10 h-72 w-full text-primary opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
     <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"><ArrowLeft className="size-4" />Voltar ao blog</Link>
     <article className="mt-8">
@@ -54,5 +58,6 @@ export default async function BlogArticlePage({ params }: Props) {
       <div className="mt-9"><ArticleContent content={post.content} document={post.document} adMiddle={middleAd} /></div>
       {bottomAd && <AdSlot ad={bottomAd} />}
     </article>
+    </div>
   </main>;
 }
