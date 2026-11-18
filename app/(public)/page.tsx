@@ -125,7 +125,7 @@ export default async function Page() {
       </section>
 
       {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
-      <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 pt-2 pb-14 sm:pb-20")}>
+      <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 pt-2 pb-10 sm:pb-12")}>
         <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
         <ol className="mt-10 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 border-t py-8">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
@@ -135,7 +135,7 @@ export default async function Page() {
       </section>
 
       {/* 02 Situações */}
-      <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-14 sm:py-20")}>
+      <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações consome horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
         <ul className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 border-t py-8">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
@@ -161,7 +161,7 @@ export default async function Page() {
       </section>
 
       {/* 04 IA consciente */}
-      <section id="ia" aria-labelledby="ia-titulo" className={cn(container, "scroll-mt-20 py-14 sm:py-20")}>
+      <section id="ia" aria-labelledby="ia-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="ia-titulo" index="04" eyebrow="IA consciente" title="A velocidade da IA, sem colocar o seu negócio em risco.">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</Heading>
         <div className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
           return <Reveal as="article" key={principle.title} delay={index * 70} className="border-t py-8"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
@@ -185,7 +185,7 @@ export default async function Page() {
       </section>
 
       {/* 06 Projetos */}
-      <section id="projetos" aria-labelledby="projetos-titulo" className={cn(container, "scroll-mt-20 py-14 sm:py-20")}>
+      <section id="projetos" aria-labelledby="projetos-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="projetos-titulo" index="06" eyebrow="Projetos" title="Qualidade que você pode conferir.">Um site em uso por cliente e projetos de código aberto, que qualquer pessoa técnica da sua confiança pode avaliar antes de você contratar.</Heading>
         <div className="mt-10 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 70} className="[&>article]:h-full"><ProjectCard project={project} index={index} /></Reveal>)}</div>
         <div className="mt-6"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
@@ -221,7 +221,7 @@ export default async function Page() {
       </section>
 
       {/* 08 Perguntas */}
-      <section id="perguntas" aria-labelledby="perguntas-titulo" className={cn(container, "scroll-mt-20 py-14 sm:py-20")}>
+      <section id="perguntas" aria-labelledby="perguntas-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="perguntas-titulo" index="08" eyebrow="Perguntas frequentes" title="Tire suas dúvidas antes de começar." />
         <Reveal className="mt-10 divide-y border-y">{faq.map(item => <details key={item.question} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-5 shrink-0 text-primary transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
       </section>
