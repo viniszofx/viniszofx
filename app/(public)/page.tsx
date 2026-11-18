@@ -107,7 +107,7 @@ export default async function Page() {
           </div>
         </div>
         {/* Credenciais numa régua com filetes, logo abaixo da dobra. */}
-        <ul aria-label="Credenciais" className={cn(container, "grid gap-x-10 pt-6 pb-6 sm:grid-cols-3")}>{credentials.map(({ title, text, href, cta }) => <li key={title} className="border-t">
+        <ul aria-label="Credenciais" className={cn(container, "grid gap-x-10 pt-6 pb-6 sm:grid-cols-3")}>{credentials.map(({ title, text, href, cta }) => <li key={title}>
           <a href={href} {...(href.startsWith("#") ? {} : { target: "_blank", rel: "noopener noreferrer" })} className="group block py-6 outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <p className="font-heading text-2xl font-light text-primary">{title}</p><p className="mt-1 text-sm text-muted-foreground">{text}</p>
             <p className="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.2em] text-foreground/70 group-hover:text-primary">{cta}{href.startsWith("#") ? <ArrowRight className="size-3.5" /> : <ArrowUpRight className="size-3.5" />}</p>
@@ -127,7 +127,7 @@ export default async function Page() {
       {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
       <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 pt-2 pb-10 sm:pb-12")}>
         <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
-        <ol className="mt-10 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 border-t py-8">
+        <ol className="mt-10 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 py-6">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
           <p className="text-sm leading-6 text-muted-foreground">{item.action}</p>
           <p className="mt-auto flex items-center gap-2 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{"href" in item ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">{item.result}<ArrowUpRight className="size-3.5" /></a> : item.result}</p>
@@ -137,7 +137,7 @@ export default async function Page() {
       {/* 02 Situações */}
       <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações consome horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
-        <ul className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 border-t py-8">
+        <ul className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 py-6">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
           <p className="mt-auto flex gap-3 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
         </Reveal>)}</ul>
@@ -145,7 +145,7 @@ export default async function Page() {
       </section>
 
       {/* 03 Serviços */}
-      <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-20 border-y bg-foreground/[0.02] py-14 sm:py-20">
+      <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-20 bg-foreground/[0.02] py-14 sm:py-20">
         <div className={container}>
           <Heading id="servicos-titulo" index="03" eyebrow="Serviços" title="Tudo o que a sua operação precisa, sob medida.">Do primeiro sistema à evolução do que você já tem, sempre começando pelo jeito que a sua equipe trabalha.</Heading>
           <div className="mt-10 grid gap-px overflow-hidden border bg-border sm:grid-cols-2 lg:grid-cols-3">{services.map((service, index) => { const Icon = serviceIcons[service.id];
@@ -164,7 +164,7 @@ export default async function Page() {
       <section id="ia" aria-labelledby="ia-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="ia-titulo" index="04" eyebrow="IA consciente" title="A velocidade da IA, sem colocar o seu negócio em risco.">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</Heading>
         <div className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
-          return <Reveal as="article" key={principle.title} delay={index * 70} className="border-t py-8"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
+          return <Reveal as="article" key={principle.title} delay={index * 70} className="py-6"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           <Reveal className="border border-primary/40 p-7 sm:p-9"><h3 className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary"><Check className="size-4" />Onde a IA entra</h3><ul className="space-y-3">{aiUses.yes.map(item => <li key={item} className="flex gap-3 leading-6"><Check className="mt-1 size-4 shrink-0 text-primary" />{item}</li>)}</ul></Reveal>
           <Reveal delay={70} className="border p-7 sm:p-9"><h3 className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-muted-foreground"><Close className="size-4" />Onde a IA não entra</h3><ul className="space-y-3 text-muted-foreground">{aiUses.no.map(item => <li key={item} className="flex gap-3 leading-6"><Close className="mt-1 size-4 shrink-0" />{item}</li>)}</ul></Reveal>
@@ -196,7 +196,7 @@ export default async function Page() {
       </section>
 
       {/* 07 Sobre: retrato emoldurado */}
-      <section id="sobre" aria-labelledby="sobre-titulo" className="scroll-mt-20 border-y bg-foreground/[0.02] py-14 sm:py-20">
+      <section id="sobre" aria-labelledby="sobre-titulo" className="scroll-mt-20 bg-foreground/[0.02] py-14 sm:py-20">
         <Reveal className={cn(container, "grid items-center gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-16")}>
           <div className="relative mx-auto w-full max-w-sm">
             <div className="relative aspect-[4/5] overflow-hidden bg-black"><Image src={portrait} alt="Vinicius Souza" fill quality={90} sizes="(min-width: 768px) 24rem, 90vw" className="object-cover object-[50%_58%]" /></div>
