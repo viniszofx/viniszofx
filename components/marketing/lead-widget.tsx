@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { RiArrowUpLine, RiChat3Line, RiCheckDoubleLine, RiCloseLine, RiRefreshLine, RiRobot2Line } from "@remixicon/react";
+import { RiArrowUpLine, RiBuilding2Line, RiChat3Line, RiCheckDoubleLine, RiCloseLine, RiMailLine, RiMessage2Line, RiPhoneLine, RiPriceTag3Line, RiRefreshLine, RiRobot2Line, RiUserLine } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { formatPhone } from "@/lib/employees/profile";
 import { cn } from "@/lib/utils";
@@ -49,7 +49,7 @@ export function LeadWidget() {
   const restart = useCallback(() => {
     timers.current.forEach(clearTimeout); timers.current = [];
     setBubbles([]); setInput(""); setLead(emptyLead); setStep("topic");
-    say(["Olá! 👋 Sou o assistente do Vinicius.", "Posso te ajudar a tirar uma ideia do papel. Sobre o que você quer conversar?"]);
+    say(["Olá! Sou o assistente do Vinicius.", "Posso te ajudar a tirar uma ideia do papel. Sobre o que você quer conversar?"]);
   }, [say]);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export function LeadWidget() {
       }) });
       if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "Não consegui enviar agora.");
       setTyping(false);
-      say([`Pronto, ${firstName(data.name)}! Sua mensagem chegou. ✅`, `Respondemos pelo e-mail ${data.email} o quanto antes.`], () => setStep("done"));
+      say([`Pronto, ${firstName(data.name)}! Sua mensagem chegou.`, `Respondemos pelo e-mail ${data.email} o quanto antes.`], () => setStep("done"));
     } catch (cause) {
       setTyping(false);
       say([`${cause instanceof Error ? cause.message : "Algo deu errado."} Quer tentar de novo?`], () => setStep("confirm"));
@@ -99,7 +99,7 @@ export function LeadWidget() {
     if (typing) return;
     const value = input.trim();
     if (step === "name") {
-      if (value.length < 2) return say(["Me diga seu nome, por favor. 🙂"]);
+      if (value.length < 2) return say(["Me diga seu nome, por favor."]);
       push("user", value); setInput(""); setLead(previous => ({ ...previous, name: value }));
       return say([`Prazer, ${firstName(value)}! De qual empresa você fala? Se for só você, pode pular.`], () => setStep("company"));
     }
@@ -118,7 +118,7 @@ export function LeadWidget() {
       return say([messagePrompt], () => setStep("message"));
     }
     if (step === "message") {
-      if (value.length < 5) return say(["Escreva um pouco mais sobre como funciona hoje. 🙂"]);
+      if (value.length < 5) return say(["Escreva um pouco mais sobre como funciona hoje."]);
       push("user", value); setInput("");
       const next = { ...lead, message: value }; setLead(next);
       return say([<Summary key="summary" lead={next} />, "Posso enviar?"], () => setStep("confirm"));
@@ -172,15 +172,19 @@ export function LeadWidget() {
   </div>;
 }
 
+// Resumo antes do envio: um ícone por linha (sem emoji), alinhado ao texto.
 function Summary({ lead }: { lead: Lead }) {
-  return <span className="block space-y-1">
+  const rows = [
+    { icon: RiUserLine, value: lead.name, label: "Nome" },
+    { icon: RiBuilding2Line, value: lead.company, label: "Empresa" },
+    { icon: RiMailLine, value: lead.email, label: "E-mail" },
+    { icon: RiPhoneLine, value: lead.phone, label: "Telefone" },
+    { icon: RiPriceTag3Line, value: lead.topic, label: "Assunto" },
+    { icon: RiMessage2Line, value: lead.message, label: "Mensagem" },
+  ].filter(row => row.value);
+  return <span className="block space-y-1.5">
     <span className="block font-medium">Confere se está tudo certo:</span>
-    <span className="block">👤 {lead.name}</span>
-    {lead.company && <span className="block">🏢 {lead.company}</span>}
-    <span className="block">✉️ {lead.email}</span>
-    {lead.phone && <span className="block">📱 {lead.phone}</span>}
-    {lead.topic && <span className="block">🏷️ {lead.topic}</span>}
-    <span className="block">💬 {lead.message}</span>
+    {rows.map(({ icon: Icon, value, label }) => <span key={label} className="flex items-start gap-2"><Icon aria-label={label} className="mt-1 size-3.5 shrink-0 opacity-60" /><span className="min-w-0 break-words">{value}</span></span>)}
   </span>;
 }
 
