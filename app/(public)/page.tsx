@@ -118,7 +118,7 @@ export default async function Page() {
         <div aria-label="Tecnologias" role="region" className="group/marquee relative overflow-hidden border-t py-6 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] motion-reduce:[mask-image:none]">
           <div className="flex w-max animate-marquee group-hover/marquee:[animation-play-state:paused] motion-reduce:w-auto motion-reduce:animate-none">
             {[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 || undefined} className={cn("flex shrink-0 items-center gap-10 pr-10", copy === 1 && "motion-reduce:hidden", "motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-x-8 motion-reduce:gap-y-3 motion-reduce:px-5")}>
-              {technologies.flatMap(group => group.items).map(item => { const Icon = techIcons[item]; return <li key={item} className="flex items-center gap-2 text-sm whitespace-nowrap text-muted-foreground">{Icon && <Icon className="size-5 shrink-0 opacity-80" aria-hidden="true" />}{item}</li>; })}
+              {technologies.flatMap(group => group.items).map(item => { const Icon = techIcons[item]; return <li key={item} className="flex items-center gap-2 text-sm whitespace-nowrap text-primary/85">{Icon && <Icon className="size-5 shrink-0" aria-hidden="true" />}{item}</li>; })}
             </ul>)}
           </div>
         </div>
