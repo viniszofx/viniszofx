@@ -137,10 +137,18 @@ export default async function Page() {
       {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
       <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
-        <ol className="mt-10 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 py-6">
+        {/* Casos como prova: etiqueta do caso, o problema, o que foi feito e o resultado em destaque. */}
+        <ol className="mt-10 grid gap-4 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70}
+          className="flex flex-col gap-4 rounded-xl border bg-card/40 p-6 transition-colors hover:border-primary/40 sm:p-7">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"><span className="text-primary tabular-nums">Caso 0{index + 1}</span> · Embrapa Pantanal</p>
           <p className="font-heading text-xl leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
-          <p className="text-sm leading-6 text-muted-foreground">{item.action}</p>
-          <p className="mt-auto flex items-center gap-2 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{"href" in item ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">{item.result}<ArrowUpRight className="size-3.5" /></a> : item.result}</p>
+          <div>
+            <p className="text-[0.7rem] font-medium uppercase tracking-[0.2em] text-muted-foreground">O que foi feito</p>
+            <p className="mt-1.5 text-sm leading-6 text-foreground/80">{item.action}</p>
+          </div>
+          <p className="mt-auto self-start">{"href" in item
+            ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"><Check className="size-4 shrink-0" />{item.result}<ArrowUpRight className="size-3.5" /></a>
+            : <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-3 py-1.5 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{item.result}</span>}</p>
         </Reveal>)}</ol>
       </section>
 
