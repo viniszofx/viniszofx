@@ -123,7 +123,7 @@ function Editor({ record }: { record: Proposal }) {
       </fieldset>
     </Section>
 
-    <Section index="03" title="Escopo e etapas" hint="Cada etapa entrega uma parte funcionando, com prazo e valor fechados. Sem valor inventado: o que faltar sai como [campo a preencher].">
+    <Section index="03" title="Escopo e etapas" hint="Cada etapa entrega uma parte funcionando, com prazo e valor fechados. Sem valor inventado: o que faltar sai em branco, com linha para preencher à mão.">
       <ol className="grid gap-3">{draft.stages.map((stage, index) => <li key={index} className="grid gap-3 border p-4 sm:grid-cols-[2.5rem_1fr_7rem_9rem_auto] sm:items-start">
         <span className="font-heading text-2xl font-light text-primary tabular-nums">{String(index + 1).padStart(2, "0")}</span>
         <div className="grid gap-2">
@@ -139,7 +139,7 @@ function Editor({ record }: { record: Proposal }) {
       </li>)}</ol>
       <div className="flex flex-wrap items-center justify-between gap-3">
         {draft.stages.length < 8 ? <Button type="button" variant="outline" size="sm" onClick={() => update({ stages: [...draft.stages, { title: "", deliverable: "", days: "", value: "" }] })}><RiAddLine />Adicionar etapa</Button> : <span />}
-        <p className="text-sm"><span className="text-muted-foreground">Total:</span> <strong className="tabular-nums">{days ? `${days} dias` : "—"} · R$ {total ? money.format(total) : "—"}</strong>{draft.stages.some(stage => !stage.value || !stage.days) && <span className="block text-xs text-muted-foreground">Etapas sem prazo ou valor: o total sai em aberto no PDF.</span>}</p>
+        <p className="text-sm"><span className="text-muted-foreground">Total:</span> <strong className="tabular-nums">{days ? `${days} dias` : "—"} · R$ {total ? money.format(total) : "—"}</strong>{draft.stages.some(stage => !stage.value || !stage.days) && <span className="block text-xs text-muted-foreground">Etapas sem prazo ou valor: o total sai em branco no PDF, para preencher à mão.</span>}</p>
       </div>
       <div className="grid gap-6 border-t pt-4 md:grid-cols-2">
         <TextList label="Está incluso" items={draft.included} placeholder="Item incluso ({empresa} vira o nome da empresa)" onChange={included => update({ included })} />
@@ -164,7 +164,7 @@ function Editor({ record }: { record: Proposal }) {
       <Button className="shadow-lg" onClick={() => save()}><RiSave3Line />Salvar alterações</Button>
     </div>
 
-    {confirmPrint && <ConfirmDialog title="Gerar PDF com campos em aberto?" description={`Faltam: ${confirmPrint.join(", ")}. Eles saem destacados como [campo a preencher], sem valor inventado.`} confirmLabel="Gerar mesmo assim"
+    {confirmPrint && <ConfirmDialog title="Gerar PDF com campos em aberto?" description={`Faltam: ${confirmPrint.join(", ")}. Eles saem como linhas em branco para preencher à mão, sem valor inventado.`} confirmLabel="Gerar mesmo assim"
       onConfirm={() => { if (dirty) save(true); printProposal(draft); }} onClose={() => setConfirmPrint(null)} />}
     {deleting && <ConfirmDialog title="Excluir proposta?" description={`A proposta ${draft.number}${draft.project ? ` (${draft.project})` : ""} será removida.`}
       onConfirm={() => { proposalStore.remove(record.id); router.push("/dashboard/proposals"); }} onClose={() => setDeleting(false)} />}

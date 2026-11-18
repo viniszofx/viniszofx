@@ -72,7 +72,7 @@ const amount = (value: string) => { const number = Number(value); return Number.
 export const proposalTotal = (stages: ProposalStage[]) => stages.reduce((sum, stage) => sum + amount(stage.value), 0);
 export const proposalDays = (stages: ProposalStage[]) => stages.reduce((sum, stage) => sum + (Number(stage.days) || 0), 0);
 
-/** Campos que nunca podem sair inventados: o PDF mostra o que falta como [campo a preencher]. */
+/** Campos que nunca podem sair inventados: o PDF deixa o que falta em branco, com linha para preencher à mão. */
 export function missingFields(proposal: ProposalFields) {
   const missing: string[] = [];
   if (!proposal.companyName.trim()) missing.push("empresa");

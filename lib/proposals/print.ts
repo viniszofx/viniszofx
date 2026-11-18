@@ -7,7 +7,7 @@ import { proposalDays, proposalTotal, type ProposalFields } from "@/lib/proposal
  * Proposta comercial em A4 no padrão de docs/brand/Impressos.md: papel claro, cobre #a56038 como destaque,
  * faixa grafite só na capa e no contato final, cores sólidas (sem degradês nem transparências) e fontes da marca.
  * Os textos fixos (processo, IA consciente, perguntas) vêm do site (lib/portfolio/services.ts): se o site mudar,
- * a proposta muda junto. Campo vazio sai como [campo a preencher], nunca com valor inventado.
+ * a proposta muda junto. Campo vazio sai em branco, com linha para preencher à mão, nunca com valor inventado.
  */
 
 const company = "Carbon Cycle LTDA";
@@ -15,7 +15,9 @@ const cnpj = "55.366.974/0001-85";
 const money = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]!);
-const fill = (value: string | undefined, placeholder: string) => value?.trim() ? escape(value.trim()) : `<span class="fill">[${escape(placeholder)}]</span>`;
+// Campo vazio sai como espaço para preencher à mão: uma linha (ou várias, em textos) com a dica embaixo, em cinza.
+const fill = (value: string | undefined, hint: string) => value?.trim() ? escape(value.trim()) : `<span class="blank"><span class="hint">${escape(hint)}</span></span>`;
+const area = (value: string | undefined, hint: string, lines = 3) => value?.trim() ? escape(value.trim()) : `<span class="lines-blank"><span class="hint">${escape(hint)}</span>${"<span class=\"rule\"></span>".repeat(lines)}</span>`;
 const brl = (value: string) => value ? money.format(Number(value)) : "";
 const date = (value: string) => { const [y, m, d] = value.split("-"); return y && m && d ? `${d}/${m}/${y}` : ""; };
 
@@ -47,7 +49,13 @@ h3 { font-size: 13.5pt; font-weight: 500; line-height: 1.35; }
 .label { font-size: 8.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: .2em; color: #5f646a; }
 section + section { margin-top: 11mm; }
 p { margin: 0; }
-.fill { background: #f1e9e3; color: #3e281b; border-bottom: 1px dashed #a56038; padding: 0 1mm; }
+/* Espaço para escrever à mão: linha sólida (sem tracejado nem transparência) e a dica pequena embaixo. */
+.blank { display: inline-block; position: relative; min-width: 34mm; height: 1.3em; vertical-align: bottom; border-bottom: 1px solid #a56038; margin: 0 1mm; }
+.lines-blank { display: block; position: relative; width: 100%; padding-top: 1mm; }
+.lines-blank .rule { display: block; height: 8mm; border-bottom: 1px solid #c9ccd1; }
+.hint { position: absolute; left: 0; bottom: -3.6mm; white-space: nowrap; font: 400 6.5pt/1 Oxanium, system-ui, sans-serif; letter-spacing: .02em; color: #9da2a9; text-transform: none; }
+.lines-blank .hint { bottom: auto; top: 1mm; }
+.stages .r .blank, .facts .blank, .conds .blank { min-width: 24mm; }
 .ico { width: 4.2mm; height: 4.2mm; flex: none; margin-top: .8mm; }
 .cover-band { position: relative; margin: -27mm -20mm 0; height: 112mm; background: #111418; color: #f0f2f4; padding: 30mm 20mm 0; overflow: hidden; }
 .cover-band .head { border-color: #2a2e34; color: #f0f2f4; }
@@ -121,7 +129,7 @@ table { width: 100%; border-collapse: collapse; }
 export function proposalHtml(proposal: ProposalFields) {
   const number = fill(proposal.number, "AAAA-000");
   const companyName = proposal.companyName.trim();
-  // Total só sai quando todas as etapas têm valor (e prazo); senão vira [campo a preencher], nunca uma soma parcial.
+  // Total só sai quando todas as etapas têm valor (e prazo); senão sai em branco para preencher à mão, nunca uma soma parcial.
   const complete = proposal.stages.length > 0 && proposal.stages.every(stage => stage.value);
   const total = complete ? proposalTotal(proposal.stages) : 0;
   const days = proposal.stages.length > 0 && proposal.stages.every(stage => stage.days) ? proposalDays(proposal.stages) : 0;
@@ -153,13 +161,13 @@ export function proposalHtml(proposal: ProposalFields) {
   const heard = `<div class="page">${head}
     <section>${eyebrow("01", "O que ouvimos")}<h2>Como o trabalho é feito hoje.</h2>
       <p class="lead">Resumo da conversa inicial, nas palavras de quem faz o trabalho. Se algo estiver diferente, ajustamos antes de começar.</p>
-      <div class="panel">${fill(proposal.today, "Descreva o processo atual: quem faz, onde os dados ficam e quanto tempo leva")}</div>
+      <div class="panel">${area(proposal.today, "Como o trabalho é feito hoje: quem faz, onde os dados ficam e quanto tempo leva", 4)}</div>
       <p class="label" style="margin-top:6mm">O que mais incomoda</p>
-      <div class="pains">${(pains.length ? pains : ["", ""]).map((pain, index) => `<div class="pain">${fill(pain, `Problema ${index + 1}`)}</div>`).join("")}</div></section>
+      <div class="pains">${(pains.length ? pains : ["", ""]).map((pain, index) => `<div class="pain">${area(pain, `Problema ${index + 1}`, 2)}</div>`).join("")}</div></section>
     <section>${eyebrow("02", "A solução")}<h2>O que muda na prática.</h2>
-      <p class="lead">${fill(proposal.solution, "Uma frase sobre a solução, falando do resultado e não da tecnologia")}</p>
+      <p class="lead">${area(proposal.solution, "O que muda na prática, em uma frase", 2)}</p>
       <table class="compare"><thead><tr><th>Hoje</th><th></th><th class="after">Depois</th></tr></thead><tbody>
-        ${(changes.length ? changes : [{ before: "", after: "" }]).map((change, index) => `<tr><td>${fill(change.before, `Situação atual ${index + 1}`)}</td><td class="sep">${arrow}</td><td>${fill(change.after, `Como fica ${index + 1}`)}</td></tr>`).join("")}
+        ${(changes.length ? changes : [{ before: "", after: "" }]).map((change, index) => `<tr><td>${area(change.before, `Hoje ${index + 1}`, 2)}</td><td class="sep">${arrow}</td><td>${area(change.after, `Depois ${index + 1}`, 2)}</td></tr>`).join("")}
       </tbody></table></section>
     ${foot(2)}</div>`;
 
@@ -167,7 +175,7 @@ export function proposalHtml(proposal: ProposalFields) {
     <section>${eyebrow("03", "Escopo e etapas")}<h2>O que você recebe em cada etapa.</h2>
       <p class="lead">O projeto é dividido em etapas com valor fechado. A cada uma, você já usa uma parte funcionando e pode ajustar o rumo antes que fique caro mudar.</p>
       <table class="stages"><thead><tr><th>#</th><th>Etapa e entrega</th><th class="r">Prazo</th><th class="r">Valor</th></tr></thead><tbody>
-        ${proposal.stages.map((stage, index) => `<tr><td class="n">${String(index + 1).padStart(2, "0")}</td><td><h3>${fill(stage.title, "Nome da etapa")}</h3><p class="muted">${fill(stage.deliverable, "O que fica pronto ao fim desta etapa")}</p></td><td class="r">${fill(stage.days && `${stage.days} dias`, "nº dias")}</td><td class="r">R$ ${stage.value ? brl(stage.value) : fill("", "0.000,00")}</td></tr>`).join("")}
+        ${proposal.stages.map((stage, index) => `<tr><td class="n">${String(index + 1).padStart(2, "0")}</td><td><h3>${fill(stage.title, "Nome da etapa")}</h3><p class="muted">${area(stage.deliverable, "O que fica pronto ao fim desta etapa", 2)}</p></td><td class="r">${fill(stage.days && `${stage.days} dias`, "nº dias")}</td><td class="r">R$ ${stage.value ? brl(stage.value) : fill("", "0.000,00")}</td></tr>`).join("")}
       </tbody><tfoot><tr><td></td><td>Total</td><td class="r">${days ? `${days} dias` : fill("", "nº dias")}</td><td class="r">R$ ${total ? brl(total.toFixed(2)) : fill("", "0.000,00")}</td></tr></tfoot></table>
       <div class="boxes">
         <div class="box in"><p class="label">Está incluso</p><ul>${included.map(item => `<li>${check}<span>${escape(item)}</span></li>`).join("")}</ul></div>
