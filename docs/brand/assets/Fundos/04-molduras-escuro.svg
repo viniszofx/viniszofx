@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice">
+<!-- Molduras: a moldura arredondada do símbolo V repetida em volta do V, com o mesmo raio proporcional (5/26). Cores sólidas, opacidade constante por traço (sem degradês). -->
+<rect width="1200" height="640" fill="#111418"/>
+<g fill="none" stroke="#e1a170" stroke-linecap="round" stroke-linejoin="round">
+<rect x="830.0" y="250.0" width="140" height="140" rx="26.9" stroke-opacity="0.652" stroke-width="1.5"/>
+<rect x="775.0" y="195.0" width="250" height="250" rx="48.1" stroke-opacity="0.573" stroke-width="1"/>
+<rect x="720.0" y="140.0" width="360" height="360" rx="69.2" stroke-opacity="0.493" stroke-width="1"/>
+<rect x="665.0" y="85.0" width="470" height="470" rx="90.4" stroke-opacity="0.413" stroke-width="1"/>
+<rect x="610.0" y="30.0" width="580" height="580" rx="111.5" stroke-opacity="0.334" stroke-width="1"/>
+<rect x="555.0" y="-25.0" width="690" height="690" rx="132.7" stroke-opacity="0.254" stroke-width="1"/>
+<rect x="500.0" y="-80.0" width="800" height="800" rx="153.8" stroke-opacity="0.174" stroke-width="1"/>
+<rect x="445.0" y="-135.0" width="910" height="910" rx="175.0" stroke-opacity="0.102" stroke-width="1"/>
+<path d="M870 290 L900 350 L930 290" stroke-opacity="0.85" stroke-width="3"/>
+</g>
+</svg>

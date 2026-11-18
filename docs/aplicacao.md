@@ -42,6 +42,8 @@ Enquanto não existe nenhuma conta, `/login` oferece **Criar conta e organizaç�
 
 ## Aparência
 
+A identidade visual completa (cores, tipografia, grafismos, fotos, tom de voz e impressos) está em [brand/README.md](brand/README.md), com os valores em [brand/tokens.json](brand/tokens.json).
+
 - Paleta grafite e cobre, com variáveis em `app/globals.css`: fundo ardósia frio, cobre como destaque (ação principal, seleção e foco) e branco-mármore no tema claro.
 - Superfícies de vidro reutilizáveis: `glass-bar`, `glass-card`, `glass-float` e `glass-surface`.
 - Fontes Oxanium (texto) e Raleway (títulos). Ícones Remix Icon.

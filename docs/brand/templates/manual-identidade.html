@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Vinicius Souza — Manual de identidade</title>
+<style>
+@font-face{font-family:"Heading";src:url(Montserrat.ttf);font-weight:100 900;}
+@font-face{font-family:"Sans";src:url(Tektur-Regular.ttf);font-weight:400;}
+@font-face{font-family:"Sans";src:url(Tektur-Medium.ttf);font-weight:500 700;}
+@font-face{font-family:"Mono";src:url(JetBrainsMono-Regular.ttf);}
+@page{size:A4;margin:0;}
+:root{
+  --bg:#0f1215;--card:#191c20;--pop:#1c2024;--fg:#f0f2f4;--muted:#9da2a9;--primary:#da9b6a;--pfg:#1e130e;
+  --bright:#e1a170;--block:#090b0f;--border:rgba(255,255,255,.09);--accent:#382b22;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:"Sans",sans-serif;font-size:12.5px;line-height:1.7;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;background:var(--bg);
+  background-image:url(bg.jpg);background-size:100% 100%;}
+.page:last-child{page-break-after:auto;}
+.in{position:absolute;inset:16mm 18mm 20mm 18mm;display:flex;flex-direction:column;}
+.foot{position:absolute;left:18mm;right:18mm;bottom:9mm;display:flex;justify-content:space-between;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);border-top:1px solid var(--border);padding-top:3mm;}
+.foot b{color:var(--primary);font-weight:500;}
+.eyebrow{display:flex;align-items:center;gap:12px;font-size:10.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--primary);margin:0;}
+.eyebrow .n{font-variant-numeric:tabular-nums;}
+.eyebrow .r{width:32px;height:1px;background:currentColor;}
+h1,h2,h3{font-family:"Heading";margin:0;letter-spacing:-.025em;}
+h2{font-size:32px;line-height:1.1;font-weight:400;margin-top:5mm;}
+h3{font-size:16px;font-weight:500;line-height:1.375;}
+.lead{font-size:14.5px;line-height:1.75;color:var(--muted);margin:4mm 0 0;}
+p{margin:0;}
+.muted{color:var(--muted);}
+.label{font-size:9.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.label.c{color:var(--primary);}
+.sp{height:7mm;flex:none;}
+.card{border:1px solid var(--border);background:rgba(25,28,32,.4);padding:5mm;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;}
+table{width:100%;border-collapse:collapse;font-size:11px;}
+th{text-align:left;font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:2mm 2mm 2mm 0;border-bottom:1px solid var(--border);}
+td{padding:2.2mm 2mm 2.2mm 0;border-bottom:1px solid var(--border);vertical-align:top;}
+code,.mono{font-family:"Mono";font-size:10.5px;}
+.tag{display:inline-flex;align-items:center;gap:6px;background:rgba(218,155,106,.12);color:var(--primary);padding:1.5mm 3mm;font-size:11px;font-weight:500;}
+.chip{display:inline-block;border:1px solid var(--border);padding:1px 7px;font-size:10px;color:var(--muted);margin:0 4px 4px 0;}
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 22px;border-radius:8.4px;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.btn.p{background:var(--bright);color:#1e130e;}
+.btn.o{border:1px solid rgba(255,255,255,.25);color:#fff;}
+.lnk{color:var(--primary);font-size:12px;font-weight:500;display:inline-flex;gap:6px;align-items:center;}
+.ok{color:var(--primary);}
+svg.i{width:14px;height:14px;flex:none;}
+ul.l{list-style:none;padding:0;margin:0;}
+ul.l li{display:flex;gap:8px;line-height:1.6;margin-bottom:2mm;}
+.dark{background:var(--block);}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="chk" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="up" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- ===== CAPA ===== -->
+<section class="page" style="background:#000">
+  <img src="capa.jpg" style="position:absolute;inset:0;width:100%;height:100%">
+  <div class="in" style="justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px">
+      <span style="width:24px;height:24px;border:1px solid var(--primary);border-radius:6px;display:grid;place-items:center;color:var(--primary);font-size:11px;font-weight:700">V</span>Vinicius Souza
+    </div>
+    <div>
+      <p class="eyebrow" style="color:var(--bright)"><span>Manual de identidade</span><span class="r"></span><span>2026</span></p>
+      <h1 style="font-size:58px;line-height:1.05;font-weight:300;margin-top:7mm">Menos planilha.<br><span style="font-weight:600">Mais resultado.</span></h1>
+      <p style="margin-top:6mm;font-size:15px;line-height:1.75;color:rgba(255,255,255,.7);max-width:120mm">Sistemas e automações sob medida para a sua empresa. Este guia reúne a marca, as cores, as fontes, os grafismos e o jeito de falar de viniccius.com.br.</p>
+      <div style="margin-top:12mm;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(255,255,255,.15);padding-top:5mm">
+        <div class="label" style="color:rgba(255,255,255,.55)">viniccius.com.br<br>Carbon Cycle LTDA</div>
+        <img src="simbolo-v.svg" style="width:15mm;height:15mm">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUMÁRIO + ESSÊNCIA ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span>Sumário</span></p>
+    <div style="margin-top:5mm;columns:2;column-gap:8mm;font-size:12px">
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">01</span>&nbsp; Essência</span><span class="muted">2</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">02</span>&nbsp; Marca</span><span class="muted">3</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">03</span>&nbsp; Cores</span><span class="muted">4</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">04</span>&nbsp; Tipografia</span><span class="muted">5</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">05</span>&nbsp; Grafismos</span><span class="muted">6</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">06</span>&nbsp; Fotografia</span><span class="muted">7</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">07</span>&nbsp; Layout e componentes</span><span class="muted">8</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">08</span>&nbsp; Ícones e movimento</span><span class="muted">9</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">09</span>&nbsp; Tom de voz</span><span class="muted">10</span></div>
+      <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--border);padding:2mm 0"><span><span class="ok">10</span>&nbsp; Acessibilidade</span><span class="muted">11</span></div>
+    </div>
+
+    <div class="sp" style="height:12mm"></div>
+    <p class="eyebrow"><span class="n">01</span><span class="r"></span><span>Essência</span></p>
+    <h2>Uma pessoa responde por cada entrega.</h2>
+    <p class="lead">Vinicius Souza é analista de sistemas da Carbon Cycle LTDA. A marca fala com empresas que perdem horas com planilha, retrabalho e sistemas que não conversam, e com quem não é da área.</p>
+
+    <table style="margin-top:6mm">
+      <tr><td class="label" style="width:32mm">Assinatura</td><td>Vinicius Souza</td></tr>
+      <tr><td class="label">Tagline</td><td>Menos planilha. Mais resultado.</td></tr>
+      <tr><td class="label">Promessa</td><td>Sistemas e automações sob medida, com valor fechado por etapa, IA revisada por uma pessoa e tudo em nome do cliente.</td></tr>
+      <tr><td class="label">Personalidade</td><td>Institucional e moderna. Sóbria, precisa, próxima.</td></tr>
+      <tr><td class="label">Conceito</td><td><b class="ok" style="font-weight:500">Grafite e cobre</b>: fundo ardósia frio, destaque em cobre polido, luz de estúdio vinda de cima.</td></tr>
+    </table>
+
+    <div class="sp"></div>
+    <div class="grid3">
+      <div class="card"><div class="label c">Ideia 01</div><h3 style="margin-top:2mm">O cliente se reconhece pelo problema.</h3><p class="muted" style="margin-top:2mm;font-size:11px;line-height:1.6">Fale da dor, não da ferramenta.</p></div>
+      <div class="card"><div class="label c">Ideia 02</div><h3 style="margin-top:2mm">Prova antes de promessa.</h3><p class="muted" style="margin-top:2mm;font-size:11px;line-height:1.6">Casos reais, trabalho publicado, site no ar. Nada inventado.</p></div>
+      <div class="card"><div class="label c">Ideia 03</div><h3 style="margin-top:2mm">Uma pessoa responde.</h3><p class="muted" style="margin-top:2mm;font-size:11px;line-height:1.6">A IA ajuda; uma pessoa revisa e assina.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>02</b></div>
+</section>
+
+<!-- ===== MARCA ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">02</span><span class="r"></span><span>Marca</span></p>
+    <h2>Um V em cobre, emoldurado, sobre grafite.</h2>
+    <p class="lead">O mesmo desenho no favicon, no ícone do celular e no cabeçalho do site e do painel.</p>
+
+    <div style="margin-top:7mm;display:grid;grid-template-columns:1.25fr 1fr;gap:4mm">
+      <div class="card" style="display:grid;place-items:center;padding:10mm;position:relative">
+        <img src="simbolo-v.svg" style="width:58mm;height:58mm">
+        <span class="label" style="position:absolute;left:5mm;bottom:4mm">Símbolo · 32×32</span>
+      </div>
+      <div style="display:grid;gap:4mm">
+        <div class="card" style="display:grid;place-items:center;background:#f3f5f6;position:relative"><img src="simbolo-v.svg" style="width:22mm;height:22mm"><span class="label" style="position:absolute;left:4mm;bottom:3mm;color:#5f646a">Sobre claro</span></div>
+        <div class="card" style="display:grid;place-items:center;position:relative"><img src="icone-app.svg" style="width:22mm;height:22mm;border-radius:5mm"><span class="label" style="position:absolute;left:4mm;bottom:3mm">Ícone de app</span></div>
+      </div>
+    </div>
+
+    <div class="sp"></div>
+    <div class="label c">Construção (grade de 32)</div>
+    <table style="margin-top:2mm">
+      <tr><td style="width:10mm"><span style="display:inline-block;width:7mm;height:7mm;background:#1b1e22;border:1px solid var(--border)"></span></td><td>Fundo <code>#1b1e22</code>, raio 7.</td></tr>
+      <tr><td><span style="display:inline-block;width:7mm;height:7mm;background:#d39a6c"></span></td><td>Moldura <code>#d39a6c</code>, traço 2, recuada 3 unidades da borda, raio 5.</td></tr>
+      <tr><td><span style="display:inline-block;width:7mm;height:7mm;background:#e7b48a"></span></td><td>V <code>#e7b48a</code>, traço 3, pontas e junção arredondadas.</td></tr>
+    </table>
+
+    <div class="sp"></div>
+    <div class="label c">Assinatura horizontal</div>
+    <div class="card" style="margin-top:2mm;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:8px;font-weight:600;font-size:15px"><span style="width:28px;height:28px;border:1px solid var(--primary);border-radius:7px;display:grid;place-items:center;color:var(--primary);font-size:13px;font-weight:700">V</span>Vinicius Souza</div>
+      <span class="muted" style="font-size:11px">Símbolo + nome, 8px entre eles. No celular, só o símbolo.</span>
+    </div>
+
+    <div class="sp"></div>
+    <div class="grid2">
+      <div class="card" style="border-color:rgba(218,155,106,.4)"><div class="label c" style="display:flex;gap:6px;align-items:center"><svg class="i"><use href="#chk"/></svg>Faça</div>
+        <ul class="l" style="margin-top:3mm;font-size:11.5px"><li>Mantenha as três cores do símbolo.</li><li>Respiro mínimo de 3/32 da largura em volta.</li><li>Use o quadrado grafite inteiro sobre fundos claros.</li></ul></div>
+      <div class="card"><div class="label" style="display:flex;gap:6px;align-items:center"><svg class="i"><use href="#x"/></svg>Evite</div>
+        <ul class="l muted" style="margin-top:3mm;font-size:11.5px"><li>Trocar o cobre por outra cor.</li><li>Distorcer ou girar o símbolo.</li><li>Sombra, gradiente ou contorno extra.</li></ul></div>
+    </div>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>03</b></div>
+</section>
+
+<!-- ===== CORES ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">03</span><span class="r"></span><span>Cores</span></p>
+    <h2>Grafite e cobre.</h2>
+    <p class="lead">O cobre fica só onde pede atenção: ação principal, seleção, foco, numeração e filetes. Cerca de 90% neutros, 10% cobre.</p>
+
+    <div style="margin-top:6mm;display:grid;grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:30mm 24mm;gap:3mm">
+      <div style="grid-row:span 2;background:#e1a170;color:#1e130e;padding:4mm;display:flex;flex-direction:column;justify-content:flex-end"><b style="font-weight:500">copper-bright</b><span class="mono" style="color:#1e130e">#e1a170 · oklch(0.76 0.1 58)</span><span style="font-size:10px;margin-top:1mm">Botão principal e filetes nos blocos escuros.</span></div>
+      <div style="background:#da9b6a;color:#1e130e;padding:3mm;display:flex;flex-direction:column;justify-content:flex-end"><b style="font-weight:500">primary · escuro</b><span class="mono" style="color:#1e130e">#da9b6a</span></div>
+      <div style="background:#a56038;color:#fefbf9;padding:3mm;display:flex;flex-direction:column;justify-content:flex-end"><b style="font-weight:500">primary · claro</b><span class="mono">#a56038</span></div>
+      <div style="background:#1b1e22;border:1px solid var(--border);padding:3mm;display:flex;flex-direction:column;justify-content:flex-end"><b style="font-weight:500">mark-graphite</b><span class="mono muted">#1b1e22</span></div>
+      <div style="background:#090b0f;border:1px solid var(--border);padding:3mm;display:flex;flex-direction:column;justify-content:flex-end"><b style="font-weight:500">graphite-block</b><span class="mono muted">#090b0f / #111418</span></div>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="label c">Neutros</div>
+    <table style="margin-top:1mm">
+      <tr><th>Token</th><th>Claro</th><th>Escuro</th><th>Papel</th></tr>
+      <tr><td><code>background</code></td><td><span class="sw" style="background:#f3f5f6"></span>#f3f5f6</td><td><span class="sw" style="background:#0f1215"></span>#0f1215</td><td class="muted">Fundo da página</td></tr>
+      <tr><td><code>card</code></td><td><span class="sw" style="background:#fdfdfe"></span>#fdfdfe</td><td><span class="sw" style="background:#191c20"></span>#191c20</td><td class="muted">Cartões</td></tr>
+      <tr><td><code>foreground</code></td><td><span class="sw" style="background:#13161b"></span>#13161b</td><td><span class="sw" style="background:#f0f2f4"></span>#f0f2f4</td><td class="muted">Texto principal</td></tr>
+      <tr><td><code>muted-foreground</code></td><td><span class="sw" style="background:#5f646a"></span>#5f646a</td><td><span class="sw" style="background:#9da2a9"></span>#9da2a9</td><td class="muted">Texto de apoio</td></tr>
+      <tr><td><code>accent</code></td><td><span class="sw" style="background:#f1e9e3"></span>#f1e9e3</td><td><span class="sw" style="background:#382b22"></span>#382b22</td><td class="muted">Realce quente</td></tr>
+      <tr><td><code>border</code></td><td><span class="sw" style="background:#dbdee1"></span>#dbdee1</td><td><span class="sw" style="background:rgba(255,255,255,.09)"></span>branco 9%</td><td class="muted">Filetes de 1px</td></tr>
+      <tr><td><code>destructive</code></td><td><span class="sw" style="background:#e7000b"></span>oklch .577</td><td><span class="sw" style="background:#ff6467"></span>oklch .704</td><td class="muted">Erro (só estado)</td></tr>
+    </table>
+    <p class="muted" style="font-size:10px;margin-top:2mm">Valores oficiais em OKLCH (tokens.json); os hex são a conversão para ferramentas que não leem OKLCH.</p>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="label c">Contraste</div>
+    <table style="margin-top:1mm">
+      <tr><th>Par</th><th>Claro</th><th>Escuro</th></tr>
+      <tr><td>foreground / background</td><td>16,5:1</td><td>16,7:1</td></tr>
+      <tr><td>muted-foreground / background</td><td>5,5:1</td><td>7,3:1</td></tr>
+      <tr><td>primary-foreground / primary</td><td>4,7:1</td><td>7,7:1</td></tr>
+      <tr><td>primary / background</td><td class="ok">4,41:1 ⚠</td><td>7,95:1</td></tr>
+    </table>
+    <p class="muted" style="font-size:10.5px;margin-top:2mm">⚠ No claro, cobre como texto pequeno fica abaixo de 4,5:1: use a partir de 18px negrito ou 24px, ou sobre card.</p>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>04</b></div>
+</section>
+
+<!-- ===== TIPOGRAFIA ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">04</span><span class="r"></span><span>Tipografia</span></p>
+    <h2>Três famílias, três papéis.</h2>
+
+    <div class="grid3" style="margin-top:6mm">
+      <div class="card"><div style="font-family:Heading;font-size:40px;font-weight:300;line-height:1">Aa</div><h3 style="margin-top:3mm">Raleway</h3><p class="muted" style="font-size:10.5px;line-height:1.55;margin-top:1mm">Títulos. Light, Regular, Medium. Sempre −0,025em.</p></div>
+      <div class="card"><div style="font-size:40px;line-height:1">Aa</div><h3 style="margin-top:3mm">Oxanium</h3><p class="muted" style="font-size:10.5px;line-height:1.55;margin-top:1mm">Texto, interface e botões. A família padrão.</p></div>
+      <div class="card"><div style="font-family:Mono;font-size:36px;line-height:1.1">Aa</div><h3 style="margin-top:3mm">JetBrains Mono</h3><p class="muted" style="font-size:10.5px;line-height:1.55;margin-top:1mm">Código, respostas de API, mockups.</p></div>
+    </div>
+
+    <div class="sp" style="height:6mm"></div>
+    <div style="border-top:1px solid var(--border)">
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">display · 72/1,05 · 300</span><span style="font-family:Heading;font-size:38px;font-weight:300;line-height:1.05;letter-spacing:-.025em">Menos planilha. <b style="font-weight:600">Mais resultado.</b></span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">h2 · 48/1,1 · 400</span><span style="font-family:Heading;font-size:26px;line-height:1.1;letter-spacing:-.025em">Problemas reais, resolvidos na prática.</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">numeral · 36 · 300</span><span style="font-family:Heading;font-size:30px;font-weight:300;color:var(--bright);font-variant-numeric:tabular-nums">01 02 03 04</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">destaque · 24 · 400</span><span style="font-family:Heading;font-size:22px;color:var(--primary);letter-spacing:-.025em">3+ anos</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">h3 · 20/1,375 · 500</span><span style="font-family:Heading;font-size:18px;font-weight:500;letter-spacing:-.025em">Sistemas sob medida</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">lead · 18/32</span><span style="font-size:15px;color:var(--muted)">Sistemas e automações sob medida para a sua empresa.</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">body · 16/28</span><span style="font-size:13px">Quem responde é quem vai construir.</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">small · 14/24</span><span style="font-size:11.5px;color:var(--muted)">Corumbá (MS) · atendimento remoto</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">eyebrow · 12 · +0,2em</span><span class="eyebrow"><span class="n">01</span><span class="r"></span><span>O que já resolvi</span></span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">button · 12 · 600</span><span style="font-size:10.5px;font-weight:600;letter-spacing:.1em">QUERO UMA PROPOSTA</span></div>
+      <div style="display:grid;grid-template-columns:30mm 1fr;align-items:baseline;padding:2.1mm 0;border-bottom:1px solid var(--border)"><span class="label">code · 13/20</span><span class="mono">HTTP/1.1 200 OK</span></div>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <ul class="l" style="font-size:11.5px">
+      <li><svg class="i ok" style="margin-top:3px"><use href="#arr"/></svg>No título de abertura, a primeira frase leve e a segunda em semibold.</li>
+      <li><svg class="i ok" style="margin-top:3px"><use href="#arr"/></svg>Números sempre com algarismos tabulares.</li>
+      <li><svg class="i ok" style="margin-top:3px"><use href="#arr"/></svg>Caixa-alta só em eyebrows, rótulos e botões, com espaçamento largo.</li>
+    </ul>
+    <p class="muted" style="font-size:9.5px;margin-top:1mm">Nota de impressão: nesta versão em PDF, Raleway e Oxanium foram substituídas por Montserrat e Tektur, as mais próximas disponíveis. No site, use sempre as originais (Google Fonts).</p>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>05</b></div>
+</section>
+
+<!-- ===== GRAFISMOS ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">05</span><span class="r"></span><span>Grafismos</span></p>
+    <h2>O losango é o motivo da marca.</h2>
+    <p class="lead">Aparece nos filetes, na moldura do símbolo e ecoa o V.</p>
+
+    <div style="margin-top:6mm;position:relative;height:84mm;overflow:hidden;border:1px solid var(--border)">
+      <img src="filetes-losango.svg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center">
+      <div style="position:absolute;left:6mm;bottom:6mm;max-width:80mm"><p class="eyebrow" style="color:var(--bright)"><span class="n">05</span><span class="r"></span><span>Como trabalhamos</span></p><div style="font-family:Heading;font-size:20px;line-height:1.15;margin-top:3mm;letter-spacing:-.025em">Do primeiro contato ao sistema no ar, em quatro passos.</div></div>
+    </div>
+    <p class="muted" style="font-size:11px;margin-top:2mm">Filetes em losango: cinco quadrados a 45°, em copper-bright, opacidade de 45% a 17%, traço de 1px. À direita dos blocos escuros, sem cruzar o texto.</p>
+
+    <div class="sp"></div>
+    <div class="grid2">
+      <div class="card"><div class="label c">Eyebrow numerado</div><p style="margin-top:3mm" class="eyebrow"><span class="n">01</span><span class="r"></span><span>O que já resolvi</span></p><p class="muted" style="font-size:11px;line-height:1.6;margin-top:3mm">Número + filete de 32px + nome. As seções vão de 01 a 08.</p></div>
+      <div class="card"><div class="label c">Luz de estúdio</div><img src="luz.jpg" style="display:block;width:100%;height:16mm;margin-top:3mm;border:1px solid var(--border)"><p class="muted" style="font-size:11px;line-height:1.6;margin-top:3mm">Foco frio de cima, reflexo de cobre embaixo, bordas escuras.</p></div>
+    </div>
+    <div class="sp" style="height:4mm"></div>
+    <div class="card" style="background:rgba(28,32,36,.75);"><div class="label c">Vidro</div><p class="muted" style="font-size:11px;line-height:1.6;margin-top:2mm">Cabeçalho, cartões flutuantes e menus: translúcidos, com desfoque de 16 a 28px e borda fina. Com "reduzir transparência", ficam opacos.</p></div>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>06</b></div>
+</section>
+
+<!-- ===== FOTOGRAFIA ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">06</span><span class="r"></span><span>Fotografia</span></p>
+    <h2>Retrato de estúdio, fundo preto.</h2>
+    <p class="lead">Luz lateral suave, roupa escura, olhar para a câmera. Sério e próximo.</p>
+
+    <div style="margin-top:6mm;display:grid;grid-template-columns:1fr 1.1fr;gap:9mm;align-items:center">
+      <div style="position:relative;margin:4mm">
+        <span style="position:absolute;inset:-3mm;border:1px solid rgba(218,155,106,.5)"></span>
+        <div style="aspect-ratio:4/5;overflow:hidden;background:#000;position:relative"><img src="sobre.jpg" style="width:100%;height:100%;object-fit:cover;object-position:50% 58%"></div>
+      </div>
+      <div>
+        <div class="label c">Seção "Quem atende você"</div>
+        <p style="margin-top:2mm;font-size:12px;line-height:1.7">Recorte 4:5 com <b style="font-weight:500">moldura deslocada</b> de 1px em primary a 50%, 12px para fora: eco da moldura do símbolo.</p>
+        <div class="sp" style="height:5mm"></div>
+        <div class="label c">Abertura do site</div>
+        <p style="margin-top:2mm;font-size:12px;line-height:1.7">Retrato à direita, área preta à esquerda para o texto. Um gradiente preto protege o texto e some antes do rosto; embaixo, a foto se dissolve na cor da página.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:7mm;position:relative;height:58mm;overflow:hidden;background:#000">
+      <img src="faixa.jpg" style="position:absolute;inset:0;width:100%;height:100%">
+      <div style="position:absolute;left:6mm;top:50%;transform:translateY(-50%)"><div style="font-family:Heading;font-size:24px;font-weight:300;line-height:1.05;letter-spacing:-.025em">Menos planilha.<br><b style="font-weight:600">Mais resultado.</b></div></div>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="card"><div class="label" style="display:flex;gap:6px;align-items:center"><svg class="i"><use href="#x"/></svg>Evite</div><p class="muted" style="font-size:11px;margin-top:2mm">Fotos de banco de imagens, ilustrações genéricas ou pessoas que não sejam o Vinicius.</p></div>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>07</b></div>
+</section>
+
+<!-- ===== LAYOUT E COMPONENTES ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">07</span><span class="r"></span><span>Layout e componentes</span></p>
+    <h2>Cartões retos, borda fina, cobre no resultado.</h2>
+    <p class="lead">Uma coluna, seções ancoradas, container de até 1152px com margens de 20–24px. Respiro de 40–80px entre seções.</p>
+
+    <div class="sp" style="height:6mm"></div>
+    <div class="label c">Cartão de caso</div>
+    <div class="card" style="margin-top:2mm">
+      <p class="label"><span class="ok">Caso 01</span> · Embrapa Pantanal</p>
+      <h3 style="margin-top:2mm">Sistema interno de inventário fora do ar.</h3>
+      <p class="label" style="margin-top:3mm;font-size:8.5px">O que foi feito</p>
+      <p style="font-size:11.5px;line-height:1.6;margin-top:1mm;color:rgba(240,242,244,.8)">Encontrei a causa (uma versão incompatível do PHP derrubava a conexão com o banco de dados) e corrigi com o sistema em uso.</p>
+      <p style="margin-top:4mm"><span class="tag"><svg class="i"><use href="#chk"/></svg>Correção urgente na Embrapa Pantanal</span></p>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="label c">Cartão de situação</div>
+    <div style="margin-top:2mm;border:1px solid var(--border);background:rgba(25,28,32,.4)">
+      <h3 style="padding:5mm;font-size:15px">A equipe passa horas copiando dados de uma planilha para outra.</h3>
+      <div style="border-top:1px solid rgba(218,155,106,.15);background:rgba(218,155,106,.06);padding:4mm 5mm"><p class="label c" style="font-size:8.5px">Como resolvemos</p><p style="display:flex;gap:8px;font-size:11.5px;margin-top:1mm"><svg class="i ok" style="margin-top:3px"><use href="#arr"/></svg>Os dados entram uma vez só. O resto acontece sozinho.</p></div>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="grid2">
+      <div>
+        <div class="label c">Botões</div>
+        <div class="dark" style="margin-top:2mm;padding:5mm;display:flex;flex-direction:column;gap:3mm;align-items:flex-start;border:1px solid var(--border)">
+          <span class="btn p">Quero uma proposta</span>
+          <span class="btn o">LinkedIn</span>
+          <span class="lnk">Ver o case Cartório LCM <svg class="i"><use href="#arr"/></svg></span>
+        </div>
+      </div>
+      <div>
+        <div class="label c">Serviço e chips</div>
+        <div class="card" style="margin-top:2mm">
+          <span style="display:grid;place-items:center;width:11mm;height:11mm;border:1px solid rgba(218,155,106,.4);color:var(--primary)"><svg class="i" style="width:18px;height:18px" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <h3 style="margin-top:3mm;font-size:15px">Sistemas sob medida</h3>
+          <div style="margin-top:2mm"><span class="chip">Controle de pedidos</span><span class="chip">Cadastro de clientes</span><span class="chip">Acesso por perfil</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sp" style="height:4mm"></div>
+    <div style="background:var(--primary);color:var(--pfg);padding:3mm 5mm;font-size:11.5px;font-weight:500;display:flex;gap:7mm;white-space:nowrap;overflow:hidden">React <span>Next.js</span><span>TypeScript</span><span>PHP / Laravel</span><span>Java / Spring Boot</span><span>PostgreSQL</span><span>Docker</span><span>Vercel</span></div>
+    <p class="muted" style="font-size:10px;margin-top:1.5mm">Faixa de tecnologias em primary: rola sem fim, pausa no hover, para com "reduzir movimento".</p>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>08</b></div>
+</section>
+
+<!-- ===== ÍCONES E MOVIMENTO ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">08</span><span class="r"></span><span>Ícones e movimento</span></p>
+    <h2>Traço fino, gesto curto.</h2>
+
+    <div class="sp" style="height:6mm"></div>
+    <div class="label c">Iconografia</div>
+    <table style="margin-top:1mm">
+      <tr><td class="label" style="width:32mm">Família</td><td><b style="font-weight:500">Remix Icon, versão Line</b> (traço, cantos suaves). Hugeicons só para logos que o Remix não tem (TypeScript, shadcn/ui).</td></tr>
+      <tr><td class="label">Tamanhos</td><td>14px em links · 16px em botões e listas · 20–24px em destaques.</td></tr>
+      <tr><td class="label">Cor</td><td>primary quando marcam ação ou resultado; muted-foreground nos demais.</td></tr>
+      <tr><td class="label">Moldura</td><td>Ícones de serviço num quadrado de 44px, borda primary a 40%, sem raio.</td></tr>
+      <tr><td class="label">Emoji</td><td>Não. Única exceção: o coração do rodapé ("Feito com ♥"), em copper-bright.</td></tr>
+    </table>
+    <div style="display:flex;gap:4mm;margin-top:4mm">
+      <span style="display:grid;place-items:center;width:12mm;height:12mm;border:1px solid rgba(218,155,106,.4);color:var(--primary)"><svg class="i" style="width:18px;height:18px"><use href="#chk"/></svg></span>
+      <span style="display:grid;place-items:center;width:12mm;height:12mm;border:1px solid rgba(218,155,106,.4);color:var(--primary)"><svg class="i" style="width:18px;height:18px"><use href="#arr"/></svg></span>
+      <span style="display:grid;place-items:center;width:12mm;height:12mm;border:1px solid rgba(218,155,106,.4);color:var(--primary)"><svg class="i" style="width:18px;height:18px"><use href="#up"/></svg></span>
+      <span style="display:grid;place-items:center;width:12mm;height:12mm;border:1px solid var(--border);color:var(--muted)"><svg class="i" style="width:18px;height:18px"><use href="#x"/></svg></span>
+    </div>
+
+    <div class="sp" style="height:10mm"></div>
+    <div class="label c">Movimento</div>
+    <div class="grid2" style="margin-top:2mm">
+      <div class="card"><div style="font-family:Heading;font-size:30px;font-weight:300;color:var(--bright)">300ms</div><h3 style="margin-top:1mm;font-size:14px">Entrada (rise-in)</h3><p class="muted" style="font-size:11px;line-height:1.6;margin-top:1mm">Sobe 8px e aparece, ease-out. Na abertura, 900ms em sequência de 150ms: título, frase, botões.</p></div>
+      <div class="card"><div style="font-family:Heading;font-size:30px;font-weight:300;color:var(--bright)">2px</div><h3 style="margin-top:1mm;font-size:14px">Hover</h3><p class="muted" style="font-size:11px;line-height:1.6;margin-top:1mm">Só cor e um pequeno deslocamento de seta. Sem desfoque, sem escala.</p></div>
+      <div class="card"><div style="font-family:Heading;font-size:30px;font-weight:300;color:var(--bright)">45s</div><h3 style="margin-top:1mm;font-size:14px">Faixa infinita</h3><p class="muted" style="font-size:11px;line-height:1.6;margin-top:1mm">Lista de tecnologias em loop linear, pausa ao passar o mouse.</p></div>
+      <div class="card"><div style="font-family:Heading;font-size:30px;font-weight:300;color:var(--bright)">0</div><h3 style="margin-top:1mm;font-size:14px">Reduzir movimento</h3><p class="muted" style="font-size:11px;line-height:1.6;margin-top:1mm">Tudo para quando a pessoa pede: a faixa vira lista estática.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>09</b></div>
+</section>
+
+<!-- ===== TOM DE VOZ ===== -->
+<section class="page">
+  <div class="in">
+    <p class="eyebrow"><span class="n">09</span><span class="r"></span><span>Tom de voz</span></p>
+    <h2>Direto, simples e acolhedor.</h2>
+    <p class="lead">Fala com "você", em frases curtas, sem jargão. Mostra prazo, custo e resultado. Confiante, sem exagero.</p>
+
+    <div class="sp" style="height:5mm"></div>
+    <div style="border-top:1px solid var(--border)">
+      <div style="display:grid;grid-template-columns:9mm 1fr;padding:2.6mm 0;border-bottom:1px solid var(--border)"><span class="ok" style="font-family:Heading;font-size:16px;font-weight:300">01</span><span><b style="font-weight:500">Comece pela dor, em forma de pergunta.</b> <span class="muted">"Digitando a mesma coisa em dois lugares?"</span></span></div>
+      <div style="display:grid;grid-template-columns:9mm 1fr;padding:2.6mm 0;border-bottom:1px solid var(--border)"><span class="ok" style="font-family:Heading;font-size:16px;font-weight:300">02</span><span><b style="font-weight:500">Responda com o resultado, não com a técnica.</b> <span class="muted">"Os dados entram uma vez só. O resto acontece sozinho."</span></span></div>
+      <div style="display:grid;grid-template-columns:9mm 1fr;padding:2.6mm 0;border-bottom:1px solid var(--border)"><span class="ok" style="font-family:Heading;font-size:16px;font-weight:300">03</span><span><b style="font-weight:500">Seja concreto.</b> <span class="muted">"Valor fechado por etapa", "proposta por escrito", "tudo em seu nome".</span></span></div>
+      <div style="display:grid;grid-template-columns:9mm 1fr;padding:2.6mm 0;border-bottom:1px solid var(--border)"><span class="ok" style="font-family:Heading;font-size:16px;font-weight:300">04</span><span><b style="font-weight:500">Primeira pessoa honesta.</b> <span class="muted">"O que já resolvi", "Quem atende você"; plural quando fala da Carbon Cycle.</span></span></div>
+      <div style="display:grid;grid-template-columns:9mm 1fr;padding:2.6mm 0;border-bottom:1px solid var(--border)"><span class="ok" style="font-family:Heading;font-size:16px;font-weight:300">05</span><span><b style="font-weight:500">Nunca prometa o que não dá para provar.</b> <span class="muted">Sem números inventados, sem "o melhor", sem "revolucionário".</span></span></div>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="grid2">
+      <div class="card" style="border-color:rgba(218,155,106,.4)"><div class="label c" style="display:flex;gap:6px;align-items:center"><svg class="i"><use href="#chk"/></svg>Faça</div>
+        <ul class="l" style="margin-top:3mm;font-size:11px"><li>"Pare de perder horas com planilha e retrabalho."</li><li>"Os sistemas passam a conversar, e ninguém digita nada duas vezes."</li><li>"A IA sugere; uma pessoa revisa, testa e responde por tudo."</li><li>"Quero uma proposta"</li></ul></div>
+      <div class="card"><div class="label" style="display:flex;gap:6px;align-items:center"><svg class="i"><use href="#x"/></svg>Evite</div>
+        <ul class="l muted" style="margin-top:3mm;font-size:11px"><li>"Soluções inovadoras de transformação digital."</li><li>"Integração via API REST com middleware."</li><li>"Potencializado por IA de ponta."</li><li>"Saiba mais" / "Clique aqui"</li></ul></div>
+    </div>
+
+    <div class="sp" style="height:5mm"></div>
+    <div class="label c">IA consciente · quatro regras fixas</div>
+    <div class="grid2" style="margin-top:2mm;gap:3mm">
+      <div style="border-top:1px solid var(--border);padding-top:2mm;font-size:11.5px"><b style="font-weight:500">Uma pessoa responsável</b></div>
+      <div style="border-top:1px solid var(--border);padding-top:2mm;font-size:11.5px"><b style="font-weight:500">Seus dados protegidos</b></div>
+      <div style="border-top:1px solid var(--border);padding-top:2mm;font-size:11.5px"><b style="font-weight:500">Transparência</b></div>
+      <div style="border-top:1px solid var(--border);padding-top:2mm;font-size:11.5px"><b style="font-weight:500">Só quando compensa</b></div>
+    </div>
+  </div>
+  <div class="foot"><span>Vinicius Souza · Manual de identidade</span><b>10</b></div>
+</section>
+
+<!-- ===== ACESSIBILIDADE + CONTRACAPA ===== -->
+<section class="page">
+  <div class="in" style="bottom:auto;height:128mm">
+    <p class="eyebrow"><span class="n">10</span><span class="r"></span><span>Acessibilidade</span></p>
+    <h2>Legível para todo mundo.</h2>
+    <ul class="l" style="margin-top:6mm;font-size:12px">
+      <li><svg class="i ok" style="margin-top:4px"><use href="#chk"/></svg>Foco sempre visível: anel de 2px na cor ring (cobre).</li>
+      <li><svg class="i ok" style="margin-top:4px"><use href="#chk"/></svg>Texto de apoio nunca mais claro que muted-foreground.</li>
+      <li><svg class="i ok" style="margin-top:4px"><use href="#chk"/></svg>Respeite "reduzir movimento" e "reduzir transparência".</li>
+      <li><svg class="i ok" style="margin-top:4px"><use href="#chk"/></svg>Imagens decorativas com alt vazio; o retrato da seção Sobre tem alt "Vinicius Souza".</li>
+      <li><svg class="i ok" style="margin-top:4px"><use href="#chk"/></svg>Cobre como texto pequeno no tema claro: ver aviso de contraste (página 4).</li>
+    </ul>
+  </div>
+  <div class="dark" style="position:absolute;left:0;right:0;bottom:0;height:150mm;overflow:hidden">
+    <img src="filetes-losango.svg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center">
+    <div style="position:absolute;left:18mm;right:18mm;top:20mm">
+      <p class="eyebrow" style="color:var(--bright)"><span>Contato</span></p>
+      <div style="font-family:Heading;font-size:30px;line-height:1.1;letter-spacing:-.025em;margin-top:5mm;max-width:130mm">Vamos tirar o trabalho manual das costas da sua equipe?</div>
+      <div style="margin-top:9mm;display:flex;gap:4mm"><span class="btn p">Quero minha proposta</span><span class="btn o">LinkedIn</span></div>
+    </div>
+    <div style="position:absolute;left:18mm;right:18mm;bottom:12mm;display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(255,255,255,.1);padding-top:5mm;font-size:10.5px;color:rgba(255,255,255,.6)">
+      <span>© 2026 Vinicius Souza · Carbon Cycle LTDA<br>CNPJ 55.366.974/0001-85 · viniccius.com.br</span>
+      <img src="simbolo-v.svg" style="width:12mm;height:12mm">
+    </div>
+  </div>
+</section>
+
+<style>.sw{display:inline-block;width:3.2mm;height:3.2mm;margin-right:2mm;vertical-align:-0.4mm;border:1px solid rgba(255,255,255,.15);}</style>
+</body>
+</html>

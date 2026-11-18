@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Proposta comercial — Vinicius Souza</title>
+<!--
+  PADRÃO PARA IMPRESSOS — Vinicius Souza / Carbon Cycle
+  Papel branco, tinta grafite, cobre só onde pede atenção. Uma única área escura (a faixa da capa).
+  Sem degradês nem transparências: todas as cores são sólidas, para sair igual em qualquer impressora e leitor de PDF.
+  Campos a preencher: <span class="ph">[ ... ]</span>
+-->
+<style>
+@font-face{font-family:"Heading";src:url(Montserrat.ttf);font-weight:100 900;}
+@font-face{font-family:"Sans";src:url(Tektur-Regular.ttf);font-weight:400;}
+@font-face{font-family:"Sans";src:url(Tektur-Medium.ttf);font-weight:500 700;}
+@font-face{font-family:"Mono";src:url(JetBrainsMono-Regular.ttf);}
+@page{size:A4;margin:0;}
+:root{
+  --paper:#ffffff; --panel:#f3f5f6; --ink:#13161b; --muted:#5f646a; --rule:#dbdee1;
+  --copper:#a56038; --copper-ink:#3e281b; --accent:#f1e9e3; --accent-rule:#e2cfc0;
+  --graphite:#111418; --bright:#e1a170; --mark:#1b1e22;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Sans",sans-serif;font-size:11px;line-height:1.65;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;background:var(--paper);}
+.page:last-child{page-break-after:auto;}
+/* cabeçalho e rodapé corridos */
+.hd{position:absolute;left:20mm;right:20mm;top:12mm;display:flex;justify-content:space-between;align-items:center;padding-bottom:3mm;border-bottom:1px solid var(--rule);font-size:9px;}
+.logo{display:flex;align-items:center;gap:7px;font-weight:600;font-size:10.5px;color:var(--ink);}
+.logo i{width:17px;height:17px;border:1px solid var(--copper);border-radius:4px;display:grid;place-items:center;color:var(--copper);font-style:normal;font-size:9px;font-weight:700;}
+.hd .meta{letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.ft{position:absolute;left:20mm;right:20mm;bottom:10mm;display:flex;justify-content:space-between;padding-top:3mm;border-top:1px solid var(--rule);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.ft b{color:var(--copper);font-weight:500;font-variant-numeric:tabular-nums;}
+.body{position:absolute;left:20mm;right:20mm;top:27mm;bottom:22mm;}
+/* tipografia */
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:9.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--copper);margin:0;}
+.eyebrow .r{width:28px;height:1px;background:var(--copper);}
+h1,h2,h3{font-family:"Heading";margin:0;letter-spacing:-.025em;color:var(--ink);}
+h2{font-size:26px;line-height:1.12;font-weight:400;margin-top:4mm;}
+h3{font-size:13.5px;font-weight:500;line-height:1.35;}
+.lead{font-size:12.5px;line-height:1.7;color:var(--muted);margin:3mm 0 0;}
+p{margin:0;}
+.muted{color:var(--muted);}
+.label{font-size:8.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.label.c{color:var(--copper);}
+.sec{margin-top:9mm;}
+/* campos a preencher */
+.ph{background:var(--accent);color:var(--copper-ink);padding:0 3px;border-bottom:1px dashed var(--copper);}
+.ph.block{display:block;padding:2.5mm 3mm;border:1px dashed var(--accent-rule);border-bottom:1px dashed var(--copper);line-height:1.6;}
+/* blocos */
+.box{border:1px solid var(--rule);padding:4.5mm;}
+.panel{background:var(--panel);padding:4.5mm;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;}
+table{width:100%;border-collapse:collapse;font-size:10.5px;}
+th{text-align:left;font-size:8.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:2mm 2mm 2mm 0;border-bottom:1px solid var(--ink);}
+td{padding:2.6mm 2mm 2.6mm 0;border-bottom:1px solid var(--rule);vertical-align:top;}
+td.n,th.n{text-align:right;padding-right:0;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.num{font-family:"Heading";font-weight:300;color:var(--copper);font-variant-numeric:tabular-nums;}
+ul.l{list-style:none;padding:0;margin:0;}
+ul.l li{display:flex;gap:7px;margin-bottom:1.6mm;}
+svg.i{width:12px;height:12px;flex:none;margin-top:3px;}
+.c{color:var(--copper);}
+.tag{display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:var(--copper-ink);padding:1mm 2.5mm;font-size:9.5px;font-weight:500;}
+.sign{border-top:1px solid var(--ink);padding-top:2mm;}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="chk" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<!-- ============ CAPA ============ -->
+<section class="page">
+  <div style="position:absolute;left:0;right:0;top:0;height:112mm;background:var(--graphite);overflow:hidden">
+    <img src="filetes-losango.svg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center">
+    <div style="position:absolute;left:20mm;top:16mm;display:flex;align-items:center;gap:8px;color:#f0f2f4;font-weight:600;font-size:12px">
+      <img src="simbolo-v.svg" style="width:9mm;height:9mm">Vinicius Souza
+    </div>
+    <div style="position:absolute;left:20mm;bottom:16mm;color:#f0f2f4">
+      <p class="eyebrow" style="color:var(--bright)"><span>Proposta comercial</span><span class="r" style="background:var(--bright)"></span><span>Nº <span style="color:#f0f2f4">[AAAA-000]</span></span></p>
+      <div style="font-family:Heading;font-size:40px;font-weight:300;line-height:1.05;letter-spacing:-.025em;margin-top:5mm">Menos planilha.<br><span style="font-weight:600">Mais resultado.</span></div>
+    </div>
+  </div>
+
+  <div style="position:absolute;left:20mm;right:20mm;top:126mm">
+    <div class="label c">Projeto</div>
+    <h1 style="font-size:30px;font-weight:400;line-height:1.12;margin-top:2mm"><span class="ph">[Nome do projeto]</span></h1>
+    <p class="lead" style="max-width:150mm">Sistema e automação sob medida para <span class="ph">[nome da empresa]</span>, com valor fechado por etapa, IA revisada por uma pessoa e tudo em nome do cliente.</p>
+
+    <table style="margin-top:10mm">
+      <tr><td class="label" style="width:38mm">Para</td><td><span class="ph">[Nome do contato]</span> · <span class="ph">[Empresa]</span></td></tr>
+      <tr><td class="label">De</td><td>Vinicius Souza · Analista de sistemas · Carbon Cycle LTDA</td></tr>
+      <tr><td class="label">Data</td><td><span class="ph">[dd/mm/aaaa]</span></td></tr>
+      <tr><td class="label">Validade</td><td><span class="ph">[nº] dias</span> a partir da data acima</td></tr>
+      <tr><td class="label">Investimento total</td><td><b style="font-weight:500">R$ <span class="ph">[0.000,00]</span></b>, dividido em <span class="ph">[nº]</span> etapas</td></tr>
+    </table>
+  </div>
+
+  <div class="ft" style="border-top-color:var(--rule)"><span>Carbon Cycle LTDA · CNPJ 55.366.974/0001-85</span><span>viniccius.com.br</span></div>
+</section>
+
+<!-- ============ 01 CONTEXTO + 02 SOLUÇÃO ============ -->
+<section class="page">
+  <div class="hd"><span class="logo"><i>V</i>Vinicius Souza</span><span class="meta">Proposta <span class="ph">[AAAA-000]</span></span></div>
+  <div class="body">
+    <p class="eyebrow"><span>01</span><span class="r"></span><span>O que ouvimos</span></p>
+    <h2>Como o trabalho é feito hoje.</h2>
+    <p class="lead">Resumo da conversa inicial, nas palavras de quem faz o trabalho. Se algo estiver diferente, ajustamos antes de começar.</p>
+    <div class="ph block" style="margin-top:5mm;min-height:24mm">[Descreva em 3 a 5 linhas o processo atual: quem faz, onde os dados ficam (planilhas, mensagens, sistemas) e quanto tempo leva.]</div>
+
+    <div class="label c" style="margin-top:7mm">O que mais incomoda</div>
+    <div class="grid2" style="margin-top:2mm">
+      <div class="box"><h3><span class="ph">[Problema 1 — ex.: a equipe copia dados de uma planilha para outra]</span></h3></div>
+      <div class="box"><h3><span class="ph">[Problema 2 — ex.: ninguém sabe em que pé está um pedido]</span></h3></div>
+      <div class="box"><h3><span class="ph">[Problema 3]</span></h3></div>
+      <div class="box"><h3><span class="ph">[Problema 4]</span></h3></div>
+    </div>
+
+    <div class="sec">
+      <p class="eyebrow"><span>02</span><span class="r"></span><span>A solução</span></p>
+      <h2>O que muda na prática.</h2>
+      <p class="lead"><span class="ph">[Uma frase sobre a solução, falando do resultado e não da tecnologia. Ex.: "Os pedidos passam a entrar uma vez só, e o painel mostra o andamento de tudo, na hora."]</span></p>
+      <div style="margin-top:5mm;border:1px solid var(--rule)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)">
+          <div class="label" style="padding:2.5mm 4mm">Hoje</div><div class="label c" style="padding:2.5mm 4mm;background:var(--accent)">Depois</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)">
+          <div style="padding:3mm 4mm"><span class="ph">[Situação atual 1]</span></div>
+          <div style="padding:3mm 4mm;display:flex;gap:7px;background:#faf6f3"><svg class="i c"><use href="#arr"/></svg><span><span class="ph">[Como fica 1]</span></span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)">
+          <div style="padding:3mm 4mm"><span class="ph">[Situação atual 2]</span></div>
+          <div style="padding:3mm 4mm;display:flex;gap:7px;background:#faf6f3"><svg class="i c"><use href="#arr"/></svg><span><span class="ph">[Como fica 2]</span></span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr">
+          <div style="padding:3mm 4mm"><span class="ph">[Situação atual 3]</span></div>
+          <div style="padding:3mm 4mm;display:flex;gap:7px;background:#faf6f3"><svg class="i c"><use href="#arr"/></svg><span><span class="ph">[Como fica 3]</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span>Vinicius Souza · Carbon Cycle LTDA</span><b>02</b></div>
+</section>
+
+<!-- ============ 03 ESCOPO E ETAPAS ============ -->
+<section class="page">
+  <div class="hd"><span class="logo"><i>V</i>Vinicius Souza</span><span class="meta">Proposta <span class="ph">[AAAA-000]</span></span></div>
+  <div class="body">
+    <p class="eyebrow"><span>03</span><span class="r"></span><span>Escopo e etapas</span></p>
+    <h2>O que você recebe em cada etapa.</h2>
+    <p class="lead">O projeto é dividido em etapas com valor fechado. A cada uma, você já usa uma parte funcionando e pode ajustar o rumo antes que fique caro mudar.</p>
+
+    <table style="margin-top:6mm">
+      <tr><th style="width:9mm">#</th><th>Etapa e entrega</th><th class="n" style="width:24mm">Prazo</th><th class="n" style="width:30mm">Valor</th></tr>
+      <tr><td><span class="num" style="font-size:16px">01</span></td><td><b style="font-weight:500"><span class="ph">[Nome da etapa]</span></b><br><span class="muted"><span class="ph">[O que fica pronto e funcionando ao fim desta etapa]</span></span></td><td class="n"><span class="ph">[nº] dias</span></td><td class="n">R$ <span class="ph">[0.000,00]</span></td></tr>
+      <tr><td><span class="num" style="font-size:16px">02</span></td><td><b style="font-weight:500"><span class="ph">[Nome da etapa]</span></b><br><span class="muted"><span class="ph">[O que fica pronto e funcionando ao fim desta etapa]</span></span></td><td class="n"><span class="ph">[nº] dias</span></td><td class="n">R$ <span class="ph">[0.000,00]</span></td></tr>
+      <tr><td><span class="num" style="font-size:16px">03</span></td><td><b style="font-weight:500"><span class="ph">[Nome da etapa]</span></b><br><span class="muted"><span class="ph">[O que fica pronto e funcionando ao fim desta etapa]</span></span></td><td class="n"><span class="ph">[nº] dias</span></td><td class="n">R$ <span class="ph">[0.000,00]</span></td></tr>
+      <tr><td><span class="num" style="font-size:16px">04</span></td><td><b style="font-weight:500">No ar e acompanhado</b><br><span class="muted">Publicação, treinamento da equipe e acompanhamento dos primeiros <span class="ph">[nº]</span> dias.</span></td><td class="n"><span class="ph">[nº] dias</span></td><td class="n">R$ <span class="ph">[0.000,00]</span></td></tr>
+      <tr><td style="border-bottom:1px solid var(--ink)"></td><td style="border-bottom:1px solid var(--ink)"><b style="font-weight:500">Total</b></td><td class="n" style="border-bottom:1px solid var(--ink)"><b style="font-weight:500"><span class="ph">[nº] dias</span></b></td><td class="n" style="border-bottom:1px solid var(--ink)"><b style="font-weight:500">R$ <span class="ph">[0.000,00]</span></b></td></tr>
+    </table>
+
+    <div class="grid2" style="margin-top:8mm">
+      <div class="box" style="border-color:var(--copper)">
+        <div class="label c" style="display:flex;gap:6px;align-items:center"><svg class="i" style="margin:0"><use href="#chk"/></svg>Está incluso</div>
+        <ul class="l" style="margin-top:3mm">
+          <li><svg class="i c"><use href="#chk"/></svg><span>Código, documentação e acessos em nome de <span class="ph">[Empresa]</span>.</span></li>
+          <li><svg class="i c"><use href="#chk"/></svg><span>Treinamento da equipe que vai usar o sistema.</span></li>
+          <li><svg class="i c"><use href="#chk"/></svg><span>Acompanhamento dos primeiros dias no ar.</span></li>
+          <li><svg class="i c"><use href="#chk"/></svg><span><span class="ph">[Outro item incluso]</span></span></li>
+        </ul>
+      </div>
+      <div class="box">
+        <div class="label" style="display:flex;gap:6px;align-items:center"><svg class="i" style="margin:0"><use href="#x"/></svg>Não está incluso</div>
+        <ul class="l muted" style="margin-top:3mm">
+          <li><svg class="i"><use href="#x"/></svg><span><span class="ph">[Ex.: custos de hospedagem e serviços de terceiros]</span></span></li>
+          <li><svg class="i"><use href="#x"/></svg><span><span class="ph">[Ex.: novas funções fora deste escopo]</span></span></li>
+          <li><svg class="i"><use href="#x"/></svg><span><span class="ph">[Outro item]</span></span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:6mm;display:flex;gap:4mm;align-items:flex-start">
+      <svg class="i c" style="width:14px;height:14px;margin-top:2px"><use href="#arr"/></svg>
+      <p style="font-size:10.5px">Mudou alguma coisa no meio do caminho? Combinamos por escrito antes de fazer, com prazo e valor da mudança. Sem surpresas.</p>
+    </div>
+  </div>
+  <div class="ft"><span>Vinicius Souza · Carbon Cycle LTDA</span><b>03</b></div>
+</section>
+
+<!-- ============ 04 COMO TRABALHAMOS + 05 IA ============ -->
+<section class="page">
+  <div class="hd"><span class="logo"><i>V</i>Vinicius Souza</span><span class="meta">Proposta <span class="ph">[AAAA-000]</span></span></div>
+  <div class="body">
+    <p class="eyebrow"><span>04</span><span class="r"></span><span>Como trabalhamos</span></p>
+    <h2>Do primeiro contato ao sistema no ar, em quatro passos.</h2>
+    <div class="grid4" style="margin-top:6mm">
+      <div style="border-top:1px solid var(--ink);padding-top:4mm"><div class="num" style="font-size:28px">01</div><h3 style="margin-top:2mm">Conversa</h3><p class="muted" style="font-size:10px;line-height:1.6;margin-top:1.5mm">Você conta como o trabalho é feito hoje e o que mais incomoda. As perguntas ficam com a gente.</p></div>
+      <div style="border-top:1px solid var(--ink);padding-top:4mm"><div class="num" style="font-size:28px">02</div><h3 style="margin-top:2mm">Proposta por escrito</h3><p class="muted" style="font-size:10px;line-height:1.6;margin-top:1.5mm">O que será feito, em quanto tempo e por quanto, dividido em etapas. <b class="c" style="font-weight:500">Você está aqui.</b></p></div>
+      <div style="border-top:1px solid var(--ink);padding-top:4mm"><div class="num" style="font-size:28px">03</div><h3 style="margin-top:2mm">Entregas aos poucos</h3><p class="muted" style="font-size:10px;line-height:1.6;margin-top:1.5mm">A cada etapa você já usa uma parte funcionando e pode ajustar o rumo.</p></div>
+      <div style="border-top:1px solid var(--ink);padding-top:4mm"><div class="num" style="font-size:28px">04</div><h3 style="margin-top:2mm">No ar e acompanhado</h3><p class="muted" style="font-size:10px;line-height:1.6;margin-top:1.5mm">Sistema no ar, equipe treinada, primeiros dias acompanhados. Tudo em seu nome.</p></div>
+    </div>
+
+    <div class="sec" style="margin-top:12mm">
+      <p class="eyebrow"><span>05</span><span class="r"></span><span>IA consciente</span></p>
+      <h2>A velocidade da IA, sem colocar o seu negócio em risco.</h2>
+      <p class="lead">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</p>
+      <table style="margin-top:5mm">
+        <tr><td style="width:46mm"><b style="font-weight:500">Uma pessoa responsável</b></td><td class="muted">A IA sugere; uma pessoa revisa, testa e responde por tudo que vai para o seu sistema.</td></tr>
+        <tr><td><b style="font-weight:500">Seus dados protegidos</b></td><td class="muted">Dados de clientes, contratos e senhas não vão para ferramentas de IA sem a sua autorização.</td></tr>
+        <tr><td><b style="font-weight:500">Transparência</b></td><td class="muted">Você sabe onde a IA participou do projeto e por quê. As decisões ficam registradas.</td></tr>
+        <tr><td><b style="font-weight:500">Só quando compensa</b></td><td class="muted">A IA entra quando reduz prazo ou custo sem reduzir qualidade.</td></tr>
+      </table>
+      <div class="grid2" style="margin-top:5mm">
+        <div class="box" style="border-color:var(--copper)"><div class="label c">Onde a IA entra</div>
+          <ul class="l" style="margin-top:2.5mm;font-size:10px"><li><svg class="i c"><use href="#chk"/></svg><span>Deixar o desenvolvimento mais rápido e mais barato</span></li><li><svg class="i c"><use href="#chk"/></svg><span>Conferir falhas de segurança e de usabilidade</span></li><li><svg class="i c"><use href="#chk"/></svg><span>Escrever manuais e documentação</span></li></ul></div>
+        <div class="box"><div class="label">Onde a IA não entra</div>
+          <ul class="l muted" style="margin-top:2.5mm;font-size:10px"><li><svg class="i"><use href="#x"/></svg><span>Decidir as regras do seu negócio no seu lugar</span></li><li><svg class="i"><use href="#x"/></svg><span>Receber dados sensíveis sem autorização</span></li><li><svg class="i"><use href="#x"/></svg><span>Entregar algo que ninguém revisou</span></li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span>Vinicius Souza · Carbon Cycle LTDA</span><b>04</b></div>
+</section>
+
+<!-- ============ 06 INVESTIMENTO + 07 PERGUNTAS ============ -->
+<section class="page">
+  <div class="hd"><span class="logo"><i>V</i>Vinicius Souza</span><span class="meta">Proposta <span class="ph">[AAAA-000]</span></span></div>
+  <div class="body">
+    <p class="eyebrow"><span>06</span><span class="r"></span><span>Investimento e condições</span></p>
+    <h2>Valor fechado, sem surpresas.</h2>
+
+    <div style="margin-top:6mm;display:grid;grid-template-columns:1.1fr 1fr;gap:4mm">
+      <div style="background:var(--graphite);color:#f0f2f4;padding:6mm;display:flex;flex-direction:column;justify-content:space-between;min-height:42mm">
+        <div class="label" style="color:var(--bright)">Investimento total</div>
+        <div><div style="font-family:Heading;font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.1">R$ <span style="background:#2b2420;color:#f0f2f4;padding:0 4px;border-bottom:1px dashed var(--bright)">[0.000,00]</span></div>
+        <p style="font-size:10px;color:#b9bec4;margin-top:2mm">Em <span style="color:#f0f2f4">[nº]</span> etapas, pagas conforme cada uma é entregue.</p></div>
+      </div>
+      <table>
+        <tr><td class="label" style="width:30mm">Pagamento</td><td><span class="ph">[Ex.: por etapa, na entrega]</span></td></tr>
+        <tr><td class="label">Forma</td><td><span class="ph">[Pix / boleto / transferência]</span></td></tr>
+        <tr><td class="label">Início</td><td><span class="ph">[Até [nº] dias após o aceite]</span></td></tr>
+        <tr><td class="label">Validade</td><td><span class="ph">[nº] dias</span></td></tr>
+      </table>
+    </div>
+
+    <div class="sec" style="margin-top:12mm">
+      <p class="eyebrow"><span>07</span><span class="r"></span><span>Perguntas frequentes</span></p>
+      <h2>Antes de decidir.</h2>
+      <div style="margin-top:4mm;border-top:1px solid var(--rule)">
+        <div style="padding:3.2mm 0;border-bottom:1px solid var(--rule)"><h3>O sistema fica comigo?</h3><p class="muted" style="margin-top:1mm">Sim. O código, a documentação e os acessos ficam em seu nome. Você pode continuar com a gente ou levar para outra equipe.</p></div>
+        <div style="padding:3.2mm 0;border-bottom:1px solid var(--rule)"><h3>Preciso entender de tecnologia?</h3><p class="muted" style="margin-top:1mm">Não. A conversa é sobre o seu negócio, não sobre programação. Explicamos as opções em linguagem simples, e você decide com base em prazo, custo e resultado.</p></div>
+        <div style="padding:3.2mm 0;border-bottom:1px solid var(--rule)"><h3>Vocês usam IA para fazer tudo?</h3><p class="muted" style="margin-top:1mm">Não. A IA acelera partes repetitivas e revisa, mas o desenho da solução, as regras do seu negócio e a revisão final são feitos por pessoas.</p></div>
+        <div style="padding:3.2mm 0;border-bottom:1px solid var(--rule)"><h3>Meus dados vão para alguma IA?</h3><p class="muted" style="margin-top:1mm">Só com a sua autorização, e só o necessário. Explicamos qual serviço é usado, onde os dados ficam e quanto custa.</p></div>
+        <div style="padding:3.2mm 0;border-bottom:1px solid var(--rule)"><h3>Vocês atendem fora de MS?</h3><p class="muted" style="margin-top:1mm">Sim. O trabalho é remoto, com reuniões por vídeo e acompanhamento das entregas online.</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="ft"><span>Vinicius Souza · Carbon Cycle LTDA</span><b>05</b></div>
+</section>
+
+<!-- ============ 08 ACEITE ============ -->
+<section class="page">
+  <div class="hd"><span class="logo"><i>V</i>Vinicius Souza</span><span class="meta">Proposta <span class="ph">[AAAA-000]</span></span></div>
+  <div class="body">
+    <p class="eyebrow"><span>08</span><span class="r"></span><span>Próximos passos</span></p>
+    <h2>Para começar.</h2>
+    <table style="margin-top:5mm">
+      <tr><td style="width:12mm"><span class="num" style="font-size:16px">01</span></td><td>Leia a proposta e anote dúvidas ou ajustes. Respondemos por escrito.</td></tr>
+      <tr><td><span class="num" style="font-size:16px">02</span></td><td>Assine o aceite abaixo e envie para <b style="font-weight:500">contato@viniccius.com.br</b>.</td></tr>
+      <tr><td><span class="num" style="font-size:16px">03</span></td><td>Marcamos a primeira reunião da etapa 01 e começamos.</td></tr>
+    </table>
+
+    <div class="sec" style="margin-top:12mm">
+      <p class="eyebrow"><span>Aceite</span></p>
+      <p style="margin-top:4mm;font-size:11.5px;line-height:1.75">Declaro que li e aceito esta proposta (nº <span class="ph">[AAAA-000]</span>), com o escopo, as etapas, os prazos e os valores descritos acima.</p>
+      <div class="grid2" style="margin-top:22mm;gap:12mm">
+        <div class="sign"><b style="font-weight:500"><span class="ph">[Nome do responsável]</span></b><br><span class="muted"><span class="ph">[Empresa]</span> · <span class="ph">[CNPJ]</span></span></div>
+        <div class="sign"><b style="font-weight:500">Vinicius Souza</b><br><span class="muted">Carbon Cycle LTDA · CNPJ 55.366.974/0001-85</span></div>
+      </div>
+      <div class="grid2" style="margin-top:10mm;gap:12mm">
+        <div class="sign"><span class="label">Local e data</span></div>
+        <div class="sign"><span class="label">Local e data</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="position:absolute;left:0;right:0;bottom:0;height:62mm;background:var(--graphite);overflow:hidden">
+    <img src="filetes-losango.svg" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:right center">
+    <div style="position:absolute;left:20mm;top:11mm;right:20mm">
+      <p class="eyebrow" style="color:var(--bright)"><span>Contato</span></p>
+      <div style="font-family:Heading;font-size:20px;line-height:1.15;letter-spacing:-.025em;margin-top:3mm;color:#f0f2f4;max-width:120mm">Quem responde é quem vai construir.</div>
+      <p style="margin-top:3mm;font-size:10.5px;color:#b9bec4">contato@viniccius.com.br · viniccius.com.br · linkedin.com/in/viniszofx</p>
+    </div>
+    <div style="position:absolute;left:20mm;right:20mm;bottom:8mm;display:flex;justify-content:space-between;align-items:flex-end;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#8d9399;border-top:1px solid #2a2e33;padding-top:3mm">
+      <span>Carbon Cycle LTDA · CNPJ 55.366.974/0001-85</span><img src="simbolo-v.svg" style="width:8mm;height:8mm">
+    </div>
+  </div>
+</section>
+</body>
+</html>

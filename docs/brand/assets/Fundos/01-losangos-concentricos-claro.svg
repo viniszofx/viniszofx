@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice">
+<!-- Losangos concêntricos: o grafismo original do site, girado a 45° em volta de um foco à direita. Cores sólidas, opacidade constante por traço (sem degradês). -->
+<rect width="1200" height="640" fill="#ffffff"/>
+<g fill="none" stroke="#a56038" stroke-linecap="round" stroke-linejoin="round">
+<rect x="810.0" y="230.0" width="180" height="180" transform="rotate(45 900 320)" stroke-opacity="0.562" stroke-width="1.5"/>
+<rect x="750.0" y="170.0" width="300" height="300" transform="rotate(45 900 320)" stroke-opacity="0.488" stroke-width="1"/>
+<rect x="690.0" y="110.0" width="420" height="420" transform="rotate(45 900 320)" stroke-opacity="0.413" stroke-width="1"/>
+<rect x="630.0" y="50.0" width="540" height="540" transform="rotate(45 900 320)" stroke-opacity="0.338" stroke-width="1"/>
+<rect x="570.0" y="-10.0" width="660" height="660" transform="rotate(45 900 320)" stroke-opacity="0.263" stroke-width="1"/>
+<rect x="510.0" y="-70.0" width="780" height="780" transform="rotate(45 900 320)" stroke-opacity="0.188" stroke-width="1"/>
+<rect x="450.0" y="-130.0" width="900" height="900" transform="rotate(45 900 320)" stroke-opacity="0.113" stroke-width="1"/>
+</g>
+</svg>

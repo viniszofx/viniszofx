@@ -25,7 +25,8 @@ export function SiteHeader({ authenticated, blog = true }: { authenticated: bool
           className="flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-semibold text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {/* Mesma marca do cabeçalho do painel. */}
-          <span aria-hidden="true" className="flex size-6 items-center justify-center rounded-md border border-primary text-xs font-bold text-primary">V</span>
+          {/* O símbolo da marca (o mesmo de app/icon.svg e docs/brand/assets/Marca/simbolo-v.svg). */}
+          <svg aria-hidden="true" viewBox="0 0 32 32" className="size-7 shrink-0"><rect width="32" height="32" rx="7" fill="#1b1e22" /><rect x="3" y="3" width="26" height="26" rx="5" fill="none" stroke="#d39a6c" strokeWidth="2" /><path d="M10.5 10.5 16 21.5 21.5 10.5" fill="none" stroke="#e7b48a" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
           <span className="hidden sm:inline">Vinicius Souza</span>
         </Link>
         <div className="flex items-center gap-3 sm:gap-5">

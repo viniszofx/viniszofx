@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" preserveAspectRatio="xMaxYMid slice">
+<!-- V em cascata: Vs paralelos, um abaixo do outro, com a inclinação 2:1 do V do símbolo. Cores sólidas, opacidade constante por traço (sem degradês). -->
+<rect width="1200" height="640" fill="#111418"/>
+<g fill="none" stroke="#e1a170" stroke-linecap="round" stroke-linejoin="round">
+<path d="M755 -10 L900 280 L1045 -10" stroke-opacity="0.850" stroke-width="2"/>
+<path d="M732 -10 L900 326 L1068 -10" stroke-opacity="0.783" stroke-width="1"/>
+<path d="M709 -10 L900 372 L1091 -10" stroke-opacity="0.696" stroke-width="1"/>
+<path d="M686 -10 L900 418 L1114 -10" stroke-opacity="0.609" stroke-width="1"/>
+<path d="M663 -10 L900 464 L1137 -10" stroke-opacity="0.522" stroke-width="1"/>
+<path d="M640 -10 L900 510 L1160 -10" stroke-opacity="0.435" stroke-width="1"/>
+<path d="M617 -10 L900 556 L1183 -10" stroke-opacity="0.348" stroke-width="1"/>
+<path d="M594 -10 L900 602 L1206 -10" stroke-opacity="0.261" stroke-width="1"/>
+<path d="M571 -10 L900 648 L1229 -10" stroke-opacity="0.174" stroke-width="1"/>
+<path d="M548 -10 L900 694 L1252 -10" stroke-opacity="0.102" stroke-width="1"/>
+</g>
+</svg>

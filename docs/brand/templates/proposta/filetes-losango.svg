@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" preserveAspectRatio="xMaxYMid slice">
+<!-- Filetes em losango (components/marketing/art.tsx) sobre grafite: o grafismo dos blocos escuros. -->
+<rect width="1200" height="400" fill="#111418"/>
+<rect x="870" y="110" width="180" height="180" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="0.45" stroke-width="1.5"/>
+<rect x="810" y="50" width="300" height="300" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="0.38" stroke-width="1"/>
+<rect x="750" y="-10" width="420" height="420" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="0.31" stroke-width="1"/>
+<rect x="690" y="-70" width="540" height="540" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="0.24" stroke-width="1"/>
+<rect x="630" y="-130" width="660" height="660" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="0.17" stroke-width="1"/>
+</svg>
