@@ -39,10 +39,25 @@ function createHostedAuth() {
 const localAuth = isLocalAuth ? createLocalAuth() : null;
 export const hostedAuth = isLocalAuth ? null : createHostedAuth();
 
+/**
+ * Com uma sessão revogada, o Neon responde "sessão inválida" e tenta apagar o cookie dela. Durante a
+ * renderização de uma página (Server Component) o Next não deixa alterar cookies e lança este erro,
+ * derrubando a página inteira, inclusive o /login. Nesse caso a sessão simplesmente não existe:
+ * o cookie velho é trocado no próximo login (e o middleware do painel, que pode alterar cookies, também o apaga).
+ */
+function isCookieWriteDuringRender(error: unknown) {
+  return error instanceof Error && /Cookies can only be modified in a Server Action or Route Handler/i.test(error.message);
+}
+
 export const auth = {
   getRawSession: async () => {
     if (localAuth) return { data: await localAuth.api.getSession({ headers: await headers() }) };
-    return hostedAuth!.getSession();
+    try {
+      return await hostedAuth!.getSession();
+    } catch (error) {
+      if (isCookieWriteDuringRender(error)) return { data: null };
+      throw error;
+    }
   },
   getSession: async () => {
     const result = await auth.getRawSession();
