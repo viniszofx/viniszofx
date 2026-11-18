@@ -147,9 +147,14 @@ export default async function Page() {
       {/* 02 Situações */}
       <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações consome horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
-        <ul className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 py-6">
-          <p className="font-heading text-xl leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
-          <p className="mt-auto flex gap-3 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
+        {/* Cada situação num cartão de mesma altura: o problema em cima e a resposta numa faixa dourada embaixo. */}
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70}
+          className="group flex flex-col overflow-hidden rounded-xl border bg-card/40 transition-colors hover:border-primary/40">
+          <p className="flex-1 p-6 font-heading text-lg leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
+          <div className="border-t border-primary/15 bg-primary/[0.06] px-6 py-4">
+            <p className="text-[0.7rem] font-medium uppercase tracking-[0.2em] text-primary">Como resolvemos</p>
+            <p className="mt-1.5 flex gap-2.5 text-sm leading-6 text-foreground/85"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
+          </div>
         </Reveal>)}</ul>
         <Reveal className="mt-8 flex flex-wrap items-center justify-between gap-4"><p className="text-muted-foreground">Não encontrou a sua? Conte como funciona aí: a resposta já vem com um caminho.</p>{talk("Quero resolver a minha")}</Reveal>
       </section>

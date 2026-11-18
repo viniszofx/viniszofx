@@ -5,7 +5,7 @@
 // Situações do dia a dia que o cliente reconhece, com o que dá para fazer em cada uma.
 export const situations = [
   { problem: "A equipe passa horas copiando dados de uma planilha para outra.", solution: "Os dados entram uma vez só. O resto acontece sozinho." },
-  { problem: "Pedidos e informações se perdem no meio do WhatsApp e do e-mail.", solution: "Tudo num lugar só, com histórico e um responsável para cada coisa." },
+  { problem: "Pedidos e informações se perdem entre mensagens e e-mails.", solution: "Tudo num lugar só, com histórico e um responsável para cada coisa." },
   { problem: "Ninguém sabe ao certo em que pé está um pedido, chamado ou entrega.", solution: "Um painel mostra o andamento de tudo, na hora." },
   { problem: "O relatório do mês leva dias para ficar pronto.", solution: "O relatório fica pronto sozinho, quando você precisar." },
   { problem: "Você usa dois sistemas que não se conversam e alguém digita tudo duas vezes.", solution: "Os sistemas passam a conversar, e ninguém digita nada duas vezes." },
@@ -15,7 +15,7 @@ export const situations = [
 export const services = [
   { id: "sistemas", title: "Sistemas sob medida", description: "Informação espalhada em planilhas e conversas? Um sistema que se adapta à sua equipe, com cadastros, pedidos, aprovações e painéis num lugar só.", items: ["Controle de pedidos", "Cadastro de clientes", "Acesso por perfil"] },
   { id: "automacao", title: "Automação de tarefas", description: "Alguém passa horas copiando, colando e conferindo? Isso passa a acontecer sozinho, e a sua equipe fica só com o que exige decisão.", items: ["Fim do copia e cola", "Avisos automáticos", "Relatórios prontos"] },
-  { id: "integracoes", title: "Sistemas que conversam", description: "Digitando a mesma coisa em dois lugares? Ligamos o seu sistema ao financeiro, à loja virtual e aos serviços que você já usa. Digitou uma vez, chegou em todo lugar.", items: ["Sistema de gestão", "Pagamentos", "WhatsApp"] },
+  { id: "integracoes", title: "Sistemas que conversam", description: "Digitando a mesma coisa em dois lugares? Ligamos o seu sistema ao financeiro, à loja virtual e aos serviços que você já usa. Digitou uma vez, chegou em todo lugar.", items: ["Sistema de gestão", "Pagamentos", "Loja virtual"] },
   { id: "ia", title: "IA onde faz sentido", description: "Na dúvida se a IA vale a pena? Mostramos onde ela economiza tempo de verdade na sua empresa, e onde só traria risco. Custos e limites claros antes de começar.", items: ["Assistente interno", "Busca em documentos", "Custo explicado antes"] },
   { id: "mobile", title: "Aplicativos para celular", description: "Equipe na rua sem acesso ao sistema? Tudo na palma da mão, funcionando mesmo com internet fraca.", items: ["Instala no celular", "Funciona com internet fraca", "Fotos e localização"] },
   { id: "evolucao", title: "Cuidar do sistema que você já tem", description: "Sistema antigo que ninguém tem coragem de mexer? Assumimos, corrigimos o que está lento ou quebrando, atualizamos o que ficou velho e documentamos o que ninguém documentou.", items: ["Correção de problemas", "Atualizações", "Documentação"] },
