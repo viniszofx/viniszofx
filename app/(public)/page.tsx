@@ -115,17 +115,19 @@ export default async function Page() {
         </li>)}</ul>
         {/* Tecnologias em faixa infinita, no espaço entre as credenciais e os casos. A lista aparece duas vezes (a segunda escondida de
             leitores de tela) e anda metade da largura; pausa ao passar o mouse. Com "reduzir movimento", fica parada e quebra linha. */}
-        <div aria-label="Tecnologias" role="region" className="group/marquee relative overflow-hidden border-t py-6 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] motion-reduce:[mask-image:none]">
+        <div aria-label="Tecnologias" role="region" className="group/marquee relative overflow-hidden bg-primary py-5 text-primary-foreground">
+          <div className="[mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] motion-reduce:[mask-image:none]">
           <div className="flex w-max animate-marquee group-hover/marquee:[animation-play-state:paused] motion-reduce:w-auto motion-reduce:animate-none">
             {[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 || undefined} className={cn("flex shrink-0 items-center gap-10 pr-10", copy === 1 && "motion-reduce:hidden", "motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-x-8 motion-reduce:gap-y-3 motion-reduce:px-5")}>
-              {technologies.flatMap(group => group.items).map(item => { const Icon = techIcons[item]; return <li key={item} className="flex items-center gap-2 text-sm whitespace-nowrap text-primary/85">{Icon && <Icon className="size-5 shrink-0" aria-hidden="true" />}{item}</li>; })}
+              {technologies.flatMap(group => group.items).map(item => { const Icon = techIcons[item]; return <li key={item} className="flex items-center gap-2 text-sm font-medium whitespace-nowrap">{Icon && <Icon className="size-5 shrink-0 opacity-75" aria-hidden="true" />}{item}</li>; })}
             </ul>)}
+          </div>
           </div>
         </div>
       </section>
 
       {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
-      <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 pt-2 pb-10 sm:pb-12")}>
+      <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
         <ol className="mt-10 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 py-6">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
