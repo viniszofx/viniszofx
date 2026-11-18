@@ -107,12 +107,21 @@ export default async function Page() {
           </div>
         </div>
         {/* Credenciais numa régua com filetes, logo abaixo da dobra. */}
-        <ul aria-label="Credenciais" className={cn(container, "grid gap-x-10 pt-4 pb-12 sm:grid-cols-3")}>{credentials.map(({ title, text, href, cta }) => <li key={title} className="border-t">
+        <ul aria-label="Credenciais" className={cn(container, "grid gap-x-10 pt-6 pb-10 sm:grid-cols-3")}>{credentials.map(({ title, text, href, cta }) => <li key={title} className="border-t">
           <a href={href} {...(href.startsWith("#") ? {} : { target: "_blank", rel: "noopener noreferrer" })} className="group block py-6 outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <p className="font-heading text-2xl font-light text-primary">{title}</p><p className="mt-1 text-sm text-muted-foreground">{text}</p>
             <p className="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.2em] text-foreground/70 group-hover:text-primary">{cta}{href.startsWith("#") ? <ArrowRight className="size-3.5" /> : <ArrowUpRight className="size-3.5" />}</p>
           </a>
         </li>)}</ul>
+        {/* Tecnologias em faixa infinita, no espaço entre as credenciais e os casos. A lista aparece duas vezes (a segunda escondida de
+            leitores de tela) e anda metade da largura; pausa ao passar o mouse. Com "reduzir movimento", fica parada e quebra linha. */}
+        <div aria-label="Tecnologias" role="region" className="group/marquee relative overflow-hidden border-y py-6 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] motion-reduce:[mask-image:none]">
+          <div className="flex w-max animate-marquee group-hover/marquee:[animation-play-state:paused] motion-reduce:w-auto motion-reduce:animate-none">
+            {[0, 1].map(copy => <ul key={copy} aria-hidden={copy === 1 || undefined} className={cn("flex shrink-0 items-center gap-10 pr-10", copy === 1 && "motion-reduce:hidden", "motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-x-8 motion-reduce:gap-y-3 motion-reduce:px-5")}>
+              {technologies.flatMap(group => group.items).map(item => { const Icon = techIcons[item]; return <li key={item} className="flex items-center gap-2 text-sm whitespace-nowrap text-muted-foreground">{Icon && <Icon className="size-5 shrink-0 opacity-80" aria-hidden="true" />}{item}</li>; })}
+            </ul>)}
+          </div>
+        </div>
       </section>
 
       {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
@@ -180,7 +189,7 @@ export default async function Page() {
         <Heading id="projetos-titulo" index="06" eyebrow="Projetos" title="Qualidade que você pode conferir.">Um site em uso por cliente e projetos de código aberto, que qualquer pessoa técnica da sua confiança pode avaliar antes de você contratar.</Heading>
         <div className="mt-14 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 70} className="[&>article]:h-full"><ProjectCard project={project} index={index} /></Reveal>)}</div>
         <div className="mt-6"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
-        <div className="mt-14 grid gap-6 border-t pt-8 md:grid-cols-[12rem_1fr]">
+        <div className="mt-10 grid gap-6 border-t pt-8 md:grid-cols-[12rem_1fr]">
           <p className="text-sm text-muted-foreground">Para quem é da área, as tecnologias que usamos:</p>
           <div className="grid gap-6 sm:grid-cols-3">{technologies.map(group => <div key={group.title}><p className="mb-3 text-xs uppercase tracking-[0.2em] text-primary">{group.title}</p><ul className="flex flex-wrap gap-1.5">{group.items.map(item => { const Icon = techIcons[item]; return <li key={item} className={cn(chip, "inline-flex items-center gap-1.5")}>{Icon && <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden="true" />}{item}</li>; })}</ul></div>)}</div>
         </div>
@@ -214,7 +223,7 @@ export default async function Page() {
       {/* 08 Perguntas */}
       <section id="perguntas" aria-labelledby="perguntas-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
         <Heading id="perguntas-titulo" index="08" eyebrow="Perguntas frequentes" title="Tire suas dúvidas antes de começar." />
-        <Reveal className="mt-10 divide-y border-y">{faq.map(item => <details key={item.question} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-5 shrink-0 text-primary transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
+        <Reveal className="mt-14 divide-y border-y">{faq.map(item => <details key={item.question} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-5 shrink-0 text-primary transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
       </section>
 
       {/* Chamada final: bloco escuro com filetes de cobre. */}

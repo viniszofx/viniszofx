@@ -247,6 +247,11 @@
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
   }
+  /* Faixa infinita (classe animate-marquee): a lista vem duplicada e anda metade da largura, então emenda sem salto. */
+  --animate-marquee: marquee 45s linear infinite;
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
+  }
 }
 
 /* Mensagens: temas, fundo e animações do chat, copiados do Nodus. */
