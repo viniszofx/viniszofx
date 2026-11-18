@@ -1,10 +1,10 @@
 "use client";
 import { surfaceVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { RiDeleteBinLine, RiDownloadLine, RiMailLine, RiPhoneLine, RiUserAddLine, RiWhatsappLine } from "@remixicon/react";
-import { CatalogLayout, CatalogSearch } from "@/components/listing/catalog";
+import { RiArrowRightSLine, RiDeleteBinLine, RiDownloadLine, RiInboxLine, RiMailLine, RiPhoneLine, RiSearchLine, RiTimeLine, RiUserAddLine, RiWhatsappLine } from "@remixicon/react";
+import { CatalogLayout } from "@/components/listing/catalog";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -32,6 +32,18 @@ export const leadStages: { value: Status; label: string; color: string }[] = [
 const stage = (value: Status) => leadStages.find(item => item.value === value) ?? leadStages[0];
 const when = (value: string) => new Date(value).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
 const digits = (value: string) => value.replace(/\D/g, "");
+// "há 5 min", "há 2 h", "há 3 dias"; depois de uma semana, a data curta.
+const ago = (value: string) => {
+  const minutes = Math.round((Date.now() - new Date(value).getTime()) / 60000);
+  if (minutes < 1) return "agora";
+  if (minutes < 60) return `há ${minutes} min`;
+  const hours = Math.round(minutes / 60);
+  if (hours < 24) return `há ${hours} h`;
+  const days = Math.round(hours / 24);
+  return days < 7 ? `há ${days} ${days === 1 ? "dia" : "dias"}` : new Date(value).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
+};
+const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]?.toUpperCase() ?? "").join("") || "?";
+const whatsappUrl = (lead: Pick<Lead, "name" | "phone">) => digits(lead.phone).length >= 10 ? `https://wa.me/55${digits(lead.phone).replace(/^55/, "")}?text=${encodeURIComponent(`Olá, ${lead.name.split(" ")[0]}! Recebi sua mensagem pelo site.`)}` : "";
 const local = (value: string | null) => { if (!value) return ""; const date = new Date(value); return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16); };
 
 async function patchLead(id: string, change: Record<string, unknown>) {
@@ -68,7 +80,7 @@ function LeadDialog({ lead, onClose, onChange }: { lead: Lead; onClose: () => vo
     if (!saved) return notifyError("Clientes ainda carregando", "Tente de novo em instantes.");
     void save({ status: "won", clientId: saved.id }, "Lead convertido em cliente");
   }
-  const whatsapp = digits(lead.phone).length >= 10 ? `https://wa.me/55${digits(lead.phone).replace(/^55/, "")}?text=${encodeURIComponent(`Olá, ${lead.name.split(" ")[0]}! Recebi sua mensagem pelo site.`)}` : "";
+  const whatsapp = whatsappUrl(lead);
   return <Dialog open onOpenChange={open => { if (!open && !busy) onClose(); }}><DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
     <DialogTitle>{lead.name}</DialogTitle>
     <DialogDescription>Recebido em {when(lead.createdAt)} · origem {lead.source || "/"}</DialogDescription>
@@ -115,23 +127,50 @@ export function LeadsPage() {
   const due = (leads ?? []).filter(lead => lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status)).length;
   const open = leads?.find(lead => lead.id === openId);
   const update = (lead: Lead) => setLeads(previous => previous?.map(item => item.id === lead.id ? lead : item) ?? null);
+  const action = "grid size-8 place-items-center rounded-lg text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring";
   return <CatalogLayout section="Marketing" title="Leads" description="Contatos recebidos pelo botão de conversa do site, do primeiro contato à conversão em cliente." action={<Button variant="outline" disabled={!visible.length} onClick={() => exportCsv(visible)}><RiDownloadLine />Exportar CSV</Button>}>
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-      <button type="button" aria-pressed={!filter} onClick={() => setFilter("")} className={`border p-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring ${!filter ? "border-primary bg-primary/5" : "bg-card hover:bg-muted/40"}`}><p className="text-xs text-muted-foreground">Total</p><p className="text-2xl font-semibold tabular-nums">{total}</p><p className="text-[11px] text-muted-foreground">{conversion}% convertidos</p></button>
-      {leadStages.map(item => <button key={item.value} type="button" aria-pressed={filter === item.value} onClick={() => setFilter(filter === item.value ? "" : item.value)} className={`border border-t-[3px] p-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring ${filter === item.value ? "bg-primary/5" : "bg-card hover:bg-muted/40"}`} style={{ borderTopColor: item.color }}><p className="text-xs text-muted-foreground">{item.label}</p><p className="text-2xl font-semibold tabular-nums">{counts[item.value]}</p></button>)}
+    {/* Funil num quadro só: total com a taxa de conversão e uma coluna por etapa (clicar filtra). */}
+    <div className={cn(surfaceVariants(), "grid grid-cols-2 overflow-hidden sm:grid-cols-3 lg:grid-cols-6")}>
+      <button type="button" aria-pressed={!filter} onClick={() => setFilter("")} className={cn("flex flex-col gap-1 border-b border-r p-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset lg:border-b-0", !filter ? "bg-primary/8" : "hover:bg-muted/40")}>
+        <span className="text-xs text-muted-foreground">Total</span>
+        <span className="font-heading text-3xl font-semibold tabular-nums">{total}</span>
+        <span className="mt-1 h-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-emerald-500" style={{ width: `${conversion}%` }} /></span>
+        <span className="text-[11px] text-muted-foreground">{conversion}% convertidos</span>
+      </button>
+      {leadStages.map(item => { const active = filter === item.value; return <button key={item.value} type="button" aria-pressed={active} onClick={() => setFilter(active ? "" : item.value)}
+        className={cn("flex flex-col gap-1 border-b border-r p-4 text-left outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset lg:border-b-0 lg:last:border-r-0", active ? "bg-(--stage)/10" : "hover:bg-muted/40")} style={{ "--stage": item.color } as CSSProperties}>
+        <span className="flex items-center gap-1.5 text-xs text-muted-foreground"><span className="size-2 rounded-full bg-(--stage)" />{item.label}</span>
+        <span className={cn("font-heading text-3xl font-semibold tabular-nums", !counts[item.value] && "text-muted-foreground/50")}>{counts[item.value]}</span>
+        {total > 0 && <span className="mt-1 h-1 overflow-hidden rounded-full bg-muted"><span className="block h-full rounded-full bg-(--stage)" style={{ width: `${Math.round(counts[item.value] / total * 100)}%` }} /></span>}
+      </button>; })}
     </div>
-    {due > 0 && <p className="border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm">{due} lead(s) com próximo contato vencido.</p>}
-    <CatalogSearch label="Buscar leads" value={search} onChange={setSearch} />
-    {error && !leads ? <p role="alert" className="text-sm text-destructive">{error}</p> : !leads ? <LoadingBlock label="Carregando leads" /> : !visible.length ? <p className="text-sm text-muted-foreground">{total ? "Nenhum lead encontrado." : "Ainda não chegou nenhum contato. O botão de conversa fica na página inicial do site."}</p>
-      : <ul className={cn(surfaceVariants({ list: true }))}>{visible.map(lead => { const current = stage(lead.status); const late = lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status);
-        return <li key={lead.id} className="flex flex-wrap items-start gap-3 px-4 py-3 sm:flex-nowrap sm:items-center">
-          <button type="button" onClick={() => setOpenId(lead.id)} className="min-w-0 flex-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <span className="flex flex-wrap items-center gap-2"><strong className="truncate text-sm">{lead.name}</strong><Badge color={current.color}>{current.label}</Badge>{late && <span className="text-xs font-medium text-destructive">Contato vencido</span>}</span>
-            <span className="block truncate text-xs text-muted-foreground">{lead.email}{lead.phone && ` · ${lead.phone}`}</span>
-            <span className="mt-0.5 line-clamp-1 block text-xs text-muted-foreground">{lead.message}</span>
+    {due > 0 && <p className="flex items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-2.5 text-sm"><RiTimeLine className="size-4 shrink-0 text-amber-500" />{due} {due === 1 ? "lead com próximo contato vencido" : "leads com próximo contato vencido"}.</p>}
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <label className="flex h-10 w-full max-w-sm items-center gap-2 rounded-full border bg-card/60 px-4 focus-within:border-ring">
+        <RiSearchLine className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <input aria-label="Buscar leads" placeholder="Buscar por nome, e-mail, telefone ou mensagem…" value={search} onChange={event => setSearch(event.target.value)} className="min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted-foreground sm:text-sm" />
+      </label>
+      {leads && <p className="text-sm text-muted-foreground">{visible.length} {visible.length === 1 ? "lead" : "leads"}{filter && ` em ${stage(filter).label.toLowerCase()}`}</p>}
+    </div>
+    {error && !leads ? <p role="alert" className="text-sm text-destructive">{error}</p> : !leads ? <LoadingBlock label="Carregando leads" />
+      : !visible.length ? <div className={cn(surfaceVariants(), "grid place-items-center gap-2 px-6 py-14 text-center")}><RiInboxLine className="size-8 text-muted-foreground/60" /><p className="font-medium">{total ? "Nenhum lead encontrado" : "Nenhum contato ainda"}</p><p className="max-w-sm text-sm text-muted-foreground">{total ? "Tente outra busca ou limpe o filtro do funil." : "Os contatos do botão de conversa da página inicial aparecem aqui."}</p></div>
+      : <ul className={cn(surfaceVariants({ list: true }))}>{visible.map(lead => { const current = stage(lead.status); const late = lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status); const whatsapp = whatsappUrl(lead);
+        return <li key={lead.id} className="group relative flex items-start gap-3 px-4 py-4 transition-colors hover:bg-muted/30 sm:items-center sm:px-5" style={{ "--stage": current.color } as CSSProperties}>
+          <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-(--stage)/15 text-sm font-semibold text-(--stage)">{initials(lead.name)}</span>
+          <button type="button" onClick={() => setOpenId(lead.id)} className="min-w-0 flex-1 text-left outline-none after:absolute after:inset-0 focus-visible:after:ring-2 focus-visible:after:ring-ring focus-visible:after:ring-inset">
+            <span className="flex flex-wrap items-center gap-2"><strong className="truncate">{lead.name}</strong><Badge color={current.color}>{current.label}</Badge>{late && <span className="inline-flex items-center gap-1 text-xs font-medium text-destructive"><RiTimeLine className="size-3.5" />Contato vencido</span>}</span>
+            <span className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-muted-foreground"><span className="inline-flex min-w-0 items-center gap-1"><RiMailLine className="size-3.5 shrink-0" /><span className="truncate">{lead.email}</span></span>{lead.phone && <span className="inline-flex items-center gap-1"><RiPhoneLine className="size-3.5 shrink-0" />{lead.phone}</span>}</span>
+            {lead.message && <span className="mt-2 line-clamp-1 block border-l-2 border-(--stage)/50 pl-2 text-sm text-muted-foreground">{lead.message}</span>}
           </button>
-          <span className="shrink-0 text-xs text-muted-foreground">{when(lead.createdAt)}</span>
-          <Button variant="ghost" size="icon-sm" aria-label={`Excluir lead ${lead.name}`} onClick={() => setDeleting(lead)}><RiDeleteBinLine /></Button>
+          <div className="relative z-10 flex shrink-0 flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+            <time dateTime={lead.createdAt} title={when(lead.createdAt)} className="text-xs whitespace-nowrap text-muted-foreground">{ago(lead.createdAt)}</time>
+            <span className="flex items-center gap-0.5 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
+              {whatsapp && <a href={whatsapp} target="_blank" rel="noreferrer" aria-label={`WhatsApp de ${lead.name}`} title="WhatsApp" className={cn(action, "hover:text-emerald-500")}><RiWhatsappLine className="size-4" /></a>}
+              <a href={`mailto:${lead.email}?subject=${encodeURIComponent("Seu contato pelo site")}`} aria-label={`E-mail para ${lead.name}`} title="E-mail" className={action}><RiMailLine className="size-4" /></a>
+              <button type="button" aria-label={`Excluir lead ${lead.name}`} title="Excluir" onClick={() => setDeleting(lead)} className={cn(action, "hover:text-destructive")}><RiDeleteBinLine className="size-4" /></button>
+            </span>
+            <RiArrowRightSLine aria-hidden="true" className="hidden size-4 text-muted-foreground/60 sm:block" />
+          </div>
         </li>; })}</ul>}
     {open && <LeadDialog key={open.id} lead={open} onClose={() => setOpenId("")} onChange={update} />}
     {deleting && <ConfirmDialog title="Excluir lead?" description={`O contato de ${deleting.name} será removido.`} onConfirm={async () => { const response = await fetch(`/api/admin/leads/${deleting.id}`, { method: "DELETE" }); if (!response.ok) throw new Error("Não foi possível excluir."); setLeads(previous => previous?.filter(item => item.id !== deleting.id) ?? null); }} onClose={() => setDeleting(null)} />}
