@@ -32,7 +32,7 @@ const css = `
 @page { size: A4 portrait; margin: 0; }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: #fff; color: #13161b; font: 11pt/1.65 Oxanium, system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.page { position: relative; width: 210mm; min-height: 297mm; padding: 27mm 20mm 22mm; break-after: page; }
+.page { position: relative; width: 210mm; height: 297mm; overflow: hidden; padding: 27mm 20mm 22mm; break-after: page; }
 .page:last-child { break-after: auto; }
 .head { position: absolute; top: 12mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: center; padding-bottom: 2.5mm; border-bottom: 1px solid #dbdee1; font-size: 9pt; }
 .brand { display: flex; align-items: center; gap: 2.5mm; font-weight: 600; }
@@ -50,12 +50,14 @@ h3 { font-size: 13.5pt; font-weight: 500; line-height: 1.35; }
 section + section { margin-top: 11mm; }
 p { margin: 0; }
 /* Espaço para escrever à mão: linha sólida (sem tracejado nem transparência) e a dica pequena embaixo. */
-.blank { display: inline-block; position: relative; min-width: 34mm; height: 1.3em; vertical-align: bottom; border-bottom: 1px solid #a56038; margin: 0 1mm; }
-.lines-blank { display: block; position: relative; width: 100%; padding-top: 1mm; }
+.blank { display: inline-block; min-width: 38mm; padding: 0 1mm .4mm; margin: 0 .5mm; border-bottom: 1px solid #a56038; line-height: 1.2; vertical-align: baseline; }
+.hint { font: 400 6.5pt/1 Oxanium, system-ui, sans-serif; letter-spacing: .02em; color: #b3b7bd; text-transform: none; white-space: nowrap; }
+.lines-blank { display: block; width: 100%; padding-top: 1mm; }
 .lines-blank .rule { display: block; height: 8mm; border-bottom: 1px solid #c9ccd1; }
-.hint { position: absolute; left: 0; bottom: -3.6mm; white-space: nowrap; font: 400 6.5pt/1 Oxanium, system-ui, sans-serif; letter-spacing: .02em; color: #9da2a9; text-transform: none; }
-.lines-blank .hint { bottom: auto; top: 1mm; }
-.stages .r .blank, .facts .blank, .conds .blank { min-width: 24mm; }
+.stages .r .blank, .facts .blank, .conds .blank { min-width: 26mm; }
+.project .name .blank { min-width: 110mm; padding-bottom: 1mm; }
+.value .blank { border-color: #e1a170; min-width: 60mm; }
+.value .hint { color: #6b7076; }
 .ico { width: 4.2mm; height: 4.2mm; flex: none; margin-top: .8mm; }
 .cover-band { position: relative; margin: -27mm -20mm 0; height: 112mm; background: #111418; color: #f0f2f4; padding: 30mm 20mm 0; overflow: hidden; }
 .cover-band .head { border-color: #2a2e34; color: #f0f2f4; }
@@ -139,7 +141,7 @@ export function proposalHtml(proposal: ProposalFields) {
   const list = (items: string[]) => items.map(item => item.trim()).filter(Boolean);
   const pains = list(proposal.pains);
   const changes = proposal.changes.filter(change => change.before.trim() || change.after.trim());
-  const included = list(proposal.included).map(item => item.replace("{empresa}", companyName || "[Empresa]"));
+  const included = list(proposal.included).map(item => escape(item).replace("{empresa}", companyName ? escape(companyName) : fill("", "Empresa")));
   const excluded = list(proposal.excluded);
   const faqItems = [3, 1, 4, 5, 6].map(index => faq[index]).filter(Boolean);
 
@@ -178,7 +180,7 @@ export function proposalHtml(proposal: ProposalFields) {
         ${proposal.stages.map((stage, index) => `<tr><td class="n">${String(index + 1).padStart(2, "0")}</td><td><h3>${fill(stage.title, "Nome da etapa")}</h3><p class="muted">${area(stage.deliverable, "O que fica pronto ao fim desta etapa", 2)}</p></td><td class="r">${fill(stage.days && `${stage.days} dias`, "nº dias")}</td><td class="r">R$ ${stage.value ? brl(stage.value) : fill("", "0.000,00")}</td></tr>`).join("")}
       </tbody><tfoot><tr><td></td><td>Total</td><td class="r">${days ? `${days} dias` : fill("", "nº dias")}</td><td class="r">R$ ${total ? brl(total.toFixed(2)) : fill("", "0.000,00")}</td></tr></tfoot></table>
       <div class="boxes">
-        <div class="box in"><p class="label">Está incluso</p><ul>${included.map(item => `<li>${check}<span>${escape(item)}</span></li>`).join("")}</ul></div>
+        <div class="box in"><p class="label">Está incluso</p><ul>${included.map(item => `<li>${check}<span>${item}</span></li>`).join("")}</ul></div>
         <div class="box out"><p class="label">Não está incluso</p><ul>${(excluded.length ? excluded : [""]).map(item => `<li>${cross}<span>${fill(item, "Item fora do escopo")}</span></li>`).join("")}</ul></div>
       </div>
       <div class="note">${arrow}<p>Mudou alguma coisa no meio do caminho? Combinamos por escrito antes de fazer, com prazo e valor da mudança. Sem surpresas.</p></div></section>
@@ -187,6 +189,9 @@ export function proposalHtml(proposal: ProposalFields) {
   const method = `<div class="page">${head}
     <section>${eyebrow("04", "Como trabalhamos")}<h2>Do primeiro contato ao sistema no ar, em quatro passos.</h2>
       <div class="steps">${processSteps.map((step, index) => `<div><p class="num">${String(index + 1).padStart(2, "0")}</p><h3>${escape(step.title)}</h3><p>${escape(step.description)}</p>${index === 1 ? `<span class="here">Você está aqui</span>` : ""}</div>`).join("")}</div></section>
+    ${foot(4)}</div>`;
+
+  const ai = `<div class="page">${head}
     <section>${eyebrow("05", "IA consciente")}<h2>A velocidade da IA, sem colocar o seu negócio em risco.</h2>
       <p class="lead">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</p>
       <div class="rules">${aiPrinciples.map(rule => `<div><h3>${escape(rule.title)}</h3><p>${escape(rule.description)}</p></div>`).join("")}</div>
@@ -194,7 +199,7 @@ export function proposalHtml(proposal: ProposalFields) {
         <div class="box in"><p class="label">Onde a IA entra</p><ul>${aiUses.yes.slice(0, 3).map(item => `<li>${check}<span>${escape(item)}</span></li>`).join("")}</ul></div>
         <div class="box out"><p class="label">Onde a IA não entra</p><ul>${aiUses.no.slice(0, 3).map(item => `<li>${cross}<span>${escape(item)}</span></li>`).join("")}</ul></div>
       </div></section>
-    ${foot(4)}</div>`;
+    ${foot(5)}</div>`;
 
   const money_ = `<div class="page">${head}
     <section>${eyebrow("06", "Investimento e condições")}<h2>Valor fechado, sem surpresas.</h2>
@@ -206,9 +211,12 @@ export function proposalHtml(proposal: ProposalFields) {
         <tr><th>Validade</th><td>${fill(proposal.validityDays && `${proposal.validityDays} dias`, "nº dias")}</td></tr>
         <tr><th>Acompanhamento</th><td>${fill(proposal.followUpDays && `${proposal.followUpDays} dias após a publicação`, "nº dias")}</td></tr>
       </table></section>
+    ${foot(6)}</div>`;
+
+  const questions = `<div class="page">${head}
     <section>${eyebrow("07", "Perguntas frequentes")}<h2>Antes de decidir.</h2>
       <div class="faq">${faqItems.map(item => `<div><h3>${escape(item.question)}</h3><p>${escape(item.answer)}</p></div>`).join("")}</div></section>
-    ${foot(5)}</div>`;
+    ${foot(7)}</div>`;
 
   const next = `<div class="page">${head}
     <section>${eyebrow("08", "Próximos passos")}<h2>Para começar.</h2>
@@ -220,14 +228,14 @@ export function proposalHtml(proposal: ProposalFields) {
       <div class="accept"><p class="label">Aceite</p>
         <p>Declaro que li e aceito esta proposta (nº ${number}), com o escopo, as etapas, os prazos e os valores descritos acima.</p>
         <div class="signs">
-          <div><b>${fill(proposal.contactName, "Nome do responsável")}</b><small>${fill(companyName, "Empresa")} · ${fill(proposal.companyDocument, "CNPJ")}</small><br><small>Local e data</small></div>
+          <div><b>${proposal.contactName.trim() ? escape(proposal.contactName.trim()) : `<span class="muted">Nome do responsável:</span>`}</b><small>${companyName ? escape(companyName) : "Empresa:"} · ${proposal.companyDocument.trim() ? escape(proposal.companyDocument.trim()) : "CNPJ:"}</small><br><small>Local e data</small></div>
           <div><b>${escape(profile.name)}</b><small>${company} · CNPJ ${cnpj}</small><br><small>Local e data</small></div>
         </div>
       </div></section>
     <div class="contact">${lines}<p class="label">Contato</p><h2>Quem responde é quem vai construir.</h2><p>${escape(profile.email)} · viniccius.com.br · linkedin.com/in/viniszofx</p><p>${company} · CNPJ ${cnpj}</p></div>
-    ${foot(6)}</div>`;
+    ${foot(8)}</div>`;
 
-  return { css, body: cover + heard + scope + method + money_ + next };
+  return { css, body: cover + heard + scope + method + ai + money_ + questions + next };
 }
 
 /** Abre o diálogo de impressão (Salvar como PDF) num iframe isolado, depois de carregar as fontes da marca. */
