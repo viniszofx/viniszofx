@@ -63,10 +63,9 @@ const cases = [
 const portrait = "/profile.png";
 
 /*
- * Linguagem institucional e moderna: títulos finos e grandes, seções numeradas, filetes de 1px,
- * botões retos e blocos escuros de destaque. Paleta grafite e cobre do app (tokens do tema, então
- * claro e escuro se ajustam sozinhos). Os blocos escuros ficam escuros nos dois temas; o cobre deles é
- * sempre o claro (--copper-bright), que contrasta com o grafite também no tema claro.
+ * Linguagem institucional e moderna, sempre no tema escuro: títulos grandes, seções numeradas, cartões
+ * retos com borda fina, destaques em dourado (--primary / --copper-bright) e blocos escuros (processo,
+ * contato, rodapé). Poucos filetes: o espaço separa as seções.
  */
 const button = "h-11 rounded-sm px-6";
 const chip = "border px-2 py-0.5 text-xs text-muted-foreground";
@@ -100,7 +99,7 @@ export default async function Page() {
         <div className={cn(dark, "relative isolate overflow-hidden bg-black dark:bg-black")}>
           <div aria-hidden="true" className="absolute inset-0 -z-10">
             <Image src="/me.png" alt="" fill priority quality={90} sizes="100vw" className="object-cover object-[72%_center] animate-in fade-in duration-[1600ms] ease-out max-lg:opacity-60 motion-reduce:animate-none" />
-                        {/* Gradiente suave só do lado do texto: some antes do rosto (no celular fica mais forte, porque a foto vai atrás do texto). */}
+            {/* Gradiente suave só do lado do texto: some antes do rosto (no celular fica mais forte, porque a foto vai atrás do texto). */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.75)_35%,rgb(0_0_0/0.35)_70%,transparent_100%)] lg:bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.55)_25%,rgb(0_0_0/0.15)_42%,transparent_55%)]" />
             {/* Pé da abertura: a foto se dissolve na cor da página, sem a linha reta entre o preto e o grafite. */}
             <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-background to-transparent" />
@@ -139,16 +138,16 @@ export default async function Page() {
         <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
         {/* Casos como prova: etiqueta do caso, o problema, o que foi feito e o resultado em destaque. */}
         <ol className="mt-10 grid gap-4 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70}
-          className="flex flex-col gap-4 rounded-xl border bg-card/40 p-6 transition-colors hover:border-primary/40 sm:p-7">
+          className="flex flex-col gap-4 border bg-card/40 p-6 transition-colors hover:border-primary/40 sm:p-7">
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"><span className="text-primary tabular-nums">Caso 0{index + 1}</span> · Embrapa Pantanal</p>
-          <p className="font-heading text-xl leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
+          <h3 className="font-heading text-xl leading-snug font-medium tracking-tight text-pretty">{item.problem}</h3>
           <div>
             <p className="text-[0.7rem] font-medium uppercase tracking-[0.2em] text-muted-foreground">O que foi feito</p>
             <p className="mt-1.5 text-sm leading-6 text-foreground/80">{item.action}</p>
           </div>
           <p className="mt-auto self-start">{"href" in item
-            ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"><Check className="size-4 shrink-0" />{item.result}<ArrowUpRight className="size-3.5" /></a>
-            : <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/12 px-3 py-1.5 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{item.result}</span>}</p>
+            ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 bg-primary/12 px-3 py-1.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"><Check className="size-4 shrink-0" />{item.result}<ArrowUpRight className="size-3.5" /></a>
+            : <span className="inline-flex items-center gap-1.5 bg-primary/12 px-3 py-1.5 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{item.result}</span>}</p>
         </Reveal>)}</ol>
       </section>
 
@@ -157,8 +156,8 @@ export default async function Page() {
         <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações consome horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
         {/* Cada situação num cartão de mesma altura: o problema em cima e a resposta numa faixa dourada embaixo. */}
         <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70}
-          className="group flex flex-col overflow-hidden rounded-xl border bg-card/40 transition-colors hover:border-primary/40">
-          <p className="flex-1 p-6 font-heading text-lg leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
+          className="group flex flex-col overflow-hidden border bg-card/40 transition-colors hover:border-primary/40">
+          <h3 className="flex-1 p-6 font-heading text-lg leading-snug font-medium tracking-tight text-pretty">{item.problem}</h3>
           <div className="border-t border-primary/15 bg-primary/[0.06] px-6 py-4">
             <p className="text-[0.7rem] font-medium uppercase tracking-[0.2em] text-primary">Como resolvemos</p>
             <p className="mt-1.5 flex gap-2.5 text-sm leading-6 text-foreground/85"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
@@ -212,10 +211,6 @@ export default async function Page() {
         <Heading id="projetos-titulo" index="06" eyebrow="Projetos" title="Qualidade que você pode conferir.">Um site em uso por cliente e projetos de código aberto, que qualquer pessoa técnica da sua confiança pode avaliar antes de você contratar.</Heading>
         <div className="mt-10 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 70} className="[&>article]:h-full"><ProjectCard project={project} index={index} /></Reveal>)}</div>
         <div className="mt-6"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
-        <div className="mt-8 grid gap-6 border-t pt-8 md:grid-cols-[12rem_1fr]">
-          <p className="text-sm text-muted-foreground">Para quem é da área, as tecnologias que usamos:</p>
-          <div className="grid gap-6 sm:grid-cols-3">{technologies.map(group => <div key={group.title}><p className="mb-3 text-xs uppercase tracking-[0.2em] text-primary">{group.title}</p><ul className="flex flex-wrap gap-1.5">{group.items.map(item => { const Icon = techIcons[item]; return <li key={item} className={cn(chip, "inline-flex items-center gap-1.5")}>{Icon && <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden="true" />}{item}</li>; })}</ul></div>)}</div>
-        </div>
       </section>
 
       {/* 07 Sobre: retrato emoldurado */}
@@ -267,7 +262,7 @@ export default async function Page() {
         </Reveal>
       </section>
     </main>
-    <footer className={cn(dark, "border-t border-white/10")}><div className={cn(container, "flex flex-wrap items-center justify-between gap-4 py-8 text-sm text-white/60")}><div className="space-y-1"><p>© {new Date().getFullYear()} Vinicius Souza · Carbon Cycle LTDA</p><p className="text-xs text-white/45">CNPJ 55.366.974/0001-85</p></div><a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-white"><Github className="size-4" />@viniszofx</a></div></footer>
+    <footer className={cn(dark, "border-t border-white/10")}><div className={cn(container, "flex flex-wrap items-center justify-between gap-4 py-8 text-sm text-white/60")}><p>© {new Date().getFullYear()} Vinicius Souza · Carbon Cycle LTDA</p><a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-white"><Github className="size-4" />@viniszofx</a></div></footer>
     {leads && <LeadWidget />}
   </div>;
 }

@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { SiteMenu } from "@/components/site-menu";
 
 const sections = [
-  { href: "/#situacoes", label: "Exemplos" },
+  { href: "/#casos", label: "Casos" },
   { href: "/#servicos", label: "Serviços" },
-  { href: "/#ia", label: "IA consciente" },
   { href: "/#projetos", label: "Projetos" },
+  { href: "/#sobre", label: "Sobre" },
   { href: "/#contato", label: "Contato" },
 ];
 
