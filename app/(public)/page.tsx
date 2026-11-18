@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 import Image from "next/image";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ShadcnIcon, TypescriptIcon } from "@hugeicons/core-free-icons";
 import {
   RiArrowRightUpLine as ArrowUpRight, RiArrowRightLine as ArrowRight, RiChat3Line as Chat, RiCheckLine as Check, RiCloseLine as Close,
   RiCodeBoxLine as Code, RiFlowChart as Flow, RiPlugLine as Plug, RiSparkling2Line as Sparkle, RiSmartphoneLine as Phone, RiToolsLine as Tools,
@@ -9,8 +11,8 @@ import {
 } from "@remixicon/react";
 import { RiGithubLine as Github, RiLinkedinBoxLine as Linkedin } from "@remixicon/react";
 import {
-  RiReactjsLine, RiNextjsLine, RiCodeSSlashLine, RiTailwindCssLine, RiLayoutGridLine, RiFigmaLine, RiNodejsLine, RiTerminalLine, RiPhpLine,
-  RiHeart3Fill, RiJavaLine, RiMicrosoftLine, RiDatabase2Line, RiBarChartBoxLine, RiBox3Line, RiVercelLine, RiCloudLine, RiGitBranchLine,
+  RiReactjsLine, RiNextjsLine, RiTailwindCssLine, RiFigmaLine, RiNodejsLine, RiTerminalLine, RiPhpLine,
+  RiHeart3Fill, RiJavaLine, RiDatabase2Line, RiBarChartBoxLine, RiBox3Line, RiVercelLine, RiCloudLine, RiGitBranchLine,
 } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { LeadWidget, OpenLeadButton } from "@/components/marketing/lead-widget";
@@ -31,9 +33,15 @@ export const metadata: Metadata = {
 const serviceIcons = { sistemas: Code, automacao: Flow, integracoes: Plug, ia: Sparkle, mobile: Phone, evolucao: Tools } as const;
 const principleIcons = [Human, Shield, Eye, Focus];
 // Ícone de cada tecnologia: o logo quando existe no Remix Icon; senão, um símbolo neutro (banco, gráfico, contêiner, nuvem).
-const techIcons: Record<string, typeof Code> = {
-  "React": RiReactjsLine, "Next.js": RiNextjsLine, "TypeScript": RiCodeSSlashLine, "Tailwind CSS": RiTailwindCssLine, "shadcn/ui": RiLayoutGridLine, "Figma": RiFigmaLine,
-  "Node.js / Express": RiNodejsLine, "Bun / Hono": RiTerminalLine, "PHP / Laravel": RiPhpLine, "Java / Spring Boot": RiJavaLine, "C# / ASP.NET Core": RiMicrosoftLine,
+// Logos que o Remix Icon não tem: shadcn/ui e TypeScript vêm do Hugeicons; C# não existe em nenhum dos dois
+// e vira um monograma no mesmo tamanho dos outros ícones.
+type TechIcon = ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>;
+const ShadcnLogo: TechIcon = (props) => <HugeiconsIcon icon={ShadcnIcon} strokeWidth={1.8} {...props} />;
+const TypescriptLogo: TechIcon = props => <HugeiconsIcon icon={TypescriptIcon} strokeWidth={1.8} {...props} />;
+const CSharpLogo: TechIcon = ({ className, ...props }) => <span {...props} className={cn("grid place-items-center rounded-[4px] border-[1.5px] border-current font-mono text-[0.5rem] leading-none font-bold", className)}>C#</span>;
+const techIcons: Record<string, TechIcon> = {
+  "React": RiReactjsLine, "Next.js": RiNextjsLine, "TypeScript": TypescriptLogo, "Tailwind CSS": RiTailwindCssLine, "shadcn/ui": ShadcnLogo, "Figma": RiFigmaLine,
+  "Node.js / Express": RiNodejsLine, "Bun / Hono": RiTerminalLine, "PHP / Laravel": RiPhpLine, "Java / Spring Boot": RiJavaLine, "C# / ASP.NET Core": CSharpLogo,
   "PostgreSQL": RiDatabase2Line, "MySQL": RiDatabase2Line, "MongoDB": RiDatabase2Line, "Power BI": RiBarChartBoxLine, "Docker": RiBox3Line,
   "Vercel": RiVercelLine, "Magalu Cloud": RiCloudLine, "Git": RiGitBranchLine,
 };
@@ -66,12 +74,12 @@ const dark = "bg-[oklch(0.19_0.01_255)] text-[oklch(0.96_0.004_250)] [--copper-b
 const container = "mx-auto w-full max-w-6xl px-5 sm:px-6";
 
 function Eyebrow({ index, children, className }: { index?: string; children: ReactNode; className?: string }) {
-  return <p className={cn("flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary", className)}>{index && <span className="tabular-nums">{index}</span>}{index && <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />}{children}</p>;
+  return <p className={cn("flex items-center gap-3 text-xs font-medium uppercase tracking-[0.2em] text-primary", className)}>{index && <span className="tabular-nums">{index}</span>}{index && <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />}{children}</p>;
 }
 
 function Heading({ index, eyebrow, title, children, id }: { index: string; eyebrow: string; title: string; children?: ReactNode; id: string }) {
-  return <Reveal className="grid gap-6 border-t pt-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
-    <div><Eyebrow index={index}>{eyebrow}</Eyebrow><h2 id={id} className="mt-5 font-heading text-3xl leading-tight font-light text-balance sm:text-4xl lg:text-5xl">{title}</h2></div>
+  return <Reveal className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+    <div><Eyebrow index={index}>{eyebrow}</Eyebrow><h2 id={id} className="mt-5 font-heading text-3xl leading-[1.1] font-normal tracking-tight text-balance sm:text-4xl lg:text-5xl">{title}</h2></div>
     {children && <p className="self-end text-lg leading-8 text-pretty text-muted-foreground">{children}</p>}
   </Reveal>;
 }
@@ -100,7 +108,7 @@ export default async function Page() {
           <div className={cn(container, "flex flex-col justify-center py-14 sm:py-20 lg:min-h-[calc(100svh-4rem-6rem)]")}>
             {/* Entrada mais lenta e em sequência: título, frase e botões, 150 ms um depois do outro. */}
             <div className="max-w-md lg:max-w-lg">
-              <h1 id="apresentacao" className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none font-heading text-5xl leading-[1.05] font-light text-balance sm:text-6xl lg:text-7xl">Menos planilha. <span className="font-semibold">Mais resultado.</span></h1>
+              <h1 id="apresentacao" className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none font-heading text-5xl leading-[1.05] font-light tracking-tight text-balance sm:text-6xl lg:text-7xl">Menos planilha. <span className="font-semibold">Mais resultado.</span></h1>
               <p className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:150ms] mt-6 text-lg leading-8 text-pretty text-white/70">Sistemas e automações sob medida para a sua empresa.</p>
               <div className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:300ms] mt-10 flex flex-wrap items-center gap-6">{talk("Quero uma proposta", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}<a href="#projetos" className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white">Ver o case Cartório LCM<ArrowRight className="size-4" /></a></div>
             </div>
@@ -109,7 +117,7 @@ export default async function Page() {
         {/* Credenciais numa régua com filetes, logo abaixo da dobra. */}
         <ul aria-label="Credenciais" className={cn(container, "grid gap-x-10 pt-6 pb-6 sm:grid-cols-3")}>{credentials.map(({ title, text, href, cta }) => <li key={title}>
           <a href={href} {...(href.startsWith("#") ? {} : { target: "_blank", rel: "noopener noreferrer" })} className="group block py-6 outline-none focus-visible:ring-2 focus-visible:ring-ring">
-            <p className="font-heading text-2xl font-light text-primary">{title}</p><p className="mt-1 text-sm text-muted-foreground">{text}</p>
+            <p className="font-heading text-2xl font-normal tracking-tight text-primary">{title}</p><p className="mt-1 text-sm text-muted-foreground">{text}</p>
             <p className="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.2em] text-foreground/70 group-hover:text-primary">{cta}{href.startsWith("#") ? <ArrowRight className="size-3.5" /> : <ArrowUpRight className="size-3.5" />}</p>
           </a>
         </li>)}</ul>
@@ -130,7 +138,7 @@ export default async function Page() {
       <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
         <ol className="mt-10 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 py-6">
-          <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
+          <p className="font-heading text-xl leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
           <p className="text-sm leading-6 text-muted-foreground">{item.action}</p>
           <p className="mt-auto flex items-center gap-2 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{"href" in item ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">{item.result}<ArrowUpRight className="size-3.5" /></a> : item.result}</p>
         </Reveal>)}</ol>
@@ -140,7 +148,7 @@ export default async function Page() {
       <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações consome horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
         <ul className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 py-6">
-          <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
+          <p className="font-heading text-xl leading-snug font-medium tracking-tight text-pretty">{item.problem}</p>
           <p className="mt-auto flex gap-3 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
         </Reveal>)}</ul>
         <Reveal className="mt-8 flex flex-wrap items-center justify-between gap-4"><p className="text-muted-foreground">Não encontrou a sua? Conte como funciona aí: a resposta já vem com um caminho.</p>{talk("Quero resolver a minha")}</Reveal>
@@ -154,7 +162,7 @@ export default async function Page() {
             return <Reveal as="article" key={service.id} delay={(index % 3) * 70} className="group flex flex-col bg-background">
               <div className="flex flex-1 flex-col gap-3 p-6 sm:p-8">
                 <span className="mb-2 grid size-11 place-items-center border border-primary/40 text-primary transition-colors group-hover:bg-primary/10"><Icon className="size-5" aria-hidden="true" /></span>
-                <h3 className="font-heading text-xl font-semibold">{service.title}</h3>
+                <h3 className="font-heading text-xl font-medium tracking-tight">{service.title}</h3>
                 <p className="text-sm leading-6 text-muted-foreground">{service.description}</p>
                 <ul className="mt-auto flex flex-wrap gap-1.5 pt-3">{service.items.map(item => <li key={item} className={chip}>{item}</li>)}</ul>
               </div>
@@ -166,7 +174,7 @@ export default async function Page() {
       <section id="ia" aria-labelledby="ia-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="ia-titulo" index="04" eyebrow="IA consciente" title="A velocidade da IA, sem colocar o seu negócio em risco.">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</Heading>
         <div className="mt-10 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
-          return <Reveal as="article" key={principle.title} delay={index * 70} className="py-6"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
+          return <Reveal as="article" key={principle.title} delay={index * 70} className="py-6"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-heading text-lg font-medium tracking-tight">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
         <div className="mt-8 grid gap-4 md:grid-cols-2">
           <Reveal className="border border-primary/40 p-7 sm:p-9"><h3 className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary"><Check className="size-4" />Onde a IA entra</h3><ul className="space-y-3">{aiUses.yes.map(item => <li key={item} className="flex gap-3 leading-6"><Check className="mt-1 size-4 shrink-0 text-primary" />{item}</li>)}</ul></Reveal>
           <Reveal delay={70} className="border p-7 sm:p-9"><h3 className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-muted-foreground"><Close className="size-4" />Onde a IA não entra</h3><ul className="space-y-3 text-muted-foreground">{aiUses.no.map(item => <li key={item} className="flex gap-3 leading-6"><Close className="mt-1 size-4 shrink-0" />{item}</li>)}</ul></Reveal>
@@ -177,10 +185,10 @@ export default async function Page() {
       <section id="processo" aria-labelledby="processo-titulo" className={cn(dark, "relative isolate scroll-mt-20 overflow-hidden py-14 sm:py-20")}>
         <DiamondLines className="absolute inset-0 -z-10 size-full text-(--copper-bright) opacity-50" />
         <div className={container}>
-          <Reveal className="max-w-2xl"><Eyebrow index="05" className="text-(--copper-bright)">Como trabalhamos</Eyebrow><h2 id="processo-titulo" className="mt-5 font-heading text-3xl leading-tight font-light sm:text-4xl lg:text-5xl">Do primeiro contato ao sistema no ar, em quatro passos.</h2></Reveal>
+          <Reveal className="max-w-2xl"><Eyebrow index="05" className="text-(--copper-bright)">Como trabalhamos</Eyebrow><h2 id="processo-titulo" className="mt-5 font-heading text-3xl leading-[1.1] font-normal tracking-tight sm:text-4xl lg:text-5xl">Do primeiro contato ao sistema no ar, em quatro passos.</h2></Reveal>
           <ol className="mt-10 grid gap-x-10 md:grid-cols-4">{processSteps.map((step, index) => <Reveal as="li" key={step.title} delay={index * 70} className="border-t border-white/20 py-8">
             <p className="font-heading text-4xl font-light text-(--copper-bright) tabular-nums">0{index + 1}</p>
-            <h3 className="mt-4 font-semibold">{step.title}</h3>
+            <h3 className="mt-4 font-heading text-lg font-medium tracking-tight">{step.title}</h3>
             <p className="mt-2 text-sm leading-6 text-white/65">{step.description}</p>
           </Reveal>)}</ol>
         </div>
@@ -206,7 +214,7 @@ export default async function Page() {
           </div>
           <div>
             <Eyebrow index="07">Quem atende você</Eyebrow>
-            <h2 id="sobre-titulo" className="mt-5 font-heading text-3xl font-light sm:text-5xl">{profile.name}</h2>
+            <h2 id="sobre-titulo" className="mt-5 font-heading text-3xl font-normal tracking-tight sm:text-5xl">{profile.name}</h2>
             <p className="mt-2 text-sm font-medium text-primary">Analista de sistemas · Carbon Cycle</p>
             <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4" />{profile.location} · atendimento remoto</p>
             <div className="mt-6 space-y-4 text-lg leading-8 text-muted-foreground"><p>Crio sistemas e automações para empresas que querem trabalhar com menos retrabalho. Na Carbon Cycle, acompanhamos cada projeto de perto, do primeiro contato à entrega.</p><p>Sou formado em Análise e Desenvolvimento de Sistemas pelo IFMS e passei mais de três anos na Embrapa Pantanal, entendendo a necessidade de pesquisadores, mantendo sistemas em uso e criando painéis que apoiam decisões. Uso inteligência artificial para entregar mais rápido, sempre com revisão humana.</p></div>
@@ -225,7 +233,7 @@ export default async function Page() {
       {/* 08 Perguntas */}
       <section id="perguntas" aria-labelledby="perguntas-titulo" className={cn(container, "scroll-mt-20 py-10 sm:py-12")}>
         <Heading id="perguntas-titulo" index="08" eyebrow="Perguntas frequentes" title="Tire suas dúvidas antes de começar." />
-        <Reveal className="mt-10 divide-y border-y">{faq.map(item => <details key={item.question} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-5 shrink-0 text-primary transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
+        <Reveal className="mt-10 divide-y border-y">{faq.map(item => <details key={item.question} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg font-medium tracking-tight outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-5 shrink-0 text-primary transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
       </section>
 
       {/* Chamada final: bloco escuro com filetes de cobre. */}
@@ -234,7 +242,7 @@ export default async function Page() {
         <Reveal className={cn(container, "grid items-end gap-10 py-14 sm:py-20 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]")}>
           <div>
             <Eyebrow className="text-(--copper-bright)">Contato</Eyebrow>
-            <h2 id="contato-titulo" className="mt-5 font-heading text-3xl leading-tight font-light text-balance sm:text-5xl">Vamos tirar o trabalho manual das costas da sua equipe?</h2>
+            <h2 id="contato-titulo" className="mt-5 font-heading text-3xl leading-[1.1] font-normal tracking-tight text-balance sm:text-5xl">Vamos tirar o trabalho manual das costas da sua equipe?</h2>
             <p className="mt-6 max-w-xl text-lg leading-8 text-pretty text-white/70">Conte em poucas linhas como funciona hoje e o que mais incomoda. Quem responde é quem vai construir: perguntas objetivas, um caminho possível e, se fizer sentido, uma proposta com prazo e valor fechado.</p>
           </div>
           <div className="flex flex-col gap-3 lg:items-stretch">
