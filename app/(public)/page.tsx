@@ -94,6 +94,8 @@ export default async function Page() {
             <Image src="/me.png" alt="" fill priority quality={90} sizes="100vw" className="object-cover object-[72%_center] max-lg:opacity-60" />
                         {/* Gradiente suave só do lado do texto: some antes do rosto (no celular fica mais forte, porque a foto vai atrás do texto). */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.75)_35%,rgb(0_0_0/0.35)_70%,transparent_100%)] lg:bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.55)_25%,rgb(0_0_0/0.15)_42%,transparent_55%)]" />
+            {/* Pé da abertura: a foto se dissolve na cor da página, sem a linha reta entre o preto e o grafite. */}
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-background to-transparent" />
           </div>
           <div className={cn(container, "flex flex-col justify-center py-20 sm:py-28 lg:min-h-[calc(100svh-4rem-6rem)]")}>
             <div className="max-w-md animate-rise-in motion-reduce:animate-none lg:max-w-lg">
