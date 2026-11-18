@@ -87,7 +87,7 @@ export function LeadWidget() {
       }) });
       if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "Não consegui enviar agora.");
       setTyping(false);
-      say([`Pronto, ${firstName(data.name)}! Sua mensagem chegou. ✅`, `Vou responder pelo e-mail ${data.email} o quanto antes.`], () => setStep("done"));
+      say([`Pronto, ${firstName(data.name)}! Sua mensagem chegou. ✅`, `Respondemos pelo e-mail ${data.email} o quanto antes.`], () => setStep("done"));
     } catch (cause) {
       setTyping(false);
       say([`${cause instanceof Error ? cause.message : "Algo deu errado."} Quer tentar de novo?`], () => setStep("confirm"));
@@ -99,13 +99,13 @@ export function LeadWidget() {
     if (typing) return;
     const value = input.trim();
     if (step === "name") {
-      if (value.length < 2) return say(["Me diz seu nome, por favor. 🙂"]);
+      if (value.length < 2) return say(["Me diga seu nome, por favor. 🙂"]);
       push("user", value); setInput(""); setLead(previous => ({ ...previous, name: value }));
       return say([`Prazer, ${firstName(value)}! De qual empresa você fala? Se for só você, pode pular.`], () => setStep("company"));
     }
     if (step === "company") {
       push("user", value || "Sou eu mesmo"); setInput(""); setLead(previous => ({ ...previous, company: value }));
-      return say(["Qual é o seu melhor e-mail para eu responder?"], () => setStep("email"));
+      return say(["Qual é o seu melhor e-mail para a resposta?"], () => setStep("email"));
     }
     if (step === "email") {
       if (!/^\S+@\S+\.\S+$/.test(value)) { if (value) push("user", value); setInput(""); return say(["Esse e-mail parece incompleto. Pode conferir? (ex.: nome@empresa.com)"]); }
@@ -118,7 +118,7 @@ export function LeadWidget() {
       return say([messagePrompt], () => setStep("message"));
     }
     if (step === "message") {
-      if (value.length < 5) return say(["Escreve um pouquinho mais sobre como funciona hoje. 🙂"]);
+      if (value.length < 5) return say(["Escreva um pouco mais sobre como funciona hoje. 🙂"]);
       push("user", value); setInput("");
       const next = { ...lead, message: value }; setLead(next);
       return say([<Summary key="summary" lead={next} />, "Posso enviar?"], () => setStep("confirm"));

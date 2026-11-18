@@ -42,15 +42,15 @@ const paperUrl = "https://www.alice.cnptia.embrapa.br/alice/handle/doc/1172127";
 const credentials = [
   { title: "3+ anos", text: "na Embrapa Pantanal, com sistemas de pesquisa", href: "#casos", cta: "Ver casos" },
   { title: "Trabalho publicado", text: "nos anais do Evinci 2024, pela Embrapa", href: paperUrl, cta: "Ler o trabalho" },
-  { title: "Site no ar", text: "para cliente, do requisito ao deploy", href: "https://cartorioaltolonga.com.br/", cta: "Ver o site" },
+  { title: "Site no ar", text: "para cliente, do primeiro pedido à publicação", href: "https://cartorioaltolonga.com.br/", cta: "Ver o site" },
 ] as const;
 const proceedingsUrl = "https://ainfo.cnptia.embrapa.br/digital/bitstream/item/278419/1/EVENTO-DE-INICIACAO-CIENTIFICA-DO-PANTANAL-11.-2024-Corumba-final.pdf";
 // Casos reais: problema, o que foi feito e o resultado. Só o que está no currículo e na publicação.
 const cases = [
-  { problem: "Sistema interno de inventário fora do ar.", action: "Encontrei a causa, uma incompatibilidade de versão do PHP que derrubava a conexão com o banco de dados, e corrigi em produção.", result: "Hotfix crítico na Embrapa Pantanal" },
-  { problem: "Dados de pesquisa difíceis de tirar da plataforma.", action: "Participei da definição de requisitos da Plataforma Alelo Animal e contribuí para a exportação dos dados em CSV.", result: "Funcionalidade hoje em produção" },
-  { problem: "Coleta e validação de dados feitas à mão.", action: "Analisei o fluxo de dados das coleções e propus automatizar a coleta e a validação, em tempo real e com vários usuários.", result: "Trabalho publicado pela Embrapa", href: paperUrl },
-  { problem: "Decisões tomadas sem os números à mão.", action: "Montei dashboards, relatórios gerenciais e modelos em Excel e Power BI para apoiar decisões na pesquisa científica.", result: "Informação pronta para decidir" },
+  { problem: "Sistema interno de inventário fora do ar.", action: "Encontrei a causa (uma versão incompatível do PHP derrubava a conexão com o banco de dados) e corrigi com o sistema em uso.", result: "Correção urgente na Embrapa Pantanal" },
+  { problem: "Dados de pesquisa presos dentro da plataforma.", action: "Ajudei a definir o que a Plataforma Alelo Animal precisava fazer e contribuí para a exportação dos dados em planilha (CSV).", result: "Recurso em uso até hoje" },
+  { problem: "Coleta e validação de dados feitas à mão.", action: "Mapeei o caminho dos dados, do campo ao sistema, e propus automatizar a coleta e a conferência, em tempo real e com várias pessoas ao mesmo tempo.", result: "Trabalho publicado pela Embrapa", href: paperUrl },
+  { problem: "Decisões tomadas sem os números em mãos.", action: "Montei painéis e relatórios em Excel e Power BI para apoiar as decisões da pesquisa científica.", result: "Informação pronta para decidir" },
 ] as const;
 const portrait = "/profile.png";
 
@@ -117,7 +117,7 @@ export default async function Page() {
 
       {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
       <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
-        <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo exatamente o tipo de problema que a sua empresa pode ter.</Heading>
+        <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo o mesmo tipo de problema que a sua empresa pode estar enfrentando.</Heading>
         <ol className="mt-14 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 border-t py-8">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
           <p className="text-sm leading-6 text-muted-foreground">{item.action}</p>
@@ -127,12 +127,12 @@ export default async function Page() {
 
       {/* 02 Situações */}
       <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
-        <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações come horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
+        <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações consome horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
         <ul className="mt-14 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 border-t py-8">
           <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
           <p className="mt-auto flex gap-3 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
         </Reveal>)}</ul>
-        <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-4"><p className="text-muted-foreground">Não achou a sua? Me conte como é aí: a resposta já vem com um caminho.</p>{talk("Quero resolver a minha")}</Reveal>
+        <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-4"><p className="text-muted-foreground">Não encontrou a sua? Conte como funciona aí: a resposta já vem com um caminho.</p>{talk("Quero resolver a minha")}</Reveal>
       </section>
 
       {/* 03 Serviços */}
@@ -153,7 +153,7 @@ export default async function Page() {
 
       {/* 04 IA consciente */}
       <section id="ia" aria-labelledby="ia-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
-        <Heading id="ia-titulo" index="04" eyebrow="IA consciente" title="A velocidade da IA, sem colocar o seu negócio em risco.">A inteligência artificial deixa o projeto mais rápido e mais barato. Para isso não virar problema, o uso segue quatro regras, e uma pessoa responde por cada entrega.</Heading>
+        <Heading id="ia-titulo" index="04" eyebrow="IA consciente" title="A velocidade da IA, sem colocar o seu negócio em risco.">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</Heading>
         <div className="mt-14 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
           return <Reveal as="article" key={principle.title} delay={index * 70} className="border-t py-8"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
         <div className="mt-10 grid gap-4 md:grid-cols-2">
@@ -166,7 +166,7 @@ export default async function Page() {
       <section id="processo" aria-labelledby="processo-titulo" className={cn(dark, "relative isolate scroll-mt-20 overflow-hidden py-20 sm:py-28")}>
         <DiamondLines className="absolute inset-0 -z-10 size-full text-(--copper-bright) opacity-50" />
         <div className={container}>
-          <Reveal className="max-w-2xl"><Eyebrow index="05" className="text-(--copper-bright)">Como trabalho</Eyebrow><h2 id="processo-titulo" className="mt-5 font-heading text-3xl leading-tight font-light sm:text-4xl lg:text-5xl">Do primeiro contato ao sistema no ar, em quatro passos.</h2></Reveal>
+          <Reveal className="max-w-2xl"><Eyebrow index="05" className="text-(--copper-bright)">Como trabalhamos</Eyebrow><h2 id="processo-titulo" className="mt-5 font-heading text-3xl leading-tight font-light sm:text-4xl lg:text-5xl">Do primeiro contato ao sistema no ar, em quatro passos.</h2></Reveal>
           <ol className="mt-14 grid gap-x-10 md:grid-cols-4">{processSteps.map((step, index) => <Reveal as="li" key={step.title} delay={index * 70} className="border-t border-white/20 py-8">
             <p className="font-heading text-4xl font-light text-(--copper-bright) tabular-nums">0{index + 1}</p>
             <h3 className="mt-4 font-semibold">{step.title}</h3>
@@ -177,11 +177,11 @@ export default async function Page() {
 
       {/* 06 Projetos */}
       <section id="projetos" aria-labelledby="projetos-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
-        <Heading id="projetos-titulo" index="06" eyebrow="Projetos" title="Qualidade que você pode conferir.">Um site no ar para cliente e projetos com o código aberto: qualquer pessoa técnica da sua confiança pode avaliar o trabalho antes de você contratar.</Heading>
+        <Heading id="projetos-titulo" index="06" eyebrow="Projetos" title="Qualidade que você pode conferir.">Um site em uso por cliente e projetos de código aberto, que qualquer pessoa técnica da sua confiança pode avaliar antes de você contratar.</Heading>
         <div className="mt-14 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 70} className="[&>article]:h-full"><ProjectCard project={project} index={index} /></Reveal>)}</div>
         <div className="mt-6"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
         <div className="mt-14 grid gap-6 border-t pt-8 md:grid-cols-[12rem_1fr]">
-          <p className="text-sm text-muted-foreground">Para quem é da área, as tecnologias com que trabalho:</p>
+          <p className="text-sm text-muted-foreground">Para quem é da área, as tecnologias que usamos:</p>
           <div className="grid gap-6 sm:grid-cols-3">{technologies.map(group => <div key={group.title}><p className="mb-3 text-xs uppercase tracking-[0.2em] text-primary">{group.title}</p><ul className="flex flex-wrap gap-1.5">{group.items.map(item => { const Icon = techIcons[item]; return <li key={item} className={cn(chip, "inline-flex items-center gap-1.5")}>{Icon && <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden="true" />}{item}</li>; })}</ul></div>)}</div>
         </div>
       </section>
@@ -198,7 +198,7 @@ export default async function Page() {
             <h2 id="sobre-titulo" className="mt-5 font-heading text-3xl font-light sm:text-5xl">{profile.name}</h2>
             <p className="mt-2 text-sm font-medium text-primary">Analista de sistemas · Carbon Cycle</p>
             <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4" />{profile.location} · atendimento remoto</p>
-            <div className="mt-6 space-y-4 text-lg leading-8 text-muted-foreground"><p>Crio sistemas e automações para empresas que querem trabalhar com menos retrabalho. Na Carbon Cycle, acompanhamos cada projeto de perto, do primeiro contato à entrega.</p><p>Sou formado em Análise e Desenvolvimento de Sistemas pelo IFMS e passei mais de três anos na Embrapa Pantanal, levantando requisitos com pesquisadores, mantendo sistemas em produção e montando dashboards para decisão. Uso inteligência artificial para entregar mais rápido, sempre com revisão humana.</p></div>
+            <div className="mt-6 space-y-4 text-lg leading-8 text-muted-foreground"><p>Crio sistemas e automações para empresas que querem trabalhar com menos retrabalho. Na Carbon Cycle, acompanhamos cada projeto de perto, do primeiro contato à entrega.</p><p>Sou formado em Análise e Desenvolvimento de Sistemas pelo IFMS e passei mais de três anos na Embrapa Pantanal, entendendo a necessidade de pesquisadores, mantendo sistemas em uso e criando painéis que apoiam decisões. Uso inteligência artificial para entregar mais rápido, sempre com revisão humana.</p></div>
             <div className="mt-8 border-t pt-6">
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Publicações · Evinci 2024, Embrapa</p>
               <ul className="mt-3 space-y-2 text-sm">
@@ -224,7 +224,7 @@ export default async function Page() {
           <div>
             <Eyebrow className="text-(--copper-bright)">Contato</Eyebrow>
             <h2 id="contato-titulo" className="mt-5 font-heading text-3xl leading-tight font-light text-balance sm:text-5xl">Vamos tirar o trabalho manual das costas da sua equipe?</h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-pretty text-white/70">Conte em poucas linhas como funciona hoje e o que mais incomoda. Eu mesmo respondo, com perguntas objetivas, um caminho possível e, se fizer sentido, uma proposta com prazo e valor fechado.</p>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-pretty text-white/70">Conte em poucas linhas como funciona hoje e o que mais incomoda. Quem responde é quem vai construir: perguntas objetivas, um caminho possível e, se fizer sentido, uma proposta com prazo e valor fechado.</p>
           </div>
           <div className="flex flex-col gap-3 lg:items-stretch">
             {talk(leads ? "Quero minha proposta" : "Enviar e-mail", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}

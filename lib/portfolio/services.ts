@@ -23,8 +23,8 @@ export const services = [
 
 // O que "IA como ferramenta consciente" significa na prática.
 export const aiPrinciples = [
-  { title: "Uma pessoa responsável", description: "A IA sugere; eu reviso, testo e respondo por tudo que vai para o seu sistema. Nada é entregue sem que eu entenda e saiba explicar." },
-  { title: "Seus dados protegidos", description: "Dados de clientes, contratos e senhas não são enviados a ferramentas de IA sem a sua autorização. Quando possível, uso dados de exemplo." },
+  { title: "Uma pessoa responsável", description: "A IA sugere; uma pessoa revisa, testa e responde por tudo que vai para o seu sistema. Nada é entregue sem ser entendido e explicado." },
+  { title: "Seus dados protegidos", description: "Dados de clientes, contratos e senhas não são enviados a ferramentas de IA sem a sua autorização. Quando possível, usamos dados de exemplo." },
   { title: "Transparência", description: "Você sabe onde a IA participou do projeto e por quê. Nada de caixa-preta: as decisões ficam registradas." },
   { title: "Só quando compensa", description: "A IA entra quando reduz prazo ou custo sem reduzir qualidade. Quando uma solução simples resolve, fica a solução simples." },
 ] as const;
@@ -35,18 +35,18 @@ export const aiUses = {
 } as const;
 
 export const processSteps = [
-  { title: "Conversa", description: "Você conta como o trabalho é feito hoje e o que mais incomoda. Não precisa chegar com nada pronto: as perguntas ficam comigo." },
+  { title: "Conversa", description: "Você conta como o trabalho é feito hoje e o que mais incomoda. Não precisa chegar com nada pronto: as perguntas ficam com a gente." },
   { title: "Proposta por escrito", description: "O que será feito, em quanto tempo e por quanto, dividido em etapas para você saber o que recebe em cada uma." },
   { title: "Entregas aos poucos", description: "A cada etapa você já usa uma parte funcionando e pode ajustar o rumo antes que fique caro mudar." },
-  { title: "No ar e acompanhado", description: "Coloco o sistema para funcionar, ensino a equipe a usar e acompanho os primeiros dias. Tudo fica em seu nome." },
+  { title: "No ar e acompanhado", description: "Colocamos o sistema no ar, treinamos a sua equipe e acompanhamos os primeiros dias. Tudo fica em seu nome." },
 ] as const;
 
 export const faq = [
-  { question: "Não sei exatamente o que preciso. Posso falar mesmo assim?", answer: "Pode, e é o caso mais comum. Basta contar como o trabalho é feito hoje e o que dá mais dor de cabeça. Eu faço as perguntas e digo o que vale a pena resolver primeiro, e também o que não vale." },
-  { question: "Preciso entender de tecnologia?", answer: "Não. A conversa é sobre o seu negócio, não sobre programação. Explico as opções em linguagem simples e você decide com base em prazo, custo e resultado." },
-  { question: "Quanto custa um projeto?", answer: "Depende do tamanho. Depois da conversa inicial envio uma proposta com valor fechado por etapa, sem surpresa no meio do caminho." },
-  { question: "O sistema fica comigo?", answer: "Sim. O código, a documentação e os acessos ficam em seu nome. Você pode continuar comigo ou levar para outra equipe." },
-  { question: "Você usa IA para fazer tudo?", answer: "Não. Uso IA como ferramenta para acelerar partes repetitivas e revisar, mas o desenho da solução, as regras do seu negócio e a revisão final são minhas. Tudo que entrego eu entendo e consigo explicar." },
-  { question: "Meus dados vão para alguma IA?", answer: "Só com a sua autorização, e só o necessário. Quando o projeto usa IA no dia a dia, explico qual serviço é usado, onde os dados ficam e quanto custa." },
-  { question: "Atende empresas de fora de MS?", answer: "Sim. O trabalho é remoto, com reuniões por vídeo e acompanhamento das entregas online." },
+  { question: "Não sei exatamente o que preciso. Posso falar mesmo assim?", answer: "Pode, e é o caso mais comum. Basta contar como o trabalho é feito hoje e o que dá mais dor de cabeça. Nós fazemos as perguntas e dizemos o que vale a pena resolver primeiro, e também o que não vale." },
+  { question: "Preciso entender de tecnologia?", answer: "Não. A conversa é sobre o seu negócio, não sobre programação. Explicamos as opções em linguagem simples, e você decide com base em prazo, custo e resultado." },
+  { question: "Quanto custa um projeto?", answer: "Depende do tamanho. Depois da conversa inicial, enviamos uma proposta com valor fechado por etapa, sem surpresas no meio do caminho." },
+  { question: "O sistema fica comigo?", answer: "Sim. O código, a documentação e os acessos ficam em seu nome. Você pode continuar com a gente ou levar para outra equipe." },
+  { question: "Vocês usam IA para fazer tudo?", answer: "Não. A IA é uma ferramenta para acelerar partes repetitivas e revisar, mas o desenho da solução, as regras do seu negócio e a revisão final são feitos por pessoas. Tudo que entregamos, entendemos e sabemos explicar." },
+  { question: "Meus dados vão para alguma IA?", answer: "Só com a sua autorização, e só o necessário. Quando o projeto usa IA no dia a dia, explicamos qual serviço é usado, onde os dados ficam e quanto custa." },
+  { question: "Vocês atendem empresas de fora de MS?", answer: "Sim. O trabalho é remoto, com reuniões por vídeo e acompanhamento das entregas online." },
 ] as const;
