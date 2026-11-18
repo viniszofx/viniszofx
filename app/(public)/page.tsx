@@ -83,7 +83,8 @@ export default async function Page() {
     ? <OpenLeadButton className={className}><Chat />{label}</OpenLeadButton>
     : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={className}><Mail />{label}</Button>;
 
-  return <div>
+  // .home-dark: a página inicial fica sempre no tema escuro (regras em globals.css).
+  return <div className="home-dark">
     <main id="conteudo">
       {/* Abertura: me.png (retrato à direita, fundo preto à esquerda) num bloco escuro nos dois temas;
           o texto fica sobre a parte preta da foto. */}

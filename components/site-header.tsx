@@ -33,7 +33,8 @@ export function SiteHeader({ authenticated, blog = true }: { authenticated: bool
           <ul className="hidden items-center gap-5 text-sm whitespace-nowrap text-muted-foreground lg:flex">
             {links.map(link => <li key={link.href}><Link href={link.href} className="hover:text-foreground">{link.label}</Link></li>)}
           </ul>
-          <ThemeSelector compact />
+          {/* Na página inicial (sempre escura) a troca de tema não teria efeito: fica escondida. */}
+          <span className="contents [:root:has(.home-dark)_&]:hidden"><ThemeSelector compact /></span>
           <Button nativeButton={false} render={<Link href={authenticated ? "/dashboard" : "/login"} />} variant="outline" size="sm" className="whitespace-nowrap normal-case tracking-normal">{authenticated ? "Ir ao app" : "Login"}</Button>
           <SiteMenu links={links} />
         </div>

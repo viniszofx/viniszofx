@@ -3,9 +3,11 @@
 @import "shadcn/tailwind.css";
 
 /* Escuro: escolhido (.dark) ou do aparelho, a menos que a pessoa tenha escolhido claro (.light).
-   Assim a primeira pintura já sai no tema certo, sem depender de JavaScript. */
+   Assim a primeira pintura já sai no tema certo, sem depender de JavaScript.
+   Páginas com .home-dark (a inicial) ficam sempre escuras, cabeçalho e fundo incluídos (via :has). */
 @custom-variant dark {
   &:where(.dark, .dark *) { @slot; }
+  &:where(:root:has(.home-dark), :root:has(.home-dark) *) { @slot; }
   @media (prefers-color-scheme: dark) { &:where(:root:not(.light), :root:not(.light) *) { @slot; } }
 }
 
@@ -48,7 +50,11 @@
   --sidebar-ring: oklch(0.62 0.1 55);
 }
 
-.dark {
+/* Controles nativos (barra de rolagem, campos) também escuros na página inicial. */
+:root:has(.home-dark) { color-scheme: dark; }
+
+.dark,
+:root:has(.home-dark) {
   --background: oklch(0.18 0.008 255);
   --foreground: oklch(0.96 0.004 250);
   --card: oklch(0.225 0.009 255);
@@ -189,7 +195,8 @@
       radial-gradient(60rem 24rem at 50% 115%, oklch(0.72 0.1 58 / 0.08), transparent 70%);
   }
   /* Seletores escritos à mão: o @variant dark não funciona em pseudo-elementos (::before). */
-  :root.dark body::before {
+  :root.dark body::before,
+  :root:has(.home-dark) body::before {
     background-image:
       radial-gradient(70rem 36rem at 50% -6rem, oklch(0.75 0.02 250 / 0.12), transparent 70%),
       radial-gradient(60rem 24rem at 50% 115%, oklch(0.72 0.1 58 / 0.07), transparent 70%),
