@@ -91,17 +91,18 @@ export default async function Page() {
       <section aria-labelledby="apresentacao" className="relative isolate overflow-hidden">
         <div className={cn(dark, "relative isolate overflow-hidden bg-black dark:bg-black")}>
           <div aria-hidden="true" className="absolute inset-0 -z-10">
-            <Image src="/me.png" alt="" fill priority quality={90} sizes="100vw" className="object-cover object-[72%_center] max-lg:opacity-60" />
+            <Image src="/me.png" alt="" fill priority quality={90} sizes="100vw" className="object-cover object-[72%_center] animate-in fade-in duration-[1600ms] ease-out max-lg:opacity-60 motion-reduce:animate-none" />
                         {/* Gradiente suave só do lado do texto: some antes do rosto (no celular fica mais forte, porque a foto vai atrás do texto). */}
             <div className="absolute inset-0 bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.75)_35%,rgb(0_0_0/0.35)_70%,transparent_100%)] lg:bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.55)_25%,rgb(0_0_0/0.15)_42%,transparent_55%)]" />
             {/* Pé da abertura: a foto se dissolve na cor da página, sem a linha reta entre o preto e o grafite. */}
             <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-background to-transparent" />
           </div>
           <div className={cn(container, "flex flex-col justify-center py-20 sm:py-28 lg:min-h-[calc(100svh-4rem-6rem)]")}>
-            <div className="max-w-md animate-rise-in motion-reduce:animate-none lg:max-w-lg">
-              <h1 id="apresentacao" className="font-heading text-5xl leading-[1.05] font-light text-balance sm:text-6xl lg:text-7xl">Menos planilha. <span className="font-semibold">Mais resultado.</span></h1>
-              <p className="mt-6 text-lg leading-8 text-pretty text-white/70">Sistemas e automações sob medida para a sua empresa.</p>
-              <div className="mt-10 flex flex-wrap items-center gap-6">{talk("Quero uma proposta", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}<a href="#situacoes" className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white">Ver exemplos<ArrowRight className="size-4" /></a></div>
+            {/* Entrada mais lenta e em sequência: título, frase e botões, 150 ms um depois do outro. */}
+            <div className="max-w-md lg:max-w-lg">
+              <h1 id="apresentacao" className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none font-heading text-5xl leading-[1.05] font-light text-balance sm:text-6xl lg:text-7xl">Menos planilha. <span className="font-semibold">Mais resultado.</span></h1>
+              <p className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:150ms] mt-6 text-lg leading-8 text-pretty text-white/70">Sistemas e automações sob medida para a sua empresa.</p>
+              <div className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:300ms] mt-10 flex flex-wrap items-center gap-6">{talk("Quero uma proposta", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}<a href="#situacoes" className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white">Ver exemplos<ArrowRight className="size-4" /></a></div>
             </div>
           </div>
         </div>
