@@ -1,13 +1,15 @@
 "use client";
-import { aiPrinciples, aiUses, faq, processSteps } from "@/lib/portfolio/services";
 import { profile } from "@/lib/portfolio/content";
 import { proposalDays, proposalTotal, type ProposalFields } from "@/lib/proposals/store";
 
 /*
- * Proposta comercial em A4 no padrão de docs/brand/Impressos.md: papel claro, cobre #a56038 como destaque,
- * faixa grafite só na capa e no contato final, cores sólidas (sem degradês nem transparências) e fontes da marca.
- * Os textos fixos (processo, IA consciente, perguntas) vêm do site (lib/portfolio/services.ts): se o site mudar,
- * a proposta muda junto. Campo vazio sai em branco, com linha para preencher à mão, nunca com valor inventado.
+ * Proposta comercial em A4: porta fiel de docs/brand/templates/proposta/proposta.html (mesmo HTML, mesmo CSS,
+ * mesmas 6 páginas e os mesmos textos fixos), preenchida com os dados da proposta.
+ * Diferenças do modelo, todas pedidas pelo manual ou pela operação:
+ *  - fontes originais da marca (Raleway nos títulos, Oxanium no texto) no lugar de Montserrat e Tektur;
+ *  - campo vazio sai como linha em branco para preencher à mão (com a dica pequena), nunca com valor inventado;
+ *  - o total só aparece quando todas as etapas têm valor.
+ * Cores sólidas, sem degradês nem transparências (docs/brand/Impressos.md).
  */
 
 const company = "Carbon Cycle LTDA";
@@ -15,227 +17,286 @@ const cnpj = "55.366.974/0001-85";
 const money = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]!);
-// Campo vazio sai como espaço para preencher à mão: uma linha (ou várias, em textos) com a dica embaixo, em cinza.
-const fill = (value: string | undefined, hint: string) => value?.trim() ? escape(value.trim()) : `<span class="blank"><span class="hint">${escape(hint)}</span></span>`;
-const area = (value: string | undefined, hint: string, lines = 3) => value?.trim() ? escape(value.trim()) : `<span class="lines-blank"><span class="hint">${escape(hint)}</span>${"<span class=\"rule\"></span>".repeat(lines)}</span>`;
-const brl = (value: string) => value ? money.format(Number(value)) : "";
+const text = (value: string | undefined) => value?.trim() ? escape(value.trim()) : "";
+/** Campo curto: o valor, ou uma linha para escrever com a dica pequena dentro. */
+const fill = (value: string | undefined, hint: string, width = 32) => text(value) || `<span class="blank" style="min-width:${width}mm"><span class="hint">${escape(hint)}</span></span>`;
+/** Campo de texto: o valor, ou linhas pautadas com a dica no alto. */
+const area = (value: string | undefined, hint: string, lines = 2) => text(value) || `<span class="area"><span class="hint">${escape(hint)}</span>${"<span class=\"rule\"></span>".repeat(lines)}</span>`;
+const brl = (value: number) => money.format(value);
 const date = (value: string) => { const [y, m, d] = value.split("-"); return y && m && d ? `${d}/${m}/${y}` : ""; };
 
-const symbol = `<svg class="symbol" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1b1e22"/><rect x="3" y="3" width="26" height="26" rx="5" fill="none" stroke="#d39a6c" stroke-width="2"/><path d="M10.5 10.5 16 21.5 21.5 10.5" fill="none" stroke="#e7b48a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-// Filetes em losango (padrão 01) com opacidade fixa por traço: sólido, sem degradê.
-const lines = `<svg class="lines" viewBox="0 0 1200 400" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">${[180, 300, 420, 540, 660].map((size, index) => `<rect x="${960 - size / 2}" y="${200 - size / 2}" width="${size}" height="${size}" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="${(0.45 - index * 0.07).toFixed(2)}" stroke-width="${index === 0 ? 1.5 : 1}"/>`).join("")}</svg>`;
-const check = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-const cross = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
-const arrow = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const symbol = (size: string) => `<svg viewBox="0 0 32 32" style="width:${size};height:${size}" aria-hidden="true"><rect width="32" height="32" rx="7" fill="#1b1e22"/><rect x="3" y="3" width="26" height="26" rx="5" fill="none" stroke="#d39a6c" stroke-width="2"/><path d="M10.5 10.5 16 21.5 21.5 10.5" fill="none" stroke="#e7b48a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// Filetes em losango (docs/brand/assets/Grafismos/filetes-losango.svg), opacidade fixa por traço.
+const lines = `<svg viewBox="0 0 1200 400" preserveAspectRatio="xMaxYMid slice" style="position:absolute;inset:0;width:100%;height:100%" aria-hidden="true">${[180, 300, 420, 540, 660].map((size, index) => `<rect x="${960 - size / 2}" y="${200 - size / 2}" width="${size}" height="${size}" transform="rotate(45 960 200)" fill="none" stroke="#e1a170" stroke-opacity="${(0.45 - index * 0.07).toFixed(2)}" stroke-width="${index === 0 ? 1.5 : 1}"/>`).join("")}</svg>`;
+const icon = (id: "chk" | "x" | "arr", copper = false) => `<svg class="i${copper ? " c" : ""}"><use href="#${id}"/></svg>`;
 
 const css = `
-@page { size: A4 portrait; margin: 0; }
-* { box-sizing: border-box; }
-html, body { margin: 0; background: #fff; color: #13161b; font: 11pt/1.65 Oxanium, system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.page { position: relative; width: 210mm; height: 297mm; overflow: hidden; padding: 27mm 20mm 22mm; break-after: page; }
-.page:last-child { break-after: auto; }
-.head { position: absolute; top: 12mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; align-items: center; padding-bottom: 2.5mm; border-bottom: 1px solid #dbdee1; font-size: 9pt; }
-.brand { display: flex; align-items: center; gap: 2.5mm; font-weight: 600; }
-.symbol { width: 7mm; height: 7mm; }
-.doc { color: #5f646a; }
-.foot { position: absolute; bottom: 10mm; left: 20mm; right: 20mm; display: flex; justify-content: space-between; padding-top: 2.5mm; border-top: 1px solid #dbdee1; font-size: 8.5pt; color: #5f646a; }
-.foot b { color: #a56038; font-weight: 500; }
-h1, h2, h3, .num { font-family: Raleway, system-ui, sans-serif; letter-spacing: -0.025em; margin: 0; }
-h2 { font-size: 26pt; font-weight: 400; line-height: 1.15; margin-top: 3mm; }
-h3 { font-size: 13.5pt; font-weight: 500; line-height: 1.35; }
-.eyebrow { display: flex; align-items: center; gap: 3mm; color: #a56038; font-size: 9.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: .2em; }
-.eyebrow i { width: 7.4mm; height: 1px; background: #a56038; }
-.lead { color: #5f646a; font-size: 12.5pt; margin: 3mm 0 0; }
-.label { font-size: 8.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: .2em; color: #5f646a; }
-section + section { margin-top: 11mm; }
-p { margin: 0; }
-/* Espaço para escrever à mão: linha sólida (sem tracejado nem transparência) e a dica pequena embaixo. */
-.blank { display: inline-block; min-width: 38mm; padding: 0 1mm .4mm; margin: 0 .5mm; border-bottom: 1px solid #a56038; line-height: 1.2; vertical-align: baseline; }
-.hint { font: 400 6.5pt/1 Oxanium, system-ui, sans-serif; letter-spacing: .02em; color: #b3b7bd; text-transform: none; white-space: nowrap; }
-.lines-blank { display: block; width: 100%; padding-top: 1mm; }
-.lines-blank .rule { display: block; height: 8mm; border-bottom: 1px solid #c9ccd1; }
-.stages .r .blank, .facts .blank, .conds .blank { min-width: 26mm; }
-.project .name .blank { min-width: 110mm; padding-bottom: 1mm; }
-.value .blank { border-color: #e1a170; min-width: 60mm; }
-.value .hint { color: #6b7076; }
-.ico { width: 4.2mm; height: 4.2mm; flex: none; margin-top: .8mm; }
-.cover-band { position: relative; margin: -27mm -20mm 0; height: 112mm; background: #111418; color: #f0f2f4; padding: 30mm 20mm 0; overflow: hidden; }
-.cover-band .head { border-color: #2a2e34; color: #f0f2f4; }
-.cover-band .doc { color: #9da2a9; }
-.cover-band .lines, .contact .lines { position: absolute; inset: 0; width: 100%; height: 100%; }
-.cover-band h1 { position: relative; font-size: 40pt; font-weight: 300; line-height: 1.05; margin-top: 18mm; }
-.cover-band h1 b { font-weight: 600; }
-.project { margin-top: 12mm; }
-.project .name { font-family: Raleway, system-ui, sans-serif; font-size: 30pt; font-weight: 400; letter-spacing: -0.025em; line-height: 1.15; margin-top: 2mm; }
-.project p { color: #5f646a; margin-top: 3mm; max-width: 150mm; }
-table { width: 100%; border-collapse: collapse; }
-.facts { margin-top: 10mm; }
-.facts th { width: 40mm; text-align: left; vertical-align: top; padding: 3mm 0; border-bottom: 1px solid #dbdee1; }
-.facts td { padding: 3mm 0; border-bottom: 1px solid #dbdee1; }
-.facts small, .muted { color: #5f646a; }
-.pains { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 4mm; }
-.pain { border: 1px solid #dbdee1; padding: 4mm 5mm; font-family: Raleway, system-ui, sans-serif; font-weight: 500; font-size: 12pt; letter-spacing: -0.02em; }
-.panel { background: #f3f5f6; padding: 5mm 6mm; margin-top: 4mm; }
-.compare { margin-top: 5mm; }
-.compare th { text-align: left; padding: 2.5mm 4mm; font-size: 8.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: .2em; border-bottom: 1px solid #13161b; }
-.compare th.after { background: #f1e9e3; }
-.compare td { padding: 3.5mm 4mm; border-bottom: 1px solid #dbdee1; vertical-align: top; }
-.compare td.sep { width: 10mm; color: #a56038; padding: 3.5mm 0; }
-.stages { margin-top: 6mm; }
-.stages th { text-align: left; font-size: 8.5pt; font-weight: 500; text-transform: uppercase; letter-spacing: .2em; color: #5f646a; padding: 2mm 2mm; border-bottom: 1px solid #13161b; }
-.stages td { padding: 3.5mm 2mm; border-bottom: 1px solid #dbdee1; vertical-align: top; }
-.stages .n { width: 12mm; font-family: Raleway, system-ui, sans-serif; font-weight: 300; font-size: 16pt; color: #a56038; font-variant-numeric: tabular-nums; }
-.stages .r { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.stages tfoot td { border-top: 1px solid #13161b; border-bottom: 0; font-weight: 600; }
-.boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; margin-top: 7mm; }
-.box { border: 1px solid #dbdee1; padding: 5mm; }
-.box.in { border-color: #a56038; }
-.box ul { list-style: none; margin: 3mm 0 0; padding: 0; display: grid; gap: 2mm; }
-.box li { display: flex; gap: 2.5mm; }
-.box.in .ico, .box.in .label { color: #a56038; }
-.box.out li { color: #5f646a; }
-.note { display: flex; gap: 3mm; background: #f3f5f6; padding: 4mm 5mm; margin-top: 5mm; }
-.note .ico, .steps .num, .rules .num { color: #a56038; }
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5mm; margin-top: 6mm; }
-.steps > div { border-top: 1px solid #13161b; padding-top: 3mm; }
-.steps .num { font-size: 22pt; font-weight: 300; }
-.steps h3 { margin-top: 1.5mm; }
-.steps p { font-size: 9.5pt; color: #5f646a; margin-top: 1.5mm; }
-.here { display: inline-block; margin-top: 2mm; background: #f1e9e3; color: #3e281b; font-size: 8pt; padding: .5mm 2mm; text-transform: uppercase; letter-spacing: .15em; }
-.rules { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm 8mm; margin-top: 6mm; }
-.rules p { font-size: 9.5pt; color: #5f646a; margin-top: 1mm; }
-.value { background: #111418; color: #f0f2f4; padding: 7mm 8mm; margin-top: 6mm; }
-.value .label { color: #e1a170; }
-.value .big { font-family: Raleway, system-ui, sans-serif; font-weight: 300; font-size: 32pt; letter-spacing: -0.025em; margin-top: 2mm; }
-.value p { color: #9da2a9; margin-top: 2mm; }
-.conds { margin-top: 5mm; }
-.conds th { width: 40mm; text-align: left; font-weight: 500; padding: 2.5mm 0; border-bottom: 1px solid #dbdee1; }
-.conds td { padding: 2.5mm 0; border-bottom: 1px solid #dbdee1; }
-.faq { margin-top: 5mm; display: grid; gap: 4mm; }
-.faq p { color: #5f646a; margin-top: 1mm; font-size: 10pt; }
-.next { margin-top: 5mm; display: grid; gap: 3mm; }
-.next div { display: flex; gap: 4mm; }
-.next .num { color: #a56038; font-weight: 300; font-size: 16pt; width: 10mm; }
-.accept { margin-top: 9mm; border: 1px solid #dbdee1; padding: 6mm; }
-.accept p { margin-top: 2mm; }
-.signs { display: grid; grid-template-columns: 1fr 1fr; gap: 12mm; margin-top: 18mm; }
-.signs div { border-top: 1px solid #13161b; padding-top: 2mm; }
-.signs b { display: block; font-weight: 500; }
-.signs small { color: #5f646a; }
-.contact { position: relative; margin: 12mm -20mm 0; background: #111418; color: #f0f2f4; padding: 10mm 20mm; min-height: 62mm; overflow: hidden; }
-.contact .label { color: #e1a170; position: relative; }
-.contact h2 { position: relative; color: #f0f2f4; font-size: 22pt; }
-.contact p { position: relative; color: #9da2a9; margin-top: 3mm; }
+@page{size:A4;margin:0;}
+:root{
+  --paper:#ffffff; --panel:#f3f5f6; --ink:#13161b; --muted:#5f646a; --rule:#dbdee1;
+  --copper:#a56038; --copper-ink:#3e281b; --accent:#f1e9e3; --accent-rule:#e2cfc0;
+  --graphite:#111418; --bright:#e1a170; --mark:#1b1e22;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Oxanium,sans-serif;font-size:11px;line-height:1.65;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;background:var(--paper);}
+.page:last-child{page-break-after:auto;}
+.hd{position:absolute;left:20mm;right:20mm;top:12mm;display:flex;justify-content:space-between;align-items:center;padding-bottom:3mm;border-bottom:1px solid var(--rule);font-size:9px;}
+.logo{display:flex;align-items:center;gap:7px;font-weight:600;font-size:10.5px;color:var(--ink);}
+.logo i{width:17px;height:17px;border:1px solid var(--copper);border-radius:4px;display:grid;place-items:center;color:var(--copper);font-style:normal;font-size:9px;font-weight:700;}
+.hd .meta{letter-spacing:.18em;text-transform:uppercase;color:var(--muted);}
+.ft{position:absolute;left:20mm;right:20mm;bottom:10mm;display:flex;justify-content:space-between;padding-top:3mm;border-top:1px solid var(--rule);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.ft b{color:var(--copper);font-weight:500;font-variant-numeric:tabular-nums;}
+.body{position:absolute;left:20mm;right:20mm;top:27mm;bottom:22mm;}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:9.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--copper);margin:0;}
+.eyebrow .r{width:28px;height:1px;background:var(--copper);}
+h1,h2,h3{font-family:Raleway,sans-serif;margin:0;letter-spacing:-.025em;color:var(--ink);}
+h2{font-size:26px;line-height:1.12;font-weight:400;margin-top:4mm;}
+h3{font-size:13.5px;font-weight:500;line-height:1.35;}
+.lead{font-size:12.5px;line-height:1.7;color:var(--muted);margin:3mm 0 0;}
+p{margin:0;}
+.muted{color:var(--muted);}
+.label{font-size:8.5px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+.label.c{color:var(--copper);}
+.sec{margin-top:9mm;}
+.box{border:1px solid var(--rule);padding:4.5mm;}
+.panel{background:var(--panel);padding:4.5mm;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:4mm;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:4mm;}
+table{width:100%;border-collapse:collapse;font-size:10.5px;}
+th{text-align:left;font-size:8.5px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:2mm 2mm 2mm 0;border-bottom:1px solid var(--ink);}
+td{padding:2.6mm 2mm 2.6mm 0;border-bottom:1px solid var(--rule);vertical-align:top;}
+td.n,th.n{text-align:right;padding-right:0;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.num{font-family:Raleway,sans-serif;font-weight:300;color:var(--copper);font-variant-numeric:tabular-nums;}
+ul.l{list-style:none;padding:0;margin:0;}
+ul.l li{display:flex;gap:7px;margin-bottom:1.6mm;}
+svg.i{width:12px;height:12px;flex:none;margin-top:3px;}
+.c{color:var(--copper);}
+.sign{border-top:1px solid var(--ink);padding-top:2mm;}
+/* Campo em branco para preencher à mão (no lugar do [colchete] do modelo): linha cobre com a dica pequena dentro. */
+.blank{display:inline-block;vertical-align:baseline;padding:0 1mm .3mm;border-bottom:1px solid var(--copper);line-height:1.25;}
+.hint{font-family:Oxanium,sans-serif;font-size:6.5px;font-weight:400;letter-spacing:.02em;text-transform:none;color:#b3b7bd;white-space:nowrap;}
+.area{display:block;}
+.area .rule{display:block;height:6mm;border-bottom:1px solid #c9ccd1;}
+h1 .blank{min-width:110mm!important;padding-bottom:1mm;}
+.dark .blank{border-bottom-color:var(--bright);}
+.dark .hint{color:#6b7076;}
 `;
 
+// Textos fixos do modelo (versões curtas do site, escritas para caber na página).
+const steps = [
+  ["Conversa", "Você conta como o trabalho é feito hoje e o que mais incomoda. As perguntas ficam com a gente."],
+  ["Proposta por escrito", "O que será feito, em quanto tempo e por quanto, dividido em etapas. <b class=\"c\" style=\"font-weight:500\">Você está aqui.</b>"],
+  ["Entregas aos poucos", "A cada etapa você já usa uma parte funcionando e pode ajustar o rumo."],
+  ["No ar e acompanhado", "Sistema no ar, equipe treinada, primeiros dias acompanhados. Tudo em seu nome."],
+];
+const rules = [
+  ["Uma pessoa responsável", "A IA sugere; uma pessoa revisa, testa e responde por tudo que vai para o seu sistema."],
+  ["Seus dados protegidos", "Dados de clientes, contratos e senhas não vão para ferramentas de IA sem a sua autorização."],
+  ["Transparência", "Você sabe onde a IA participou do projeto e por quê. As decisões ficam registradas."],
+  ["Só quando compensa", "A IA entra quando reduz prazo ou custo sem reduzir qualidade."],
+];
+const aiYes = ["Deixar o desenvolvimento mais rápido e mais barato", "Conferir falhas de segurança e de usabilidade", "Escrever manuais e documentação"];
+const aiNo = ["Decidir as regras do seu negócio no seu lugar", "Receber dados sensíveis sem autorização", "Entregar algo que ninguém revisou"];
+const questions = [
+  ["O sistema fica comigo?", "Sim. O código, a documentação e os acessos ficam em seu nome. Você pode continuar com a gente ou levar para outra equipe."],
+  ["Preciso entender de tecnologia?", "Não. A conversa é sobre o seu negócio, não sobre programação. Explicamos as opções em linguagem simples, e você decide com base em prazo, custo e resultado."],
+  ["Vocês usam IA para fazer tudo?", "Não. A IA acelera partes repetitivas e revisa, mas o desenho da solução, as regras do seu negócio e a revisão final são feitos por pessoas."],
+  ["Meus dados vão para alguma IA?", "Só com a sua autorização, e só o necessário. Explicamos qual serviço é usado, onde os dados ficam e quanto custa."],
+  ["Vocês atendem fora de MS?", "Sim. O trabalho é remoto, com reuniões por vídeo e acompanhamento das entregas online."],
+];
+
 export function proposalHtml(proposal: ProposalFields) {
-  const number = fill(proposal.number, "AAAA-000");
-  const companyName = proposal.companyName.trim();
-  // Total só sai quando todas as etapas têm valor (e prazo); senão sai em branco para preencher à mão, nunca uma soma parcial.
-  const complete = proposal.stages.length > 0 && proposal.stages.every(stage => stage.value);
-  const total = complete ? proposalTotal(proposal.stages) : 0;
-  const days = proposal.stages.length > 0 && proposal.stages.every(stage => stage.days) ? proposalDays(proposal.stages) : 0;
-  const head = `<div class="head"><span class="brand">${symbol}${escape(profile.name)}</span><span class="doc">Proposta ${number}</span></div>`;
-  const foot = (page: number) => `<div class="foot"><span>${escape(profile.name)} · ${company}</span><b>${String(page).padStart(2, "0")}</b></div>`;
-  const eyebrow = (index: string, name: string) => `<p class="eyebrow">${index}<i></i>${name}</p>`;
+  const number = fill(proposal.number, "AAAA-000", 18);
+  const companyName = text(proposal.companyName);
+  const stages = proposal.stages;
+  // Total e prazo só saem quando todas as etapas estão preenchidas; senão, linha para preencher à mão.
+  const total = stages.length && stages.every(stage => stage.value) ? brl(proposalTotal(stages)) : "";
+  const days = stages.length && stages.every(stage => stage.days) ? `${proposalDays(stages)} dias` : "";
+  const stageCount = stages.length ? String(stages.length) : "";
   const list = (items: string[]) => items.map(item => item.trim()).filter(Boolean);
   const pains = list(proposal.pains);
   const changes = proposal.changes.filter(change => change.before.trim() || change.after.trim());
-  const included = list(proposal.included).map(item => escape(item).replace("{empresa}", companyName ? escape(companyName) : fill("", "Empresa")));
+  const included = list(proposal.included).map(item => escape(item).replace("{empresa}", companyName || fill("", "Empresa", 24)));
   const excluded = list(proposal.excluded);
-  const faqItems = [3, 1, 4, 5, 6].map(index => faq[index]).filter(Boolean);
+  const head = `<div class="hd"><span class="logo"><i>V</i>${escape(profile.name)}</span><span class="meta">Proposta ${number}</span></div>`;
+  const foot = (page: string) => `<div class="ft"><span>${escape(profile.name)} · ${company}</span><b>${page}</b></div>`;
+  const eyebrow = (index: string, name: string) => `<p class="eyebrow"><span>${index}</span><span class="r"></span><span>${name}</span></p>`;
 
-  const cover = `<div class="page">
-    <div class="cover-band">${lines}<div class="head"><span class="brand">${symbol}${escape(profile.name)}</span><span class="doc">Proposta comercial · Nº ${number}</span></div>
-      <h1>Menos planilha.<br><b>Mais resultado.</b></h1></div>
-    <div class="project"><p class="label">Projeto</p><p class="name">${fill(proposal.project, "Nome do projeto")}</p>
-      <p>Sistema e automação sob medida para ${fill(companyName, "nome da empresa")}, com valor fechado por etapa, IA revisada por uma pessoa e tudo em nome do cliente.</p></div>
-    <table class="facts">
-      <tr><th class="label">Para</th><td>${fill(proposal.contactName, "Nome do contato")} · ${fill(companyName, "Empresa")}</td></tr>
-      <tr><th class="label">De</th><td>${escape(profile.name)} · Analista de sistemas · ${company}</td></tr>
-      <tr><th class="label">Data</th><td>${fill(date(proposal.date), "dd/mm/aaaa")}</td></tr>
-      <tr><th class="label">Validade</th><td>${fill(proposal.validityDays && `${proposal.validityDays} dias`, "nº dias")} <small>a partir da data acima</small></td></tr>
-      <tr><th class="label">Investimento total</th><td>R$ ${total ? brl(total.toFixed(2)) : fill("", "0.000,00")}, dividido em ${proposal.stages.length || fill("", "nº")} etapas</td></tr>
+  const cover = `<section class="page">
+  <div class="dark" style="position:absolute;left:0;right:0;top:0;height:112mm;background:var(--graphite);overflow:hidden">
+    ${lines}
+    <div style="position:absolute;left:20mm;top:16mm;display:flex;align-items:center;gap:8px;color:#f0f2f4;font-weight:600;font-size:12px">${symbol("9mm")}${escape(profile.name)}</div>
+    <div style="position:absolute;left:20mm;bottom:16mm;color:#f0f2f4">
+      <p class="eyebrow" style="color:var(--bright)"><span>Proposta comercial</span><span class="r" style="background:var(--bright)"></span><span>Nº <span style="color:#f0f2f4">${number}</span></span></p>
+      <div style="font-family:Raleway,sans-serif;font-size:40px;font-weight:300;line-height:1.05;letter-spacing:-.025em;margin-top:5mm">Menos planilha.<br><span style="font-weight:600">Mais resultado.</span></div>
+    </div>
+  </div>
+  <div style="position:absolute;left:20mm;right:20mm;top:126mm">
+    <div class="label c">Projeto</div>
+    <h1 style="font-size:30px;font-weight:400;line-height:1.12;margin-top:2mm">${fill(proposal.project, "Nome do projeto")}</h1>
+    <p class="lead" style="max-width:150mm">Sistema e automação sob medida para ${companyName || fill("", "nome da empresa", 40)}, com valor fechado por etapa, IA revisada por uma pessoa e tudo em nome do cliente.</p>
+    <table style="margin-top:10mm">
+      <tr><td class="label" style="width:38mm">Para</td><td>${fill(proposal.contactName, "Nome do contato")} · ${companyName || fill("", "Empresa")}</td></tr>
+      <tr><td class="label">De</td><td>${escape(profile.name)} · Analista de sistemas · ${company}</td></tr>
+      <tr><td class="label">Data</td><td>${fill(date(proposal.date), "dd/mm/aaaa", 24)}</td></tr>
+      <tr><td class="label">Validade</td><td>${fill(proposal.validityDays, "nº", 10)} dias a partir da data acima</td></tr>
+      <tr><td class="label">Investimento total</td><td><b style="font-weight:500">R$ ${fill(total, "0.000,00", 26)}</b>, dividido em ${fill(stageCount, "nº", 10)} etapas</td></tr>
     </table>
-    <div class="foot"><span>${company} · CNPJ ${cnpj}</span><span>viniccius.com.br</span></div>
-  </div>`;
+  </div>
+  <div class="ft" style="border-top-color:var(--rule)"><span>${company} · CNPJ ${cnpj}</span><span>viniccius.com.br</span></div>
+</section>`;
 
-  const heard = `<div class="page">${head}
-    <section>${eyebrow("01", "O que ouvimos")}<h2>Como o trabalho é feito hoje.</h2>
-      <p class="lead">Resumo da conversa inicial, nas palavras de quem faz o trabalho. Se algo estiver diferente, ajustamos antes de começar.</p>
-      <div class="panel">${area(proposal.today, "Como o trabalho é feito hoje: quem faz, onde os dados ficam e quanto tempo leva", 4)}</div>
-      <p class="label" style="margin-top:6mm">O que mais incomoda</p>
-      <div class="pains">${(pains.length ? pains : ["", ""]).map((pain, index) => `<div class="pain">${area(pain, `Problema ${index + 1}`, 2)}</div>`).join("")}</div></section>
-    <section>${eyebrow("02", "A solução")}<h2>O que muda na prática.</h2>
+  const painCards = (pains.length ? pains : ["", "", "", ""]).map((pain, index) => `<div class="box"><h3>${area(pain, `Problema ${index + 1}`, 1)}</h3></div>`).join("");
+  const changeRows = (changes.length ? changes : [{ before: "", after: "" }, { before: "", after: "" }, { before: "", after: "" }]).map((change, index, all) => `
+        <div style="display:grid;grid-template-columns:1fr 1fr;${index < all.length - 1 ? "border-bottom:1px solid var(--rule)" : ""}">
+          <div style="padding:3mm 4mm">${area(change.before, `Situação atual ${index + 1}`, 1)}</div>
+          <div style="padding:3mm 4mm;display:flex;gap:7px;background:#faf6f3">${icon("arr", true)}<span style="flex:1">${area(change.after, `Como fica ${index + 1}`, 1)}</span></div>
+        </div>`).join("");
+  const context = `<section class="page">
+  ${head}
+  <div class="body">
+    ${eyebrow("01", "O que ouvimos")}
+    <h2>Como o trabalho é feito hoje.</h2>
+    <p class="lead">Resumo da conversa inicial, nas palavras de quem faz o trabalho. Se algo estiver diferente, ajustamos antes de começar.</p>
+    <div class="panel" style="margin-top:5mm;min-height:24mm">${area(proposal.today, "Como o trabalho é feito hoje: quem faz, onde os dados ficam e quanto tempo leva", 3)}</div>
+    <div class="label c" style="margin-top:7mm">O que mais incomoda</div>
+    <div class="grid2" style="margin-top:2mm">${painCards}</div>
+    <div class="sec">
+      ${eyebrow("02", "A solução")}
+      <h2>O que muda na prática.</h2>
       <p class="lead">${area(proposal.solution, "O que muda na prática, em uma frase", 2)}</p>
-      <table class="compare"><thead><tr><th>Hoje</th><th></th><th class="after">Depois</th></tr></thead><tbody>
-        ${(changes.length ? changes : [{ before: "", after: "" }]).map((change, index) => `<tr><td>${area(change.before, `Hoje ${index + 1}`, 2)}</td><td class="sep">${arrow}</td><td>${area(change.after, `Depois ${index + 1}`, 2)}</td></tr>`).join("")}
-      </tbody></table></section>
-    ${foot(2)}</div>`;
-
-  const scope = `<div class="page">${head}
-    <section>${eyebrow("03", "Escopo e etapas")}<h2>O que você recebe em cada etapa.</h2>
-      <p class="lead">O projeto é dividido em etapas com valor fechado. A cada uma, você já usa uma parte funcionando e pode ajustar o rumo antes que fique caro mudar.</p>
-      <table class="stages"><thead><tr><th>#</th><th>Etapa e entrega</th><th class="r">Prazo</th><th class="r">Valor</th></tr></thead><tbody>
-        ${proposal.stages.map((stage, index) => `<tr><td class="n">${String(index + 1).padStart(2, "0")}</td><td><h3>${fill(stage.title, "Nome da etapa")}</h3><p class="muted">${area(stage.deliverable, "O que fica pronto ao fim desta etapa", 2)}</p></td><td class="r">${fill(stage.days && `${stage.days} dias`, "nº dias")}</td><td class="r">R$ ${stage.value ? brl(stage.value) : fill("", "0.000,00")}</td></tr>`).join("")}
-      </tbody><tfoot><tr><td></td><td>Total</td><td class="r">${days ? `${days} dias` : fill("", "nº dias")}</td><td class="r">R$ ${total ? brl(total.toFixed(2)) : fill("", "0.000,00")}</td></tr></tfoot></table>
-      <div class="boxes">
-        <div class="box in"><p class="label">Está incluso</p><ul>${included.map(item => `<li>${check}<span>${item}</span></li>`).join("")}</ul></div>
-        <div class="box out"><p class="label">Não está incluso</p><ul>${(excluded.length ? excluded : [""]).map(item => `<li>${cross}<span>${fill(item, "Item fora do escopo")}</span></li>`).join("")}</ul></div>
+      <div style="margin-top:5mm;border:1px solid var(--rule)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)">
+          <div class="label" style="padding:2.5mm 4mm">Hoje</div><div class="label c" style="padding:2.5mm 4mm;background:var(--accent)">Depois</div>
+        </div>${changeRows}
       </div>
-      <div class="note">${arrow}<p>Mudou alguma coisa no meio do caminho? Combinamos por escrito antes de fazer, com prazo e valor da mudança. Sem surpresas.</p></div></section>
-    ${foot(3)}</div>`;
+    </div>
+  </div>
+  ${foot("02")}
+</section>`;
 
-  const method = `<div class="page">${head}
-    <section>${eyebrow("04", "Como trabalhamos")}<h2>Do primeiro contato ao sistema no ar, em quatro passos.</h2>
-      <div class="steps">${processSteps.map((step, index) => `<div><p class="num">${String(index + 1).padStart(2, "0")}</p><h3>${escape(step.title)}</h3><p>${escape(step.description)}</p>${index === 1 ? `<span class="here">Você está aqui</span>` : ""}</div>`).join("")}</div></section>
-    ${foot(4)}</div>`;
+  const stageRows = stages.map((stage, index) => `<tr><td><span class="num" style="font-size:16px">${String(index + 1).padStart(2, "0")}</span></td><td><b style="font-weight:500">${fill(stage.title, "Nome da etapa", 50)}</b><br><span class="muted">${area(stage.deliverable, "O que fica pronto e funcionando ao fim desta etapa", 1)}</span></td><td class="n">${stage.days ? `${escape(stage.days)} dias` : fill("", "nº dias", 18)}</td><td class="n">R$ ${stage.value ? brl(Number(stage.value)) : fill("", "0.000,00", 20)}</td></tr>`).join("");
+  const scope = `<section class="page">
+  ${head}
+  <div class="body">
+    ${eyebrow("03", "Escopo e etapas")}
+    <h2>O que você recebe em cada etapa.</h2>
+    <p class="lead">O projeto é dividido em etapas com valor fechado. A cada uma, você já usa uma parte funcionando e pode ajustar o rumo antes que fique caro mudar.</p>
+    <table style="margin-top:6mm">
+      <tr><th style="width:9mm">#</th><th>Etapa e entrega</th><th class="n" style="width:24mm">Prazo</th><th class="n" style="width:30mm">Valor</th></tr>
+      ${stageRows}
+      <tr><td style="border-bottom:1px solid var(--ink)"></td><td style="border-bottom:1px solid var(--ink)"><b style="font-weight:500">Total</b></td><td class="n" style="border-bottom:1px solid var(--ink)"><b style="font-weight:500">${days || fill("", "nº dias", 18)}</b></td><td class="n" style="border-bottom:1px solid var(--ink)"><b style="font-weight:500">R$ ${fill(total, "0.000,00", 20)}</b></td></tr>
+    </table>
+    <div class="grid2" style="margin-top:8mm">
+      <div class="box" style="border-color:var(--copper)">
+        <div class="label c" style="display:flex;gap:6px;align-items:center">${icon("chk", true)}Está incluso</div>
+        <ul class="l" style="margin-top:3mm">${included.map(item => `<li>${icon("chk", true)}<span>${item}</span></li>`).join("")}</ul>
+      </div>
+      <div class="box">
+        <div class="label" style="display:flex;gap:6px;align-items:center">${icon("x")}Não está incluso</div>
+        <ul class="l muted" style="margin-top:3mm">${(excluded.length ? excluded : [""]).map(item => `<li>${icon("x")}<span style="flex:1">${item ? escape(item) : area("", "Item fora do escopo", 1)}</span></li>`).join("")}</ul>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:6mm;display:flex;gap:4mm;align-items:flex-start">
+      ${icon("arr", true)}
+      <p style="font-size:10.5px">Mudou alguma coisa no meio do caminho? Combinamos por escrito antes de fazer, com prazo e valor da mudança. Sem surpresas.</p>
+    </div>
+  </div>
+  ${foot("03")}
+</section>`;
 
-  const ai = `<div class="page">${head}
-    <section>${eyebrow("05", "IA consciente")}<h2>A velocidade da IA, sem colocar o seu negócio em risco.</h2>
+  const method = `<section class="page">
+  ${head}
+  <div class="body">
+    ${eyebrow("04", "Como trabalhamos")}
+    <h2>Do primeiro contato ao sistema no ar, em quatro passos.</h2>
+    <div class="grid4" style="margin-top:6mm">${steps.map(([title, body], index) => `<div style="border-top:1px solid var(--ink);padding-top:4mm"><div class="num" style="font-size:28px">${String(index + 1).padStart(2, "0")}</div><h3 style="margin-top:2mm">${title}</h3><p class="muted" style="font-size:10px;line-height:1.6;margin-top:1.5mm">${body}</p></div>`).join("")}</div>
+    <div class="sec" style="margin-top:12mm">
+      ${eyebrow("05", "IA consciente")}
+      <h2>A velocidade da IA, sem colocar o seu negócio em risco.</h2>
       <p class="lead">A inteligência artificial deixa o projeto mais rápido e mais barato. Para que isso não vire risco, seguimos quatro regras, e uma pessoa responde por cada entrega.</p>
-      <div class="rules">${aiPrinciples.map(rule => `<div><h3>${escape(rule.title)}</h3><p>${escape(rule.description)}</p></div>`).join("")}</div>
-      <div class="boxes">
-        <div class="box in"><p class="label">Onde a IA entra</p><ul>${aiUses.yes.slice(0, 3).map(item => `<li>${check}<span>${escape(item)}</span></li>`).join("")}</ul></div>
-        <div class="box out"><p class="label">Onde a IA não entra</p><ul>${aiUses.no.slice(0, 3).map(item => `<li>${cross}<span>${escape(item)}</span></li>`).join("")}</ul></div>
-      </div></section>
-    ${foot(5)}</div>`;
-
-  const money_ = `<div class="page">${head}
-    <section>${eyebrow("06", "Investimento e condições")}<h2>Valor fechado, sem surpresas.</h2>
-      <div class="value"><p class="label">Investimento total</p><p class="big">R$ ${total ? brl(total.toFixed(2)) : fill("", "0.000,00")}</p><p>Em ${proposal.stages.length || fill("", "nº")} etapas, pagas conforme cada uma é entregue.</p></div>
-      <table class="conds">
-        <tr><th>Pagamento</th><td>${fill(proposal.payment, "Ex.: por etapa, na entrega")}</td></tr>
-        <tr><th>Forma</th><td>${fill(proposal.paymentMethod, "Pix / boleto / transferência")}</td></tr>
-        <tr><th>Início</th><td>${fill(proposal.start, "Até nº dias após o aceite")}</td></tr>
-        <tr><th>Validade</th><td>${fill(proposal.validityDays && `${proposal.validityDays} dias`, "nº dias")}</td></tr>
-        <tr><th>Acompanhamento</th><td>${fill(proposal.followUpDays && `${proposal.followUpDays} dias após a publicação`, "nº dias")}</td></tr>
-      </table></section>
-    ${foot(6)}</div>`;
-
-  const questions = `<div class="page">${head}
-    <section>${eyebrow("07", "Perguntas frequentes")}<h2>Antes de decidir.</h2>
-      <div class="faq">${faqItems.map(item => `<div><h3>${escape(item.question)}</h3><p>${escape(item.answer)}</p></div>`).join("")}</div></section>
-    ${foot(7)}</div>`;
-
-  const next = `<div class="page">${head}
-    <section>${eyebrow("08", "Próximos passos")}<h2>Para começar.</h2>
-      <div class="next">
-        <div><span class="num">01</span><p>Leia a proposta e anote dúvidas ou ajustes. Respondemos por escrito.</p></div>
-        <div><span class="num">02</span><p>Assine o aceite abaixo e envie para ${escape(profile.email)}.</p></div>
-        <div><span class="num">03</span><p>Marcamos a primeira reunião da etapa 01 e começamos.</p></div>
+      <table style="margin-top:5mm">${rules.map(([title, body], index) => `<tr><td${index ? "" : ' style="width:46mm"'}><b style="font-weight:500">${title}</b></td><td class="muted">${body}</td></tr>`).join("")}</table>
+      <div class="grid2" style="margin-top:5mm">
+        <div class="box" style="border-color:var(--copper)"><div class="label c">Onde a IA entra</div>
+          <ul class="l" style="margin-top:2.5mm;font-size:10px">${aiYes.map(item => `<li>${icon("chk", true)}<span>${item}</span></li>`).join("")}</ul></div>
+        <div class="box"><div class="label">Onde a IA não entra</div>
+          <ul class="l muted" style="margin-top:2.5mm;font-size:10px">${aiNo.map(item => `<li>${icon("x")}<span>${item}</span></li>`).join("")}</ul></div>
       </div>
-      <div class="accept"><p class="label">Aceite</p>
-        <p>Declaro que li e aceito esta proposta (nº ${number}), com o escopo, as etapas, os prazos e os valores descritos acima.</p>
-        <div class="signs">
-          <div><b>${proposal.contactName.trim() ? escape(proposal.contactName.trim()) : `<span class="muted">Nome do responsável:</span>`}</b><small>${companyName ? escape(companyName) : "Empresa:"} · ${proposal.companyDocument.trim() ? escape(proposal.companyDocument.trim()) : "CNPJ:"}</small><br><small>Local e data</small></div>
-          <div><b>${escape(profile.name)}</b><small>${company} · CNPJ ${cnpj}</small><br><small>Local e data</small></div>
-        </div>
-      </div></section>
-    <div class="contact">${lines}<p class="label">Contato</p><h2>Quem responde é quem vai construir.</h2><p>${escape(profile.email)} · viniccius.com.br · linkedin.com/in/viniszofx</p><p>${company} · CNPJ ${cnpj}</p></div>
-    ${foot(8)}</div>`;
+    </div>
+  </div>
+  ${foot("04")}
+</section>`;
 
-  return { css, body: cover + heard + scope + method + ai + money_ + questions + next };
+  const investment = `<section class="page">
+  ${head}
+  <div class="body">
+    ${eyebrow("06", "Investimento e condições")}
+    <h2>Valor fechado, sem surpresas.</h2>
+    <div style="margin-top:6mm;display:grid;grid-template-columns:1.1fr 1fr;gap:4mm">
+      <div class="dark" style="background:var(--graphite);color:#f0f2f4;padding:6mm;display:flex;flex-direction:column;justify-content:space-between;min-height:42mm">
+        <div class="label" style="color:var(--bright)">Investimento total</div>
+        <div><div style="font-family:Raleway,sans-serif;font-size:32px;font-weight:300;letter-spacing:-.02em;line-height:1.1">R$ ${fill(total, "0.000,00", 40)}</div>
+        <p style="font-size:10px;color:#b9bec4;margin-top:2mm">Em <span style="color:#f0f2f4">${fill(stageCount, "nº", 8)}</span> etapas, pagas conforme cada uma é entregue.</p></div>
+      </div>
+      <table>
+        <tr><td class="label" style="width:30mm">Pagamento</td><td>${fill(proposal.payment, "Ex.: por etapa, na entrega")}</td></tr>
+        <tr><td class="label">Forma</td><td>${fill(proposal.paymentMethod, "Pix / boleto / transferência")}</td></tr>
+        <tr><td class="label">Início</td><td>${fill(proposal.start, "Até nº dias após o aceite")}</td></tr>
+        <tr><td class="label">Validade</td><td>${fill(proposal.validityDays, "nº", 10)} dias</td></tr>
+      </table>
+    </div>
+    <div class="sec" style="margin-top:12mm">
+      ${eyebrow("07", "Perguntas frequentes")}
+      <h2>Antes de decidir.</h2>
+      <div style="margin-top:4mm;border-top:1px solid var(--rule)">${questions.map(([question, answer]) => `<div style="padding:3.2mm 0;border-bottom:1px solid var(--rule)"><h3>${question}</h3><p class="muted" style="margin-top:1mm">${answer}</p></div>`).join("")}</div>
+    </div>
+  </div>
+  ${foot("05")}
+</section>`;
+
+  const accept = `<section class="page">
+  ${head}
+  <div class="body">
+    ${eyebrow("08", "Próximos passos")}
+    <h2>Para começar.</h2>
+    <table style="margin-top:5mm">
+      <tr><td style="width:12mm"><span class="num" style="font-size:16px">01</span></td><td>Leia a proposta e anote dúvidas ou ajustes. Respondemos por escrito.</td></tr>
+      <tr><td><span class="num" style="font-size:16px">02</span></td><td>Assine o aceite abaixo e envie para <b style="font-weight:500">${escape(profile.email)}</b>.</td></tr>
+      <tr><td><span class="num" style="font-size:16px">03</span></td><td>Marcamos a primeira reunião da etapa 01 e começamos.</td></tr>
+    </table>
+    <div class="sec" style="margin-top:12mm">
+      <p class="eyebrow"><span>Aceite</span></p>
+      <p style="margin-top:4mm;font-size:11.5px;line-height:1.75">Declaro que li e aceito esta proposta (nº ${number}), com o escopo, as etapas, os prazos e os valores descritos acima.</p>
+      <div class="grid2" style="margin-top:22mm;gap:12mm">
+        <div class="sign"><b style="font-weight:500">${text(proposal.contactName) || '<span class="label">Nome do responsável</span>'}</b><br><span class="muted">${companyName || '<span class="label">Empresa</span>'} · ${text(proposal.companyDocument) || '<span class="label">CNPJ</span>'}</span></div>
+        <div class="sign"><b style="font-weight:500">${escape(profile.name)}</b><br><span class="muted">${company} · CNPJ ${cnpj}</span></div>
+      </div>
+      <div class="grid2" style="margin-top:10mm;gap:12mm">
+        <div class="sign"><span class="label">Local e data</span></div>
+        <div class="sign"><span class="label">Local e data</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:62mm;background:var(--graphite);overflow:hidden">
+    ${lines}
+    <div style="position:absolute;left:20mm;top:11mm;right:20mm">
+      <p class="eyebrow" style="color:var(--bright)"><span>Contato</span></p>
+      <div style="font-family:Raleway,sans-serif;font-size:20px;line-height:1.15;letter-spacing:-.025em;margin-top:3mm;color:#f0f2f4;max-width:120mm">Quem responde é quem vai construir.</div>
+      <p style="margin-top:3mm;font-size:10.5px;color:#b9bec4">${escape(profile.email)} · viniccius.com.br · linkedin.com/in/viniszofx</p>
+    </div>
+    <div style="position:absolute;left:20mm;right:20mm;bottom:8mm;display:flex;justify-content:space-between;align-items:flex-end;font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#8d9399;border-top:1px solid #2a2e33;padding-top:3mm">
+      <span>${company} · CNPJ ${cnpj}</span>${symbol("8mm")}
+    </div>
+  </div>
+</section>`;
+
+  const sprite = `<svg width="0" height="0" style="position:absolute"><defs>
+    <symbol id="chk" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs></svg>`;
+  return { css, body: sprite + cover + context + scope + method + investment + accept };
 }
 
 /** Abre o diálogo de impressão (Salvar como PDF) num iframe isolado, depois de carregar as fontes da marca. */
@@ -248,9 +309,9 @@ export function printProposal(proposal: ProposalFields) {
   document.body.append(frame);
   const doc = frame.contentDocument; const view = frame.contentWindow;
   if (!doc || !view) { frame.remove(); return; }
-  const fonts = "https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600&family=Raleway:wght@300;400;500;600&display=block";
+  const fonts = "https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Raleway:wght@300;400;500;600&display=block";
   doc.open();
-  doc.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Proposta ${escape(proposal.number)} · ${escape(proposal.project || "Vinicius Souza")}</title><link rel="stylesheet" href="${fonts}"><style>${style}</style></head><body>${body}</body></html>`);
+  doc.write(`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Proposta ${escape(proposal.number)} · ${escape(proposal.project || profile.name)}</title><link rel="stylesheet" href="${fonts}"><style>${style}</style></head><body>${body}</body></html>`);
   doc.close();
   const go = () => { view.focus(); view.print(); };
   view.addEventListener("afterprint", () => setTimeout(() => frame.remove(), 1000), { once: true });
