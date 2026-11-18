@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { LeadWidget, OpenLeadButton } from "@/components/marketing/lead-widget";
 import { ProjectCard } from "@/components/portfolio/project-card";
-import { DiamondLines } from "@/components/marketing/art";
+import { DiamondChain, DiamondLines } from "@/components/marketing/art";
 import { profile, projects, technologies } from "@/lib/portfolio/content";
 import { aiPrinciples, aiUses, faq, processSteps, services, situations } from "@/lib/portfolio/services";
 import { cn } from "@/lib/utils";
@@ -195,7 +195,8 @@ export default async function Page() {
 
       {/* 05 Processo: bloco escuro nos dois temas. */}
       <section id="processo" aria-labelledby="processo-titulo" className={cn(dark, "relative isolate scroll-mt-20 overflow-hidden py-14 sm:py-20")}>
-        <DiamondLines className="absolute inset-0 -z-10 size-full text-(--copper-bright) opacity-50" />
+        {/* Padrão 05 da marca (losangos em fila): só na faixa de cima, ao lado do título, sem passar por cima das etapas. */}
+        <DiamondChain className="absolute inset-x-0 top-0 -z-10 h-64 w-full text-(--copper-bright) opacity-70 sm:h-72" />
         <div className={container}>
           <Reveal className="max-w-2xl"><Eyebrow index="05" className="text-(--copper-bright)">Como trabalhamos</Eyebrow><h2 id="processo-titulo" className="mt-5 font-heading text-3xl leading-[1.1] font-normal tracking-tight sm:text-4xl lg:text-5xl">Do primeiro contato ao sistema no ar, em quatro passos.</h2></Reveal>
           <ol className="mt-10 grid gap-x-10 md:grid-cols-4">{processSteps.map((step, index) => <Reveal as="li" key={step.title} delay={index * 70} className="border-t border-white/20 py-8">
