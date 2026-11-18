@@ -8,6 +8,10 @@ import {
   RiAddLine as Plus,
 } from "@remixicon/react";
 import { RiGithubLine as Github, RiLinkedinBoxLine as Linkedin } from "@remixicon/react";
+import {
+  RiReactjsLine, RiNextjsLine, RiCodeSSlashLine, RiTailwindCssLine, RiLayoutGridLine, RiFigmaLine, RiNodejsLine, RiTerminalLine, RiPhpLine,
+  RiJavaLine, RiMicrosoftLine, RiDatabase2Line, RiBarChartBoxLine, RiBox3Line, RiVercelLine, RiCloudLine, RiGitBranchLine,
+} from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { LeadWidget, OpenLeadButton } from "@/components/marketing/lead-widget";
 import { ProjectCard } from "@/components/portfolio/project-card";
@@ -26,6 +30,13 @@ export const metadata: Metadata = {
 
 const serviceIcons = { sistemas: Code, automacao: Flow, integracoes: Plug, ia: Sparkle, mobile: Phone, evolucao: Tools } as const;
 const principleIcons = [Human, Shield, Eye, Focus];
+// Ícone de cada tecnologia: o logo quando existe no Remix Icon; senão, um símbolo neutro (banco, gráfico, contêiner, nuvem).
+const techIcons: Record<string, typeof Code> = {
+  "React": RiReactjsLine, "Next.js": RiNextjsLine, "TypeScript": RiCodeSSlashLine, "Tailwind CSS": RiTailwindCssLine, "shadcn/ui": RiLayoutGridLine, "Figma": RiFigmaLine,
+  "Node.js / Express": RiNodejsLine, "Bun / Hono": RiTerminalLine, "PHP / Laravel": RiPhpLine, "Java / Spring Boot": RiJavaLine, "C# / ASP.NET Core": RiMicrosoftLine,
+  "PostgreSQL": RiDatabase2Line, "MySQL": RiDatabase2Line, "MongoDB": RiDatabase2Line, "Power BI": RiBarChartBoxLine, "Docker": RiBox3Line,
+  "Vercel": RiVercelLine, "Magalu Cloud": RiCloudLine, "Git": RiGitBranchLine,
+};
 // Fatos verificáveis (LinkedIn, currículo e anais do Evinci 2024), logo abaixo da abertura.
 const paperUrl = "https://www.alice.cnptia.embrapa.br/alice/handle/doc/1172127";
 const credentials = [
@@ -167,7 +178,7 @@ export default async function Page() {
         <div className="mt-6"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
         <div className="mt-14 grid gap-6 border-t pt-8 md:grid-cols-[12rem_1fr]">
           <p className="text-sm text-muted-foreground">Para quem é da área, as tecnologias com que trabalho:</p>
-          <div className="grid gap-6 sm:grid-cols-3">{technologies.map(group => <div key={group.title}><p className="mb-3 text-xs uppercase tracking-[0.2em] text-primary">{group.title}</p><ul className="flex flex-wrap gap-1.5">{group.items.map(item => <li key={item} className={chip}>{item}</li>)}</ul></div>)}</div>
+          <div className="grid gap-6 sm:grid-cols-3">{technologies.map(group => <div key={group.title}><p className="mb-3 text-xs uppercase tracking-[0.2em] text-primary">{group.title}</p><ul className="flex flex-wrap gap-1.5">{group.items.map(item => { const Icon = techIcons[item]; return <li key={item} className={cn(chip, "inline-flex items-center gap-1.5")}>{Icon && <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden="true" />}{item}</li>; })}</ul></div>)}</div>
         </div>
       </section>
 
