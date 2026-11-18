@@ -10,7 +10,7 @@ import {
 import { RiGithubLine as Github, RiLinkedinBoxLine as Linkedin } from "@remixicon/react";
 import {
   RiReactjsLine, RiNextjsLine, RiCodeSSlashLine, RiTailwindCssLine, RiLayoutGridLine, RiFigmaLine, RiNodejsLine, RiTerminalLine, RiPhpLine,
-  RiJavaLine, RiMicrosoftLine, RiDatabase2Line, RiBarChartBoxLine, RiBox3Line, RiVercelLine, RiCloudLine, RiGitBranchLine,
+  RiHeart3Fill, RiJavaLine, RiMicrosoftLine, RiDatabase2Line, RiBarChartBoxLine, RiBox3Line, RiVercelLine, RiCloudLine, RiGitBranchLine,
 } from "@remixicon/react";
 import { Button } from "@/components/ui/button";
 import { LeadWidget, OpenLeadButton } from "@/components/marketing/lead-widget";
@@ -230,7 +230,7 @@ export default async function Page() {
             {talk(leads ? "Quero minha proposta" : "Enviar e-mail", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}
             <Button nativeButton={false} render={<a href={profile.linkedin} target="_blank" rel="noopener noreferrer" />} variant="outline" className={cn(button, "border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white")}><Linkedin />LinkedIn</Button>
             <a href={`mailto:${profile.email}`} className="mt-2 inline-flex items-center gap-2 text-sm text-white/65 hover:text-white"><Mail className="size-4" />{profile.email}</a>
-            <p className="text-xs text-white/50">Feito com amor por Carbon Cycle LTDA · CNPJ 55.366.974/0001-85</p>
+            <p className="text-xs text-white/50">Feito com <RiHeart3Fill role="img" aria-label="amor" className="inline size-3.5 -translate-y-px align-middle text-(--copper-bright)" /> por Carbon Cycle LTDA · CNPJ 55.366.974/0001-85</p>
           </div>
         </Reveal>
       </section>
