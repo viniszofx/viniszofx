@@ -294,6 +294,7 @@ export const leads = pgTable("app_leads", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull().default(""),
+  company: text("company").notNull().default(""),
   message: text("message").notNull().default(""),
   status: text("status").$type<"new" | "contacted" | "qualified" | "won" | "lost">().notNull().default("new"),
   source: text("source").notNull().default(""),

@@ -120,6 +120,13 @@
       "when": 1794665726191,
       "tag": "0016_striped_impossible_man",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1795016812656,
+      "tag": "0017_low_pixie",
+      "breakpoints": true
     }
   ]
 }

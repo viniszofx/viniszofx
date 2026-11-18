@@ -13,12 +13,12 @@ export const situations = [
 ] as const;
 
 export const services = [
-  { id: "sistemas", title: "Sistemas sob medida", description: "Um sistema que se adapta à sua equipe, e não o contrário: cadastros, pedidos, aprovações e painéis num lugar só.", items: ["Controle de pedidos", "Cadastro de clientes", "Acesso por perfil"] },
-  { id: "automacao", title: "Automação de tarefas", description: "O que alguém faz toda semana copiando, colando e conferindo passa a acontecer sozinho. A sua equipe fica só com o que exige decisão.", items: ["Fim do copia e cola", "Avisos automáticos", "Relatórios prontos"] },
-  { id: "integracoes", title: "Sistemas que conversam", description: "Ligo o seu sistema ao financeiro, à loja virtual, ao WhatsApp e aos serviços que você já usa. Digitou uma vez, chegou em todo lugar.", items: ["Sistema de gestão", "Pagamentos", "WhatsApp"] },
-  { id: "ia", title: "IA onde faz sentido", description: "Mostro onde a inteligência artificial economiza tempo de verdade na sua empresa, e onde só traria risco. Custos e limites claros antes de começar.", items: ["Assistente interno", "Busca em documentos", "Custo explicado antes"] },
-  { id: "mobile", title: "Aplicativos para celular", description: "Para quem trabalha na rua ou em campo: tudo na palma da mão, funcionando mesmo com internet fraca.", items: ["Instala no celular", "Funciona com internet fraca", "Fotos e localização"] },
-  { id: "evolucao", title: "Cuidar do sistema que você já tem", description: "Assumo o sistema que você já tem: corrijo o que está lento ou quebrando, atualizo o que ficou velho e documento o que ninguém documentou.", items: ["Correção de problemas", "Atualizações", "Documentação"] },
+  { id: "sistemas", title: "Sistemas sob medida", description: "Informação espalhada em planilhas e conversas? Um sistema que se adapta à sua equipe, com cadastros, pedidos, aprovações e painéis num lugar só.", items: ["Controle de pedidos", "Cadastro de clientes", "Acesso por perfil"] },
+  { id: "automacao", title: "Automação de tarefas", description: "Alguém passa horas copiando, colando e conferindo? Isso passa a acontecer sozinho, e a sua equipe fica só com o que exige decisão.", items: ["Fim do copia e cola", "Avisos automáticos", "Relatórios prontos"] },
+  { id: "integracoes", title: "Sistemas que conversam", description: "Digitando a mesma coisa em dois lugares? Ligamos o seu sistema ao financeiro, à loja virtual e aos serviços que você já usa. Digitou uma vez, chegou em todo lugar.", items: ["Sistema de gestão", "Pagamentos", "WhatsApp"] },
+  { id: "ia", title: "IA onde faz sentido", description: "Na dúvida se a IA vale a pena? Mostramos onde ela economiza tempo de verdade na sua empresa, e onde só traria risco. Custos e limites claros antes de começar.", items: ["Assistente interno", "Busca em documentos", "Custo explicado antes"] },
+  { id: "mobile", title: "Aplicativos para celular", description: "Equipe na rua sem acesso ao sistema? Tudo na palma da mão, funcionando mesmo com internet fraca.", items: ["Instala no celular", "Funciona com internet fraca", "Fotos e localização"] },
+  { id: "evolucao", title: "Cuidar do sistema que você já tem", description: "Sistema antigo que ninguém tem coragem de mexer? Assumimos, corrigimos o que está lento ou quebrando, atualizamos o que ficou velho e documentamos o que ninguém documentou.", items: ["Correção de problemas", "Atualizações", "Documentação"] },
 ] as const;
 
 // O que "IA como ferramenta consciente" significa na prática.

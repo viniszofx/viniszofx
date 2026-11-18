@@ -1,0 +1,1 @@
+ALTER TABLE "app_leads" ADD COLUMN "company" text DEFAULT '' NOT NULL;

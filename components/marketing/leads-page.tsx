@@ -3,7 +3,7 @@ import { surfaceVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { RiArrowRightSLine, RiDeleteBinLine, RiDownloadLine, RiInboxLine, RiMailLine, RiPhoneLine, RiSearchLine, RiTimeLine, RiUserAddLine, RiWhatsappLine } from "@remixicon/react";
+import { RiArrowRightSLine, RiDeleteBinLine, RiDownloadLine, RiInboxLine, RiMailLine, RiPhoneLine, RiSearchLine, RiTimeLine, RiUserAddLine } from "@remixicon/react";
 import { CatalogLayout } from "@/components/listing/catalog";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -17,7 +17,7 @@ import { notifyError, notifySuccess } from "@/lib/ui/notifications";
 import { today } from "@/lib/format/date";
 
 export type Lead = {
-  id: string; name: string; email: string; phone: string; message: string; status: Status; source: string;
+  id: string; name: string; email: string; phone: string; company: string; message: string; status: Status; source: string;
   campaign: Record<string, string>; notes: string; nextContactAt: string | null; clientId: string | null; createdAt: string; updatedAt: string;
 };
 type Status = "new" | "contacted" | "qualified" | "won" | "lost";
@@ -43,7 +43,6 @@ const ago = (value: string) => {
   return days < 7 ? `há ${days} ${days === 1 ? "dia" : "dias"}` : new Date(value).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
 };
 const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map(part => part[0]?.toUpperCase() ?? "").join("") || "?";
-const whatsappUrl = (lead: Pick<Lead, "name" | "phone">) => digits(lead.phone).length >= 10 ? `https://wa.me/55${digits(lead.phone).replace(/^55/, "")}?text=${encodeURIComponent(`Olá, ${lead.name.split(" ")[0]}! Recebi sua mensagem pelo site.`)}` : "";
 const local = (value: string | null) => { if (!value) return ""; const date = new Date(value); return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16); };
 
 async function patchLead(id: string, change: Record<string, unknown>) {
@@ -55,8 +54,8 @@ async function patchLead(id: string, change: Record<string, unknown>) {
 
 function exportCsv(rows: Lead[]) {
   const cell = (value: string) => `"${value.replace(/"/g, '""')}"`;
-  const header = ["Data", "Nome", "E-mail", "Telefone", "Etapa", "Mensagem", "Origem", "Campanha", "Próximo contato", "Anotações"];
-  const lines = rows.map(lead => [when(lead.createdAt), lead.name, lead.email, lead.phone, stage(lead.status).label, lead.message, lead.source, Object.entries(lead.campaign).map(([key, value]) => `${key}=${value}`).join(" "), lead.nextContactAt ? when(lead.nextContactAt) : "", lead.notes].map(cell).join(";"));
+  const header = ["Data", "Nome", "Empresa", "E-mail", "Telefone", "Etapa", "Mensagem", "Origem", "Campanha", "Próximo contato", "Anotações"];
+  const lines = rows.map(lead => [when(lead.createdAt), lead.name, lead.company, lead.email, lead.phone, stage(lead.status).label, lead.message, lead.source, Object.entries(lead.campaign).map(([key, value]) => `${key}=${value}`).join(" "), lead.nextContactAt ? when(lead.nextContactAt) : "", lead.notes].map(cell).join(";"));
   const url = URL.createObjectURL(new Blob(["﻿" + [header.map(cell).join(";"), ...lines].join("\r\n")], { type: "text/csv;charset=utf-8" }));
   Object.assign(document.createElement("a"), { href: url, download: `leads-${today()}.csv` }).click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
@@ -76,18 +75,16 @@ function LeadDialog({ lead, onClose, onChange }: { lead: Lead; onClose: () => vo
   }
   function convert() {
     // Vira cliente no cadastro e o lead vai para "Convertido".
-    const saved = saveClient({ name: lead.name, company: "", email: lead.email, phone: lead.phone, address: "", notes: `Lead do site em ${when(lead.createdAt)}.\n${lead.message}` });
+    const saved = saveClient({ name: lead.name, company: lead.company, email: lead.email, phone: lead.phone, address: "", notes: `Lead do site em ${when(lead.createdAt)}.\n${lead.message}` });
     if (!saved) return notifyError("Clientes ainda carregando", "Tente de novo em instantes.");
     void save({ status: "won", clientId: saved.id }, "Lead convertido em cliente");
   }
-  const whatsapp = whatsappUrl(lead);
   return <Dialog open onOpenChange={open => { if (!open && !busy) onClose(); }}><DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
     <DialogTitle>{lead.name}</DialogTitle>
-    <DialogDescription>Recebido em {when(lead.createdAt)} · origem {lead.source || "/"}</DialogDescription>
+    <DialogDescription>{lead.company && <>{lead.company} · </>}Recebido em {when(lead.createdAt)} · origem {lead.source || "/"}</DialogDescription>
     <div className="flex flex-wrap gap-2">
       <Button size="sm" variant="outline" nativeButton={false} render={<a href={`mailto:${lead.email}?subject=${encodeURIComponent("Seu contato pelo site")}`} />}><RiMailLine />{lead.email}</Button>
       {lead.phone && <Button size="sm" variant="outline" nativeButton={false} render={<a href={`tel:${digits(lead.phone)}`} />}><RiPhoneLine />{lead.phone}</Button>}
-      {whatsapp && <Button size="sm" variant="outline" nativeButton={false} render={<a href={whatsapp} target="_blank" rel="noreferrer" />}><RiWhatsappLine />WhatsApp</Button>}
     </div>
     <section className="space-y-1"><h3 className="text-sm font-semibold">Mensagem</h3><p className="whitespace-pre-wrap break-words border bg-muted/30 p-3 text-sm">{lead.message}</p></section>
     {Object.keys(lead.campaign).length > 0 && <p className="text-xs text-muted-foreground">Campanha: {Object.entries(lead.campaign).map(([key, value]) => `${key.replace("utm_", "")}: ${value}`).join(" · ")}</p>}
@@ -123,7 +120,7 @@ export function LeadsPage() {
   const counts = useMemo(() => Object.fromEntries(leadStages.map(item => [item.value, (leads ?? []).filter(lead => lead.status === item.value).length])) as Record<Status, number>, [leads]);
   const total = leads?.length ?? 0;
   const conversion = total ? Math.round(counts.won / total * 100) : 0;
-  const visible = (leads ?? []).filter(lead => (!filter || lead.status === filter) && matchesText([lead.name, lead.email, lead.phone, lead.message, lead.notes, lead.source], search));
+  const visible = (leads ?? []).filter(lead => (!filter || lead.status === filter) && matchesText([lead.name, lead.company, lead.email, lead.phone, lead.message, lead.notes, lead.source], search));
   const due = (leads ?? []).filter(lead => lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status)).length;
   const open = leads?.find(lead => lead.id === openId);
   const update = (lead: Lead) => setLeads(previous => previous?.map(item => item.id === lead.id ? lead : item) ?? null);
@@ -154,18 +151,17 @@ export function LeadsPage() {
     </div>
     {error && !leads ? <p role="alert" className="text-sm text-destructive">{error}</p> : !leads ? <LoadingBlock label="Carregando leads" />
       : !visible.length ? <div className={cn(surfaceVariants(), "grid place-items-center gap-2 px-6 py-14 text-center")}><RiInboxLine className="size-8 text-muted-foreground/60" /><p className="font-medium">{total ? "Nenhum lead encontrado" : "Nenhum contato ainda"}</p><p className="max-w-sm text-sm text-muted-foreground">{total ? "Tente outra busca ou limpe o filtro do funil." : "Os contatos do botão de conversa da página inicial aparecem aqui."}</p></div>
-      : <ul className={cn(surfaceVariants({ list: true }))}>{visible.map(lead => { const current = stage(lead.status); const late = lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status); const whatsapp = whatsappUrl(lead);
+      : <ul className={cn(surfaceVariants({ list: true }))}>{visible.map(lead => { const current = stage(lead.status); const late = lead.nextContactAt && new Date(lead.nextContactAt) <= new Date() && !["won", "lost"].includes(lead.status);
         return <li key={lead.id} className="group relative flex items-start gap-3 px-4 py-4 transition-colors hover:bg-muted/30 sm:items-center sm:px-5" style={{ "--stage": current.color } as CSSProperties}>
           <span aria-hidden="true" className="grid size-10 shrink-0 place-items-center rounded-full bg-(--stage)/15 text-sm font-semibold text-(--stage)">{initials(lead.name)}</span>
           <button type="button" onClick={() => setOpenId(lead.id)} className="min-w-0 flex-1 text-left outline-none after:absolute after:inset-0 focus-visible:after:ring-2 focus-visible:after:ring-ring focus-visible:after:ring-inset">
-            <span className="flex flex-wrap items-center gap-2"><strong className="truncate">{lead.name}</strong><Badge color={current.color}>{current.label}</Badge>{late && <span className="inline-flex items-center gap-1 text-xs font-medium text-destructive"><RiTimeLine className="size-3.5" />Contato vencido</span>}</span>
+            <span className="flex flex-wrap items-center gap-2"><strong className="truncate">{lead.name}</strong>{lead.company && <span className="truncate text-sm text-muted-foreground">· {lead.company}</span>}<Badge color={current.color}>{current.label}</Badge>{late && <span className="inline-flex items-center gap-1 text-xs font-medium text-destructive"><RiTimeLine className="size-3.5" />Contato vencido</span>}</span>
             <span className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-0.5 text-xs text-muted-foreground"><span className="inline-flex min-w-0 items-center gap-1"><RiMailLine className="size-3.5 shrink-0" /><span className="truncate">{lead.email}</span></span>{lead.phone && <span className="inline-flex items-center gap-1"><RiPhoneLine className="size-3.5 shrink-0" />{lead.phone}</span>}</span>
             {lead.message && <span className="mt-2 line-clamp-1 block border-l-2 border-(--stage)/50 pl-2 text-sm text-muted-foreground">{lead.message}</span>}
           </button>
           <div className="relative z-10 flex shrink-0 flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3">
             <time dateTime={lead.createdAt} title={when(lead.createdAt)} className="text-xs whitespace-nowrap text-muted-foreground">{ago(lead.createdAt)}</time>
             <span className="flex items-center gap-0.5 transition-opacity [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100">
-              {whatsapp && <a href={whatsapp} target="_blank" rel="noreferrer" aria-label={`WhatsApp de ${lead.name}`} title="WhatsApp" className={cn(action, "hover:text-emerald-500")}><RiWhatsappLine className="size-4" /></a>}
               <a href={`mailto:${lead.email}?subject=${encodeURIComponent("Seu contato pelo site")}`} aria-label={`E-mail para ${lead.name}`} title="E-mail" className={action}><RiMailLine className="size-4" /></a>
               <button type="button" aria-label={`Excluir lead ${lead.name}`} title="Excluir" onClick={() => setDeleting(lead)} className={cn(action, "hover:text-destructive")}><RiDeleteBinLine className="size-4" /></button>
             </span>

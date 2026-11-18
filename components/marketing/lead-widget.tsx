@@ -8,12 +8,14 @@ import { cn } from "@/lib/utils";
 const campaignKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 const glass = "border border-foreground/10 bg-card/80 backdrop-blur-2xl backdrop-saturate-150 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.15),0_30px_80px_-30px_rgb(0_0_0/0.55)] dark:border-white/10 dark:bg-card/70";
 
-type Step = "topic" | "name" | "email" | "phone" | "message" | "confirm" | "sending" | "done";
+type Step = "topic" | "name" | "company" | "email" | "phone" | "message" | "confirm" | "sending" | "done";
 type Bubble = { id: number; from: "bot" | "user"; text: ReactNode };
-type Lead = { topic: string; name: string; email: string; phone: string; message: string };
+type Lead = { topic: string; name: string; company: string; email: string; phone: string; message: string };
+const emptyLead: Lead = { topic: "", name: "", company: "", email: "", phone: "", message: "" };
 const topics = ["Quero um orçamento", "Não sei bem o que preciso", "Tenho uma dúvida"];
-const placeholders: Partial<Record<Step, string>> = { name: "Seu nome", email: "seu@email.com", phone: "(00) 00000-0000", message: "Ex.: controlo os pedidos numa planilha e sempre algo se perde" };
+const placeholders: Partial<Record<Step, string>> = { name: "Seu nome", company: "Nome da empresa", email: "seu@email.com", phone: "(00) 00000-0000", message: "Ex.: controlo os pedidos numa planilha e sempre algo se perde" };
 const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? "";
+const messagePrompt = "Perfeito. Agora me conta como funciona hoje e o que mais incomoda. Pode ser do seu jeito, sem termos técnicos.";
 
 /**
  * Botão flutuante de conversa (bot): pergunta uma coisa por vez e, no fim,
@@ -25,7 +27,7 @@ export function LeadWidget() {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
   const [typing, setTyping] = useState(false);
   const [input, setInput] = useState("");
-  const [lead, setLead] = useState<Lead>({ topic: "", name: "", email: "", phone: "", message: "" });
+  const [lead, setLead] = useState<Lead>(emptyLead);
   const [trap, setTrap] = useState("");
   const counter = useRef(0);
   const timers = useRef<number[]>([]);
@@ -46,7 +48,7 @@ export function LeadWidget() {
 
   const restart = useCallback(() => {
     timers.current.forEach(clearTimeout); timers.current = [];
-    setBubbles([]); setInput(""); setLead({ topic: "", name: "", email: "", phone: "", message: "" }); setStep("topic");
+    setBubbles([]); setInput(""); setLead(emptyLead); setStep("topic");
     say(["Olá! 👋 Sou o assistente do Vinicius.", "Posso te ajudar a tirar uma ideia do papel. Sobre o que você quer conversar?"]);
   }, [say]);
 
@@ -81,11 +83,11 @@ export function LeadWidget() {
     const campaign = Object.fromEntries([...campaignKeys.map(key => [key, params.get(key) ?? ""]), ["referrer", document.referrer]].filter(([, value]) => value));
     try {
       const response = await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
-        name: data.name, email: data.email, phone: data.phone, message: data.topic ? `[${data.topic}] ${data.message}` : data.message, website: trap, source: location.pathname + location.hash, campaign,
+        name: data.name, company: data.company, email: data.email, phone: data.phone, message: data.topic ? `[${data.topic}] ${data.message}` : data.message, website: trap, source: location.pathname + location.hash, campaign,
       }) });
       if (!response.ok) throw new Error((await response.json().catch(() => ({}))).error || "Não consegui enviar agora.");
       setTyping(false);
-      say([`Pronto, ${firstName(data.name)}! Sua mensagem chegou. ✅`, `Vou responder pelo e-mail ${data.email}${data.phone ? " ou pelo WhatsApp" : ""} o quanto antes.`], () => setStep("done"));
+      say([`Pronto, ${firstName(data.name)}! Sua mensagem chegou. ✅`, `Vou responder pelo e-mail ${data.email} o quanto antes.`], () => setStep("done"));
     } catch (cause) {
       setTyping(false);
       say([`${cause instanceof Error ? cause.message : "Algo deu errado."} Quer tentar de novo?`], () => setStep("confirm"));
@@ -99,17 +101,21 @@ export function LeadWidget() {
     if (step === "name") {
       if (value.length < 2) return say(["Me diz seu nome, por favor. 🙂"]);
       push("user", value); setInput(""); setLead(previous => ({ ...previous, name: value }));
-      return say([`Prazer, ${firstName(value)}! Qual é o seu melhor e-mail para eu responder?`], () => setStep("email"));
+      return say([`Prazer, ${firstName(value)}! De qual empresa você fala? Se for só você, pode pular.`], () => setStep("company"));
+    }
+    if (step === "company") {
+      push("user", value || "Sou eu mesmo"); setInput(""); setLead(previous => ({ ...previous, company: value }));
+      return say(["Qual é o seu melhor e-mail para eu responder?"], () => setStep("email"));
     }
     if (step === "email") {
       if (!/^\S+@\S+\.\S+$/.test(value)) { if (value) push("user", value); setInput(""); return say(["Esse e-mail parece incompleto. Pode conferir? (ex.: nome@empresa.com)"]); }
       push("user", value); setInput(""); setLead(previous => ({ ...previous, email: value.toLowerCase() }));
-      return say(["Anotado! Tem um WhatsApp para contato? É opcional, pode pular."], () => setStep("phone"));
+      return say(["Anotado! Tem um telefone para contato? É opcional, pode pular."], () => setStep("phone"));
     }
     if (step === "phone") {
       if (value && value.replace(/\D/g, "").length < 10) return say(["Coloque o número com DDD, por favor. Ou toque em Pular."]);
       push("user", value || "Prefiro não informar"); setInput(""); setLead(previous => ({ ...previous, phone: value }));
-      return say(["Perfeito. Agora me conta como funciona hoje e o que mais incomoda. Pode ser do seu jeito, sem termos técnicos."], () => setStep("message"));
+      return say([messagePrompt], () => setStep("message"));
     }
     if (step === "message") {
       if (value.length < 5) return say(["Escreve um pouquinho mais sobre como funciona hoje. 🙂"]);
@@ -119,7 +125,7 @@ export function LeadWidget() {
     }
   }
 
-  const inputStep = step === "name" || step === "email" || step === "phone" || step === "message";
+  const inputStep = step === "name" || step === "company" || step === "email" || step === "phone" || step === "message";
   return <div className="fixed right-4 bottom-4 z-40 [--primary:oklch(0.76_0.1_58)] [--primary-foreground:oklch(0.2_0.02_50)] [--ring:oklch(0.76_0.1_58)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
     {open && <section role="dialog" aria-label="Conversa com o assistente" className={cn(glass, "flex h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] origin-bottom-right animate-rise-in flex-col overflow-hidden rounded-3xl motion-reduce:animate-none")}>
       <header className="flex items-center gap-3 border-b border-foreground/10 px-4 py-3">
@@ -152,8 +158,8 @@ export function LeadWidget() {
             value={input} onChange={event => setInput(step === "phone" ? formatPhone(event.target.value) : event.target.value)}
             onKeyDown={event => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); answer(); } }}
             className="max-h-32 min-h-9 flex-1 resize-none bg-transparent py-1.5 text-base outline-none sm:text-sm [field-sizing:content] placeholder:text-muted-foreground disabled:cursor-not-allowed" />
-          {step === "phone" && !input && !typing && <button type="button" onClick={() => answer()} className="h-9 shrink-0 rounded-full px-3 text-sm text-muted-foreground hover:text-foreground">Pular</button>}
-          <button type="submit" aria-label="Enviar resposta" disabled={!inputStep || typing || (!input.trim() && step !== "phone")} className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground outline-none transition-opacity hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"><RiArrowUpLine className="size-5" /></button>
+          {(step === "phone" || step === "company") && !input && !typing && <button type="button" onClick={() => answer()} className="h-9 shrink-0 rounded-full px-3 text-sm text-muted-foreground hover:text-foreground">Pular</button>}
+          <button type="submit" aria-label="Enviar resposta" disabled={!inputStep || typing || (!input.trim() && step !== "phone" && step !== "company")} className="grid size-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground outline-none transition-opacity hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"><RiArrowUpLine className="size-5" /></button>
         </div>
         <p className="mt-2 text-center text-[11px] text-muted-foreground">Seus dados são usados só para responder este contato.</p>
       </form>
@@ -170,6 +176,7 @@ function Summary({ lead }: { lead: Lead }) {
   return <span className="block space-y-1">
     <span className="block font-medium">Confere se está tudo certo:</span>
     <span className="block">👤 {lead.name}</span>
+    {lead.company && <span className="block">🏢 {lead.company}</span>}
     <span className="block">✉️ {lead.email}</span>
     {lead.phone && <span className="block">📱 {lead.phone}</span>}
     {lead.topic && <span className="block">🏷️ {lead.topic}</span>}

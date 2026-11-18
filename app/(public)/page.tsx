@@ -102,7 +102,7 @@ export default async function Page() {
             <div className="max-w-md lg:max-w-lg">
               <h1 id="apresentacao" className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none font-heading text-5xl leading-[1.05] font-light text-balance sm:text-6xl lg:text-7xl">Menos planilha. <span className="font-semibold">Mais resultado.</span></h1>
               <p className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:150ms] mt-6 text-lg leading-8 text-pretty text-white/70">Sistemas e automações sob medida para a sua empresa.</p>
-              <div className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:300ms] mt-10 flex flex-wrap items-center gap-6">{talk("Quero uma proposta", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}<a href="#situacoes" className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white">Ver exemplos<ArrowRight className="size-4" /></a></div>
+              <div className="animate-rise-in [animation-duration:900ms] motion-reduce:animate-none [animation-delay:300ms] mt-10 flex flex-wrap items-center gap-6">{talk("Quero uma proposta", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}<a href="#projetos" className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white">Ver o case Cartório LCM<ArrowRight className="size-4" /></a></div>
             </div>
           </div>
         </div>
