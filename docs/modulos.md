@@ -28,6 +28,7 @@ Funções trazidas do Nodus para a área privada (`/dashboard`). Os dados são p
 | Ferramentas | Drive | `/dashboard/drive` | `drive` — ver [drive.md](drive.md) |
 | | Diagramas (draw.io) | `/dashboard/diagrams` | `diagrams`, `drawio_libraries` |
 | | Quadro branco (Excalidraw) | `/dashboard/whiteboards` (`/<id>` abre o editor) | `whiteboards` |
+| | Propostas comerciais | `/dashboard/proposals` (`/<id>` abre o editor) | `proposals` |
 | Configurações | Empresa | `/dashboard/settings/company` | `settings` (registro `company`) |
 | | Suporte | `/dashboard/settings/support` | — (`GET /api/health`) |
 | Administração | Módulos | `/dashboard/system/modules` | tabela `app_modules` (API `/api/system/modules`) |
@@ -87,6 +88,8 @@ Funções trazidas do Nodus para a área privada (`/dashboard`). Os dados são p
 
 **Financeiro.** Páginas reservadas com o escopo de cada etapa; ainda sem dados.
 
+**Propostas.** App próprio (Ferramentas), no modelo de `docs/brand/templates/proposta/proposta.html`. Número `AAAA-000` gerado pelo ano, situação (rascunho, enviada, aceita, recusada), cliente do cadastro (preenche empresa, contato e CNPJ) ou digitado, e as seções do documento: 01 O que ouvimos (processo de hoje e o que incomoda), 02 A solução (frase e quadro Hoje → Depois), 03 Escopo e etapas (prazo e valor por etapa, total calculado, incluso e não incluso; `{empresa}` vira o nome da empresa) e 06 Investimento e condições. As seções 04 Como trabalhamos, 05 IA consciente e 07 Perguntas vêm prontas do site (`lib/portfolio/services.ts`). **Gerar PDF** imprime em A4 no padrão de `docs/brand/Impressos.md` (papel claro, faixa grafite só na capa e no contato, cores sólidas, fontes da marca). Campo vazio sai destacado como `[campo a preencher]`, e o total só aparece quando todas as etapas têm valor: nada sai com valor inventado. Em Marketing › Leads, **Criar proposta** abre uma proposta nova com o contato e a empresa do lead. Anotações internas não vão para o PDF.
+
 ## Estrutura
 
 Cadastros simples não têm tela própria: são uma configuração de campos sobre um motor genérico.
@@ -138,6 +141,6 @@ Os cadastros e ferramentas continuam por conta; mural e mensagens são da organi
 
 ## Marketing: leads do site
 
-**Captura.** A página inicial tem um botão flutuante de conversa (e o botão **Enviar mensagem** da seção Contato abre o mesmo formulário): nome, e-mail, telefone/WhatsApp e mensagem. `POST /api/leads` aceita só envios do próprio site, ignora robôs pelo campo isca `website`, limita 5 envios por IP a cada 10 minutos e guarda a página de origem e os parâmetros UTM (`utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`) e o `referrer`. Tabela `app_leads`.
+**Captura.** A página inicial tem um botão flutuante de conversa (e o botão **Enviar mensagem** da seção Contato abre o mesmo formulário): nome, empresa (opcional), e-mail, telefone (opcional) e mensagem. `POST /api/leads` aceita só envios do próprio site, ignora robôs pelo campo isca `website`, limita 5 envios por IP a cada 10 minutos e guarda a página de origem e os parâmetros UTM (`utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`) e o `referrer`. Tabela `app_leads`.
 
-**Funil (Marketing › Leads, só administração).** Etapas Novo → Em contato → Qualificado → Convertido / Perdido, com contadores clicáveis como filtro e taxa de conversão. No detalhe: atalhos para e-mail, telefone e WhatsApp (mensagem pronta), etapa, próximo contato (avisa quando vence) e anotações salvas ao sair do campo. **Converter em cliente** cria o cliente no cadastro e marca o lead como Convertido. **Exportar CSV** baixa a lista filtrada (separador `;`, abre no Excel).
+**Funil (Marketing › Leads, só administração).** Etapas Novo → Em contato → Qualificado → Convertido / Perdido, com contadores clicáveis como filtro e taxa de conversão. No detalhe: atalhos para e-mail e telefone, **Criar proposta**, etapa, próximo contato (avisa quando vence) e anotações salvas ao sair do campo. **Converter em cliente** cria o cliente no cadastro e marca o lead como Convertido. **Exportar CSV** baixa a lista filtrada (separador `;`, abre no Excel).

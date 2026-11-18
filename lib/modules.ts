@@ -41,6 +41,7 @@ export const appModules: AppModule[] = [
   { section: "Ferramentas", key: "drive", name: "Drive", description: "Pastas, arquivos e editores de DOCX, planilhas e PDF.", hrefs: ["/dashboard/drive"], kinds: ["drive"], apis: ["/api/shared/drive", "/arquivo"] },
   { section: "Ferramentas", key: "drawio", name: "Diagramas", description: "Diagramas do draw.io, bibliotecas de formas e links de leitura.", hrefs: ["/dashboard/diagrams"], kinds: ["diagrams", "drawio_libraries"], apis: ["/api/shared/diagrams", "/diagrama"] },
   { section: "Ferramentas", key: "whiteboard", name: "Quadro branco", description: "Quadros brancos do Excalidraw.", hrefs: ["/dashboard/whiteboards"], kinds: ["whiteboards"] },
+  { section: "Ferramentas", key: "proposals", name: "Propostas", description: "Propostas comerciais no padrão da marca, com etapas, valores e PDF. Leads › Criar proposta abre uma já preenchida.", hrefs: ["/dashboard/proposals"], kinds: ["proposals"] },
   { section: "Ferramentas", key: "shortlinks", name: "Links curtos", description: "Links /s/código para links públicos.", hrefs: [], kinds: [], apis: ["/api/short-links", "/s/"] },
   { section: "Marketing", key: "leads", name: "Leads", description: "Botão de conversa do site e o funil de leads.", hrefs: ["/dashboard/leads"], kinds: [], apis: ["/api/leads", "/api/admin/leads"] },
   { section: "Marketing", key: "blog", name: "Blog", description: "Publicações do blog e páginas públicas /blog.", hrefs: ["/dashboard/blog"], kinds: [], apis: ["/api/blog", "/blog"] },

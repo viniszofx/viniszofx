@@ -1,5 +1,5 @@
 import { hiddenHref } from "@/lib/modules";
-import { RiAdvertisementLine as Advertisement, RiArticleLine as Article, RiCarLine as Car, RiBuilding2Line as Building, RiFileTextLine as FileText, RiHomeLine as Home, RiHotelLine as Hotel, RiLayoutGridLine as LayoutGrid, RiSettings3Line as Settings, RiSuitcaseLine as Suitcase, RiGroupLine as Users, RiArchiveLine as Archive, RiBankCardLine as BankCard, RiBarChartBoxLine as Chart, RiCalendarLine as Calendar, RiCheckboxLine as Checkbox, RiListCheck3 as TodoList, RiChat3Line as Chat, RiPencilRuler2Line as Whiteboard, RiClipboardLine as Clipboard, RiDashboard3Line as Dashboard, RiExchangeDollarLine as Exchange, RiFlowChart as Flow, RiHardDrive2Line as HardDrive, RiInboxLine as Inbox, RiLockLine as Lock, RiMapPinLine as MapPin, RiMegaphoneLine as Megaphone, RiReceiptLine as Receipt, RiTimeLine as Time, RiWhatsappLine as WhatsApp, RiUserStarLine as Clients, RiLayoutColumnLine as Kanban, RiUserVoiceLine as Leads } from "@remixicon/react";
+import { RiFileList3Line as Proposal, RiAdvertisementLine as Advertisement, RiArticleLine as Article, RiCarLine as Car, RiBuilding2Line as Building, RiFileTextLine as FileText, RiHomeLine as Home, RiHotelLine as Hotel, RiLayoutGridLine as LayoutGrid, RiSettings3Line as Settings, RiSuitcaseLine as Suitcase, RiGroupLine as Users, RiArchiveLine as Archive, RiBankCardLine as BankCard, RiBarChartBoxLine as Chart, RiCalendarLine as Calendar, RiCheckboxLine as Checkbox, RiListCheck3 as TodoList, RiChat3Line as Chat, RiPencilRuler2Line as Whiteboard, RiClipboardLine as Clipboard, RiDashboard3Line as Dashboard, RiExchangeDollarLine as Exchange, RiFlowChart as Flow, RiHardDrive2Line as HardDrive, RiInboxLine as Inbox, RiLockLine as Lock, RiMapPinLine as MapPin, RiMegaphoneLine as Megaphone, RiReceiptLine as Receipt, RiTimeLine as Time, RiWhatsappLine as WhatsApp, RiUserStarLine as Clients, RiLayoutColumnLine as Kanban, RiUserVoiceLine as Leads } from "@remixicon/react";
 
 export type NavLink = { label: string; href: string; icon: typeof Home; exact?: boolean; adminOnly?: boolean };
 export type NavGroup = { title: string; links: NavLink[]; collapsed?: boolean };
@@ -76,6 +76,7 @@ export const navigation: NavGroup[] = [
       { label: "Drive", href: "/dashboard/drive", icon: HardDrive },
       { label: "Diagramas", href: "/dashboard/diagrams", icon: Flow },
       { label: "Quadro branco", href: "/dashboard/whiteboards", icon: Whiteboard },
+      { label: "Propostas", href: "/dashboard/proposals", icon: Proposal },
     ],
   },
   {

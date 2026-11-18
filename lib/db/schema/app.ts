@@ -40,6 +40,7 @@ export const todoLists = records("app_todo_lists");
 export const whiteboards = records("app_whiteboards");
 export const drawioLibraries = records("app_drawio_libraries");
 export const inventories = records("app_inventories");
+export const proposals = records("app_proposals");
 
 // Prevents old IndexedDB records from reappearing after a feature is emptied.
 export const migrationState = pgTable("app_migration_state", {
@@ -50,7 +51,7 @@ export const migrationState = pgTable("app_migration_state", {
 
 export const featureTables = {
   clients, employees, vehicles, reservations, trips, boards, notes, attachments, orders, tasks, events, announcements, hotels, mileage, journeys,
-  inventory_items: inventoryItems, inventory_locations: inventoryLocations, inventory_movements: inventoryMovements, requests, drive: driveFiles, diagrams, settings, todos, todo_lists: todoLists, whiteboards, drawio_libraries: drawioLibraries, inventories,
+  inventory_items: inventoryItems, inventory_locations: inventoryLocations, inventory_movements: inventoryMovements, requests, drive: driveFiles, diagrams, settings, todos, todo_lists: todoLists, whiteboards, drawio_libraries: drawioLibraries, inventories, proposals,
 } as const;
 
 export const workplaceSettings = pgTable("app_workplace_settings", {

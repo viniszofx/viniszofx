@@ -1,6 +1,6 @@
 export const fileLimit = 20 * 1024 * 1024;
 export const fileIdPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-export const collectionKinds = ["clients", "employees", "vehicles", "reservations", "trips", "boards", "notes", "attachments", "orders", "tasks", "events", "announcements", "hotels", "mileage", "journeys", "inventory_items", "inventory_locations", "inventory_movements", "requests", "drive", "diagrams", "settings", "todos", "todo_lists", "whiteboards", "drawio_libraries", "inventories"] as const;
+export const collectionKinds = ["clients", "employees", "vehicles", "reservations", "trips", "boards", "notes", "attachments", "orders", "tasks", "events", "announcements", "hotels", "mileage", "journeys", "inventory_items", "inventory_locations", "inventory_movements", "requests", "drive", "diagrams", "settings", "todos", "todo_lists", "whiteboards", "drawio_libraries", "inventories", "proposals"] as const;
 export type CollectionKind = (typeof collectionKinds)[number];
 
 export function fileIds(value: unknown, ids = new Set<string>()): Set<string> {

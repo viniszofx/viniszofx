@@ -3,7 +3,7 @@ import { surfaceVariants } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { RiArrowRightSLine, RiDeleteBinLine, RiDownloadLine, RiInboxLine, RiMailLine, RiPhoneLine, RiSearchLine, RiTimeLine, RiUserAddLine } from "@remixicon/react";
+import { RiFileList3Line, RiArrowRightSLine, RiDeleteBinLine, RiDownloadLine, RiInboxLine, RiMailLine, RiPhoneLine, RiSearchLine, RiTimeLine, RiUserAddLine } from "@remixicon/react";
 import { CatalogLayout } from "@/components/listing/catalog";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
@@ -96,7 +96,11 @@ function LeadDialog({ lead, onClose, onChange }: { lead: Lead; onClose: () => vo
     <footer className="flex flex-wrap items-center justify-between gap-2 border-t pt-4">
       {client ? <Link href={`/dashboard/clients?client=${client.id}`} className="text-sm text-primary underline-offset-4 hover:underline">Ver cliente {client.name}</Link>
         : <Button type="button" disabled={busy || !clientsLoaded} onClick={convert}><RiUserAddLine />Converter em cliente</Button>}
-      <Button type="button" variant="outline" onClick={onClose}>Fechar</Button>
+      <div className="flex flex-wrap gap-2">
+        {/* Abre uma proposta nova já com o contato e a empresa do lead (Marketing › Propostas). */}
+        <Button type="button" variant="outline" nativeButton={false} render={<Link href={`/dashboard/proposals?novo=1&contato=${encodeURIComponent(lead.name)}&empresa=${encodeURIComponent(lead.company)}`} />}><RiFileList3Line />Criar proposta</Button>
+        <Button type="button" variant="outline" onClick={onClose}>Fechar</Button>
+      </div>
     </footer>
   </DialogContent></Dialog>;
 }
