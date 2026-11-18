@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import Image from "next/image";
 import {
   RiArrowRightUpLine as ArrowUpRight, RiArrowRightLine as ArrowRight, RiChat3Line as Chat, RiCheckLine as Check, RiCloseLine as Close,
   RiCodeBoxLine as Code, RiFlowChart as Flow, RiPlugLine as Plug, RiSparkling2Line as Sparkle, RiSmartphoneLine as Phone, RiToolsLine as Tools,
@@ -6,11 +8,10 @@ import {
   RiAddLine as Plus,
 } from "@remixicon/react";
 import { RiGithubLine as Github, RiLinkedinBoxLine as Linkedin } from "@remixicon/react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { surfaceVariants } from "@/components/ui/card";
 import { LeadWidget, OpenLeadButton } from "@/components/marketing/lead-widget";
 import { ProjectCard } from "@/components/portfolio/project-card";
+import { DiamondLines } from "@/components/marketing/art";
 import { profile, projects, technologies } from "@/lib/portfolio/content";
 import { aiPrinciples, aiUses, faq, processSteps, services, situations } from "@/lib/portfolio/services";
 import { cn } from "@/lib/utils";
@@ -18,123 +19,208 @@ import { Reveal } from "@/components/marketing/reveal";
 import { disabledModules } from "@/lib/modules-server";
 
 export const metadata: Metadata = {
-  title: "Vinicius Souza | Desenvolvimento de software com IA consciente",
-  description: "Sistemas e automações sob medida para empresas que perdem tempo com planilhas, retrabalho e informação espalhada. IA usada com revisão humana e dados protegidos.",
+  title: "Vinicius Souza | Sistemas e automações sob medida para a sua empresa",
+  description: "Pare de perder horas com planilha e retrabalho. Sistemas e automações sob medida, com valor fechado por etapa, IA revisada por uma pessoa e tudo em seu nome.",
   alternates: { canonical: "/" },
 };
 
 const serviceIcons = { sistemas: Code, automacao: Flow, integracoes: Plug, ia: Sparkle, mobile: Phone, evolucao: Tools } as const;
 const principleIcons = [Human, Shield, Eye, Focus];
-// Mesma linguagem do painel: superfícies de vidro do app (surfaceVariants), títulos sóbrios,
-// rótulo em caixa alta no cobre e botões normais. Sem manchas de cor, gradientes ou elevação no hover.
-const card = surfaceVariants();
-const cardHover = "transition-colors hover:border-primary/40";
-const action = "normal-case tracking-normal";
-const chip = "rounded-md bg-muted/70 px-2 py-0.5 text-xs text-muted-foreground";
-const eyebrowClass = "text-xs uppercase tracking-widest text-primary";
+// Fatos verificáveis (LinkedIn, currículo e anais do Evinci 2024), logo abaixo da abertura.
+const paperUrl = "https://www.alice.cnptia.embrapa.br/alice/handle/doc/1172127";
+const credentials = [
+  { title: "3+ anos", text: "na Embrapa Pantanal, com sistemas de pesquisa", href: "#casos", cta: "Ver casos" },
+  { title: "Trabalho publicado", text: "nos anais do Evinci 2024, pela Embrapa", href: paperUrl, cta: "Ler o trabalho" },
+  { title: "Site no ar", text: "para cliente, do requisito ao deploy", href: "https://cartorioaltolonga.com.br/", cta: "Ver o site" },
+] as const;
+const proceedingsUrl = "https://ainfo.cnptia.embrapa.br/digital/bitstream/item/278419/1/EVENTO-DE-INICIACAO-CIENTIFICA-DO-PANTANAL-11.-2024-Corumba-final.pdf";
+// Casos reais: problema, o que foi feito e o resultado. Só o que está no currículo e na publicação.
+const cases = [
+  { problem: "Sistema interno de inventário fora do ar.", action: "Encontrei a causa, uma incompatibilidade de versão do PHP que derrubava a conexão com o banco de dados, e corrigi em produção.", result: "Hotfix crítico na Embrapa Pantanal" },
+  { problem: "Dados de pesquisa difíceis de tirar da plataforma.", action: "Participei da definição de requisitos da Plataforma Alelo Animal e contribuí para a exportação dos dados em CSV.", result: "Funcionalidade hoje em produção" },
+  { problem: "Coleta e validação de dados feitas à mão.", action: "Analisei o fluxo de dados das coleções e propus automatizar a coleta e a validação, em tempo real e com vários usuários.", result: "Trabalho publicado pela Embrapa", href: paperUrl },
+  { problem: "Decisões tomadas sem os números à mão.", action: "Montei dashboards, relatórios gerenciais e modelos em Excel e Power BI para apoiar decisões na pesquisa científica.", result: "Informação pronta para decidir" },
+] as const;
+const portrait = "/profile.png";
 
-function Heading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
-  return <Reveal className="max-w-2xl">
-    <p className={eyebrowClass}>{eyebrow}</p>
-    <h2 className="mt-2 font-heading text-2xl font-semibold text-balance sm:text-3xl">{title}</h2>
-    {children && <p className="mt-3 leading-7 text-pretty text-muted-foreground">{children}</p>}
+/*
+ * Linguagem institucional e moderna: títulos finos e grandes, seções numeradas, filetes de 1px,
+ * botões retos e blocos escuros de destaque. Paleta grafite e cobre do app (tokens do tema, então
+ * claro e escuro se ajustam sozinhos). Os blocos escuros ficam escuros nos dois temas; o cobre deles é
+ * sempre o claro (--copper-bright), que contrasta com o grafite também no tema claro.
+ */
+const button = "h-11 rounded-sm px-6";
+const chip = "border px-2 py-0.5 text-xs text-muted-foreground";
+const dark = "bg-[oklch(0.19_0.01_255)] text-[oklch(0.96_0.004_250)] [--copper-bright:oklch(0.76_0.1_58)] dark:bg-[oklch(0.15_0.008_255)]";
+const container = "mx-auto w-full max-w-6xl px-5 sm:px-6";
+
+function Eyebrow({ index, children, className }: { index?: string; children: ReactNode; className?: string }) {
+  return <p className={cn("flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary", className)}>{index && <span className="tabular-nums">{index}</span>}{index && <span aria-hidden="true" className="h-px w-8 bg-current opacity-60" />}{children}</p>;
+}
+
+function Heading({ index, eyebrow, title, children, id }: { index: string; eyebrow: string; title: string; children?: ReactNode; id: string }) {
+  return <Reveal className="grid gap-6 border-t pt-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+    <div><Eyebrow index={index}>{eyebrow}</Eyebrow><h2 id={id} className="mt-5 font-heading text-3xl leading-tight font-light text-balance sm:text-4xl lg:text-5xl">{title}</h2></div>
+    {children && <p className="self-end text-lg leading-8 text-pretty text-muted-foreground">{children}</p>}
   </Reveal>;
 }
 
 export default async function Page() {
   // Com Leads desligado em Sistema › Módulos, os botões de conversa viram link de e-mail.
   const leads = !(await disabledModules()).includes("leads");
+  const talk = (label: string, className = button) => leads
+    ? <OpenLeadButton className={className}><Chat />{label}</OpenLeadButton>
+    : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={className}><Mail />{label}</Button>;
+
   return <div>
-    <main id="conteudo" className="mx-auto w-full max-w-6xl px-5 sm:px-6">
-      {/* Abertura */}
-      <section aria-labelledby="apresentacao" className="pt-14 pb-16 sm:pt-20 sm:pb-20">
-        <p className={eyebrowClass}>Sistemas e automações sob medida</p>
-        <h1 id="apresentacao" className="mt-3 max-w-3xl font-heading text-4xl leading-tight font-semibold text-balance sm:text-5xl">Menos planilha e retrabalho. Mais tempo para o seu negócio.</h1>
-        <p className="mt-5 max-w-2xl text-lg leading-8 text-pretty text-muted-foreground">Você me conta como o trabalho é feito hoje. Eu mostro o que dá para simplificar e construo o sistema ou a automação que resolve, com IA onde ela ajuda e revisão humana em tudo.</p>
-        <div className="mt-8 flex flex-wrap gap-2">{leads ? <OpenLeadButton className={action}><Chat />Conversar sobre seu projeto</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={action}><Mail />Conversar sobre seu projeto</Button>}<Button nativeButton={false} render={<a href="#situacoes" />} variant="outline" className={action}>Ver exemplos<ArrowRight /></Button></div>
-        <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">{["Você não precisa saber o que pedir", "Proposta com valor fechado por etapa", "O sistema fica em seu nome"].map(item => <li key={item} className="flex items-center gap-2"><Check className="size-4 text-primary" />{item}</li>)}</ul>
+    <main id="conteudo">
+      {/* Abertura: me.png (retrato à direita, fundo preto à esquerda) num bloco escuro nos dois temas;
+          o texto fica sobre a parte preta da foto. */}
+      <section aria-labelledby="apresentacao" className="relative isolate overflow-hidden">
+        <div className={cn(dark, "relative isolate overflow-hidden bg-black dark:bg-black")}>
+          <div aria-hidden="true" className="absolute inset-0 -z-10">
+            <Image src="/me.png" alt="" fill priority quality={90} sizes="100vw" className="object-cover object-[72%_center] max-lg:opacity-60" />
+                        {/* Gradiente suave só do lado do texto: some antes do rosto (no celular fica mais forte, porque a foto vai atrás do texto). */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.75)_35%,rgb(0_0_0/0.35)_70%,transparent_100%)] lg:bg-[linear-gradient(to_right,black_0%,rgb(0_0_0/0.55)_25%,rgb(0_0_0/0.15)_42%,transparent_55%)]" />
+          </div>
+          <div className={cn(container, "flex flex-col justify-center py-20 sm:py-28 lg:min-h-[calc(100svh-4rem-6rem)]")}>
+            <div className="max-w-md animate-rise-in motion-reduce:animate-none lg:max-w-lg">
+              <h1 id="apresentacao" className="font-heading text-5xl leading-[1.05] font-light text-balance sm:text-6xl lg:text-7xl">Menos planilha. <span className="font-semibold">Mais resultado.</span></h1>
+              <p className="mt-6 text-lg leading-8 text-pretty text-white/70">Sistemas e automações sob medida para a sua empresa.</p>
+              <div className="mt-10 flex flex-wrap items-center gap-6">{talk("Quero uma proposta", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}<a href="#situacoes" className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white">Ver exemplos<ArrowRight className="size-4" /></a></div>
+            </div>
+          </div>
+        </div>
+        {/* Credenciais numa régua com filetes, logo abaixo da dobra. */}
+        <ul aria-label="Credenciais" className={cn(container, "grid gap-x-10 pt-4 pb-12 sm:grid-cols-3")}>{credentials.map(({ title, text, href, cta }) => <li key={title} className="border-t">
+          <a href={href} {...(href.startsWith("#") ? {} : { target: "_blank", rel: "noopener noreferrer" })} className="group block py-6 outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <p className="font-heading text-2xl font-light text-primary">{title}</p><p className="mt-1 text-sm text-muted-foreground">{text}</p>
+            <p className="mt-3 inline-flex items-center gap-1 text-xs uppercase tracking-[0.2em] text-foreground/70 group-hover:text-primary">{cta}{href.startsWith("#") ? <ArrowRight className="size-3.5" /> : <ArrowUpRight className="size-3.5" />}</p>
+          </a>
+        </li>)}</ul>
       </section>
 
-      {/* Situações: o cliente se reconhece pelo problema, sem precisar saber o nome da solução. */}
-      <section id="situacoes" aria-labelledby="situacoes-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <div id="situacoes-titulo"><Heading eyebrow="Reconhece alguma?" title="Situações que dá para resolver.">Se alguma dessas parece com o dia a dia da sua empresa, já temos por onde começar.</Heading></div>
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 110} className={cn(card, cardHover, "flex flex-col gap-3 p-5")}>
-          <p className="font-heading text-lg leading-snug font-semibold text-pretty">{item.problem}</p>
-          <p className="mt-auto flex gap-2.5 border-t pt-3 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />{item.solution}</p>
+      {/* 01 Casos reais: logo depois das credenciais, que apontam para cá. */}
+      <section id="casos" aria-labelledby="casos-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
+        <Heading id="casos-titulo" index="01" eyebrow="O que já resolvi" title="Problemas reais, resolvidos na prática.">Antes da Carbon Cycle, passei mais de três anos na Embrapa Pantanal resolvendo exatamente o tipo de problema que a sua empresa pode ter.</Heading>
+        <ol className="mt-14 grid gap-x-10 md:grid-cols-2">{cases.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 2) * 70} className="flex flex-col gap-4 border-t py-8">
+          <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
+          <p className="text-sm leading-6 text-muted-foreground">{item.action}</p>
+          <p className="mt-auto flex items-center gap-2 text-sm font-medium text-primary"><Check className="size-4 shrink-0" />{"href" in item ? <a href={item.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 hover:underline">{item.result}<ArrowUpRight className="size-3.5" /></a> : item.result}</p>
+        </Reveal>)}</ol>
+      </section>
+
+      {/* 02 Situações */}
+      <section id="situacoes" aria-labelledby="situacoes-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
+        <Heading id="situacoes-titulo" index="02" eyebrow="Reconhece alguma?" title="Quanto tempo a sua equipe perde com isso?">Cada uma dessas situações come horas de trabalho toda semana. Todas têm solução, e a sua provavelmente também.</Heading>
+        <ul className="mt-14 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-3">{situations.map((item, index) => <Reveal as="li" key={item.problem} delay={(index % 3) * 70} className="group flex flex-col gap-5 border-t py-8">
+          <p className="font-heading text-xl leading-snug text-pretty">{item.problem}</p>
+          <p className="mt-auto flex gap-3 text-sm leading-6 text-muted-foreground"><ArrowRight className="mt-1 size-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" aria-hidden="true" />{item.solution}</p>
         </Reveal>)}</ul>
-        <Reveal className="mt-6 flex flex-wrap items-center gap-3"><p className="text-sm text-muted-foreground">Não achou a sua? Conte como funciona aí.</p>{leads ? <OpenLeadButton className={action}><Chat />Contar minha situação</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={action}><Mail />Contar minha situação</Button>}</Reveal>
+        <Reveal className="mt-10 flex flex-wrap items-center justify-between gap-4"><p className="text-muted-foreground">Não achou a sua? Me conte como é aí: a resposta já vem com um caminho.</p>{talk("Quero resolver a minha")}</Reveal>
       </section>
 
-      {/* Serviços (grade em mosaico) */}
-      <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <div id="servicos-titulo"><Heading eyebrow="Serviços" title="O que posso construir para você.">Do primeiro sistema ao cuidado com um que já existe. Cada projeto começa entendendo como a sua equipe trabalha.</Heading></div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{services.map((service, index) => { const Icon = serviceIcons[service.id];
-          return <Reveal as="article" key={service.id} delay={(index % 3) * 110} className={cn(card, cardHover, "flex flex-col gap-3 p-5")}>
-            <span className="grid size-10 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="size-5" aria-hidden="true" /></span>
-            <h3 className="font-heading text-lg font-semibold">{service.title}</h3>
-            <p className="text-sm leading-6 text-muted-foreground">{service.description}</p>
-            <ul className="mt-auto flex flex-wrap gap-2 pt-2">{service.items.map(item => <li key={item} className={chip}>{item}</li>)}</ul>
-          </Reveal>; })}</div>
-      </section>
-
-      {/* IA consciente */}
-      <section id="ia" aria-labelledby="ia-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <div id="ia-titulo"><Heading eyebrow="IA consciente" title="IA como ferramenta, não como atalho.">A inteligência artificial deixa o trabalho mais rápido e mais barato. Usada sem critério, também traz erros e riscos. Por isso o uso segue quatro regras.</Heading></div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
-          return <Reveal as="article" key={principle.title} delay={index * 100} className={cn(card, cardHover, "p-5")}><span className="grid size-10 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="size-5" aria-hidden="true" /></span><h3 className="mt-4 font-semibold">{principle.title}</h3><p className="mt-1.5 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <Reveal delay={0} className={cn(card, "p-6")}><h3 className="mb-4 flex items-center gap-2 font-semibold"><Check className="size-5 text-primary" />Onde a IA entra</h3><ul className="space-y-3 text-sm">{aiUses.yes.map(item => <li key={item} className="flex gap-3 leading-6"><Check className="mt-0.5 size-4 shrink-0 text-primary" />{item}</li>)}</ul></Reveal>
-          <Reveal delay={120} className={cn(card, "p-6")}><h3 className="mb-4 flex items-center gap-2 font-semibold"><Close className="size-5 text-muted-foreground" />Onde a IA não entra</h3><ul className="space-y-3 text-sm text-muted-foreground">{aiUses.no.map(item => <li key={item} className="flex gap-3 leading-6"><Close className="mt-0.5 size-4 shrink-0" />{item}</li>)}</ul></Reveal>
+      {/* 03 Serviços */}
+      <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-20 border-y bg-foreground/[0.02] py-20 sm:py-28">
+        <div className={container}>
+          <Heading id="servicos-titulo" index="03" eyebrow="Serviços" title="Tudo o que a sua operação precisa, sob medida.">Do primeiro sistema à evolução do que você já tem, sempre começando pelo jeito que a sua equipe trabalha.</Heading>
+          <div className="mt-14 grid gap-px overflow-hidden border bg-border sm:grid-cols-2 lg:grid-cols-3">{services.map((service, index) => { const Icon = serviceIcons[service.id];
+            return <Reveal as="article" key={service.id} delay={(index % 3) * 70} className="group flex flex-col bg-background">
+              <div className="flex flex-1 flex-col gap-3 p-6 sm:p-8">
+                <span className="mb-2 grid size-11 place-items-center border border-primary/40 text-primary transition-colors group-hover:bg-primary/10"><Icon className="size-5" aria-hidden="true" /></span>
+                <h3 className="font-heading text-xl font-semibold">{service.title}</h3>
+                <p className="text-sm leading-6 text-muted-foreground">{service.description}</p>
+                <ul className="mt-auto flex flex-wrap gap-1.5 pt-3">{service.items.map(item => <li key={item} className={chip}>{item}</li>)}</ul>
+              </div>
+            </Reveal>; })}</div>
         </div>
       </section>
 
-      {/* Processo */}
-      <section id="processo" aria-labelledby="processo-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <div id="processo-titulo"><Heading eyebrow="Como trabalho" title="Do problema ao sistema no ar." /></div>
-        <Reveal as="ol" className={cn(card, "mt-8 grid overflow-hidden md:grid-cols-4")}>{processSteps.map((step, index) => <li key={step.title} className="p-5 not-last:border-b md:not-last:border-r md:not-last:border-b-0"><span className="font-mono text-xs text-primary">0{index + 1}</span><h3 className="mt-2 font-semibold">{step.title}</h3><p className="mt-1.5 text-sm leading-6 text-muted-foreground">{step.description}</p></li>)}</Reveal>
+      {/* 04 IA consciente */}
+      <section id="ia" aria-labelledby="ia-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
+        <Heading id="ia-titulo" index="04" eyebrow="IA consciente" title="A velocidade da IA, sem colocar o seu negócio em risco.">A inteligência artificial deixa o projeto mais rápido e mais barato. Para isso não virar problema, o uso segue quatro regras, e uma pessoa responde por cada entrega.</Heading>
+        <div className="mt-14 grid gap-x-10 sm:grid-cols-2 lg:grid-cols-4">{aiPrinciples.map((principle, index) => { const Icon = principleIcons[index];
+          return <Reveal as="article" key={principle.title} delay={index * 70} className="border-t py-8"><Icon className="size-6 text-primary" aria-hidden="true" /><h3 className="mt-5 font-semibold">{principle.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{principle.description}</p></Reveal>; })}</div>
+        <div className="mt-10 grid gap-4 md:grid-cols-2">
+          <Reveal className="border border-primary/40 p-7 sm:p-9"><h3 className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-primary"><Check className="size-4" />Onde a IA entra</h3><ul className="space-y-3">{aiUses.yes.map(item => <li key={item} className="flex gap-3 leading-6"><Check className="mt-1 size-4 shrink-0 text-primary" />{item}</li>)}</ul></Reveal>
+          <Reveal delay={70} className="border p-7 sm:p-9"><h3 className="mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-muted-foreground"><Close className="size-4" />Onde a IA não entra</h3><ul className="space-y-3 text-muted-foreground">{aiUses.no.map(item => <li key={item} className="flex gap-3 leading-6"><Close className="mt-1 size-4 shrink-0" />{item}</li>)}</ul></Reveal>
+        </div>
       </section>
 
-      {/* Projetos */}
-      <section id="projetos" aria-labelledby="projetos-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <div id="projetos-titulo"><Heading eyebrow="Projetos" title="Alguns projetos que construí.">São projetos públicos, com o código aberto: qualquer pessoa técnica da sua confiança pode conferir a qualidade.</Heading></div>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 80} className="[&>article]:h-full"><ProjectCard project={project} index={index} /></Reveal>)}</div>
-        <div className="mt-4"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
-        <p className="mt-8 text-center text-sm text-muted-foreground">Para quem é da área, as tecnologias com que trabalho:</p>
-        <div className="mt-3 grid gap-4 md:grid-cols-3">{technologies.map((group, index) => <Reveal key={group.title} delay={index * 100} className={cn(card, "p-5")}><p className="mb-3 text-sm font-semibold">{group.title}</p><ul className="flex flex-wrap gap-2">{group.items.map(item => <li key={item} className={chip}>{item}</li>)}</ul></Reveal>)}</div>
+      {/* 05 Processo: bloco escuro nos dois temas. */}
+      <section id="processo" aria-labelledby="processo-titulo" className={cn(dark, "relative isolate scroll-mt-20 overflow-hidden py-20 sm:py-28")}>
+        <DiamondLines className="absolute inset-0 -z-10 size-full text-(--copper-bright) opacity-50" />
+        <div className={container}>
+          <Reveal className="max-w-2xl"><Eyebrow index="05" className="text-(--copper-bright)">Como trabalho</Eyebrow><h2 id="processo-titulo" className="mt-5 font-heading text-3xl leading-tight font-light sm:text-4xl lg:text-5xl">Do primeiro contato ao sistema no ar, em quatro passos.</h2></Reveal>
+          <ol className="mt-14 grid gap-x-10 md:grid-cols-4">{processSteps.map((step, index) => <Reveal as="li" key={step.title} delay={index * 70} className="border-t border-white/20 py-8">
+            <p className="font-heading text-4xl font-light text-(--copper-bright) tabular-nums">0{index + 1}</p>
+            <h3 className="mt-4 font-semibold">{step.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-white/65">{step.description}</p>
+          </Reveal>)}</ol>
+        </div>
       </section>
 
-      {/* Sobre */}
-      <section id="sobre" aria-labelledby="sobre-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <Reveal className={cn(card, "grid items-center gap-6 p-6 sm:p-8 md:grid-cols-[auto_1fr]")}>
-          <Avatar className="size-24 rounded-full border sm:size-28"><AvatarImage src={profile.avatar} alt="Vinicius Souza" className="object-cover" /><AvatarFallback className="text-3xl">VS</AvatarFallback></Avatar>
+      {/* 06 Projetos */}
+      <section id="projetos" aria-labelledby="projetos-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
+        <Heading id="projetos-titulo" index="06" eyebrow="Projetos" title="Qualidade que você pode conferir.">Um site no ar para cliente e projetos com o código aberto: qualquer pessoa técnica da sua confiança pode avaliar o trabalho antes de você contratar.</Heading>
+        <div className="mt-14 grid gap-4 md:grid-cols-2">{projects.map((project, index) => <Reveal key={project.name} delay={(index % 2) * 70} className="[&>article]:h-full"><ProjectCard project={project} index={index} /></Reveal>)}</div>
+        <div className="mt-6"><a href={`${profile.github}?tab=repositories`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">Todos os repositórios<ArrowUpRight className="size-4" /></a></div>
+        <div className="mt-14 grid gap-6 border-t pt-8 md:grid-cols-[12rem_1fr]">
+          <p className="text-sm text-muted-foreground">Para quem é da área, as tecnologias com que trabalho:</p>
+          <div className="grid gap-6 sm:grid-cols-3">{technologies.map(group => <div key={group.title}><p className="mb-3 text-xs uppercase tracking-[0.2em] text-primary">{group.title}</p><ul className="flex flex-wrap gap-1.5">{group.items.map(item => <li key={item} className={chip}>{item}</li>)}</ul></div>)}</div>
+        </div>
+      </section>
+
+      {/* 07 Sobre: retrato emoldurado */}
+      <section id="sobre" aria-labelledby="sobre-titulo" className="scroll-mt-20 border-y bg-foreground/[0.02] py-20 sm:py-28">
+        <Reveal className={cn(container, "grid items-center gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-16")}>
+          <div className="relative mx-auto w-full max-w-sm">
+            <div className="relative aspect-[4/5] overflow-hidden bg-black"><Image src={portrait} alt="Vinicius Souza" fill quality={90} sizes="(min-width: 768px) 24rem, 90vw" className="object-cover object-[50%_58%]" /></div>
+            <span aria-hidden="true" className="absolute -inset-3 -z-10 border border-primary/50" />
+          </div>
           <div>
-            <p className={eyebrowClass}>Quem vai construir</p>
-            <h2 id="sobre-titulo" className="mt-2 font-heading text-2xl font-semibold sm:text-3xl">{profile.name}</h2>
-            <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4" />{profile.location} · atendimento remoto</p>
-            <div className="mt-4 space-y-3 leading-7 text-muted-foreground"><p>{profile.role} formado em Análise e Desenvolvimento de Sistemas pelo IFMS. Cuido do projeto do começo ao fim: da primeira conversa ao sistema funcionando na sua empresa, sem intermediários.</p><p>Uso IA todos os dias como parte do trabalho, e justamente por isso sei onde ela ajuda e onde atrapalha. O compromisso é com o resultado: um sistema que a sua equipe entende, usa de verdade e não fica refém de ninguém.</p></div>
-            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"><Linkedin className="size-4" />Trajetória no LinkedIn<ArrowUpRight className="size-4" /></a>
+            <Eyebrow index="07">Quem atende você</Eyebrow>
+            <h2 id="sobre-titulo" className="mt-5 font-heading text-3xl font-light sm:text-5xl">{profile.name}</h2>
+            <p className="mt-2 text-sm font-medium text-primary">Analista de sistemas · Carbon Cycle</p>
+            <p className="mt-3 flex items-center gap-1.5 text-sm text-muted-foreground"><MapPin className="size-4" />{profile.location} · atendimento remoto</p>
+            <div className="mt-6 space-y-4 text-lg leading-8 text-muted-foreground"><p>Crio sistemas e automações para empresas que querem trabalhar com menos retrabalho. Na Carbon Cycle, acompanhamos cada projeto de perto, do primeiro contato à entrega.</p><p>Sou formado em Análise e Desenvolvimento de Sistemas pelo IFMS e passei mais de três anos na Embrapa Pantanal, levantando requisitos com pesquisadores, mantendo sistemas em produção e montando dashboards para decisão. Uso inteligência artificial para entregar mais rápido, sempre com revisão humana.</p></div>
+            <div className="mt-8 border-t pt-6">
+              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Publicações · Evinci 2024, Embrapa</p>
+              <ul className="mt-3 space-y-2 text-sm">
+                <li><a href={paperUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-1.5 hover:text-primary hover:underline">Melhorias no fluxo contínuo de dados das coleções na Embrapa Pantanal<ArrowUpRight className="mt-0.5 size-3.5 shrink-0" /></a></li>
+                <li><a href={proceedingsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-start gap-1.5 hover:text-primary hover:underline">Cadeia produtiva de ovinos em Corumbá e Ladário, Mato Grosso do Sul<ArrowUpRight className="mt-0.5 size-3.5 shrink-0" /></a></li>
+              </ul>
+            </div>
+            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"><Linkedin className="size-4" />Trajetória no LinkedIn<ArrowUpRight className="size-4" /></a>
           </div>
         </Reveal>
       </section>
 
-      {/* Perguntas */}
-      <section id="perguntas" aria-labelledby="perguntas-titulo" className="scroll-mt-24 py-12 sm:py-16">
-        <div id="perguntas-titulo"><Heading eyebrow="Perguntas" title="Antes de começar." /></div>
-        <Reveal className={cn(card, "mt-8 max-w-3xl divide-y overflow-hidden")}>{faq.map(item => <details key={item.question} className="group px-5 py-4"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-2 pr-8 text-sm leading-6 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
+      {/* 08 Perguntas */}
+      <section id="perguntas" aria-labelledby="perguntas-titulo" className={cn(container, "scroll-mt-20 py-20 sm:py-28")}>
+        <Heading id="perguntas-titulo" index="08" eyebrow="Perguntas frequentes" title="Tire suas dúvidas antes de começar." />
+        <Reveal className="mt-10 divide-y border-y">{faq.map(item => <details key={item.question} className="group py-6"><summary className="flex cursor-pointer list-none items-center justify-between gap-6 font-heading text-lg outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-xl [&::-webkit-details-marker]:hidden">{item.question}<Plus className="size-5 shrink-0 text-primary transition-transform group-open:rotate-45 motion-reduce:transition-none" /></summary><p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{item.answer}</p></details>)}</Reveal>
       </section>
 
-      {/* Contato */}
-      <section id="contato" aria-labelledby="contato-titulo" className="scroll-mt-24 pt-8 pb-20 sm:pb-24">
-        <Reveal className={cn(card, "p-6 sm:p-10")}>
-          <p className={eyebrowClass}>Contato</p>
-          <h2 id="contato-titulo" className="mt-2 max-w-2xl font-heading text-2xl font-semibold text-balance sm:text-3xl">Alguma tarefa toma tempo demais por aí?</h2>
-          <p className="mt-3 max-w-2xl leading-7 text-pretty text-muted-foreground">Você não precisa saber o que pedir. Conte como o trabalho é feito hoje e o que mais incomoda: eu respondo com perguntas, uma ideia de caminho e, se fizer sentido, uma proposta com prazo e valor.</p>
-          <div className="mt-6 flex flex-wrap items-center gap-2">{leads ? <OpenLeadButton className={action}><Chat />Enviar mensagem</OpenLeadButton> : <Button nativeButton={false} render={<a href={`mailto:${profile.email}`} />} className={action}><Mail />Enviar e-mail</Button>}<Button nativeButton={false} render={<a href={profile.linkedin} target="_blank" rel="noopener noreferrer" />} variant="outline" className={action}><Linkedin />LinkedIn</Button>
-            <a href={`mailto:${profile.email}`} className="ml-2 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"><Mail className="size-4" />{profile.email}</a></div>
+      {/* Chamada final: bloco escuro com filetes de cobre. */}
+      <section id="contato" aria-labelledby="contato-titulo" className={cn(dark, "relative isolate scroll-mt-20 overflow-hidden")}>
+        <DiamondLines className="absolute inset-0 -z-10 size-full text-(--copper-bright) opacity-60" />
+        <Reveal className={cn(container, "grid items-end gap-10 py-20 sm:py-28 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]")}>
+          <div>
+            <Eyebrow className="text-(--copper-bright)">Contato</Eyebrow>
+            <h2 id="contato-titulo" className="mt-5 font-heading text-3xl leading-tight font-light text-balance sm:text-5xl">Vamos tirar o trabalho manual das costas da sua equipe?</h2>
+            <p className="mt-6 max-w-xl text-lg leading-8 text-pretty text-white/70">Conte em poucas linhas como funciona hoje e o que mais incomoda. Eu mesmo respondo, com perguntas objetivas, um caminho possível e, se fizer sentido, uma proposta com prazo e valor fechado.</p>
+          </div>
+          <div className="flex flex-col gap-3 lg:items-stretch">
+            {talk(leads ? "Quero minha proposta" : "Enviar e-mail", cn(button, "bg-(--copper-bright) text-[oklch(0.2_0.02_50)] hover:bg-(--copper-bright)/90"))}
+            <Button nativeButton={false} render={<a href={profile.linkedin} target="_blank" rel="noopener noreferrer" />} variant="outline" className={cn(button, "border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white")}><Linkedin />LinkedIn</Button>
+            <a href={`mailto:${profile.email}`} className="mt-2 inline-flex items-center gap-2 text-sm text-white/65 hover:text-white"><Mail className="size-4" />{profile.email}</a>
+            <p className="text-xs text-white/50">Contratação pela Carbon Cycle LTDA · CNPJ 55.366.974/0001-85</p>
+          </div>
         </Reveal>
       </section>
     </main>
-    <footer className="border-t"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 py-8 text-sm text-muted-foreground sm:px-6"><p>© {new Date().getFullYear()} Vinicius Souza · Desenvolvimento de software</p><a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-foreground"><Github className="size-4" />@viniszofx</a></div></footer>
+    <footer className={cn(dark, "border-t border-white/10")}><div className={cn(container, "flex flex-wrap items-center justify-between gap-4 py-8 text-sm text-white/60")}><div className="space-y-1"><p>© {new Date().getFullYear()} Vinicius Souza · Carbon Cycle LTDA</p><p className="text-xs text-white/45">CNPJ 55.366.974/0001-85</p></div><a href={profile.github} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 hover:text-white"><Github className="size-4" />@viniszofx</a></div></footer>
     {leads && <LeadWidget />}
   </div>;
 }

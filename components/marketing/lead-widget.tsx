@@ -120,7 +120,7 @@ export function LeadWidget() {
   }
 
   const inputStep = step === "name" || step === "email" || step === "phone" || step === "message";
-  return <div className="fixed right-4 bottom-4 z-40 [--primary:var(--color-cyan-500)] [--primary-foreground:var(--color-white)] [--ring:var(--color-cyan-400)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
+  return <div className="fixed right-4 bottom-4 z-40 [--primary:var(--color-cyan-600)] [--primary-foreground:var(--color-white)] [--ring:var(--color-cyan-500)] dark:[--primary:var(--color-cyan-400)] dark:[--primary-foreground:var(--color-cyan-950)] dark:[--ring:var(--color-cyan-300)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
     {open && <section role="dialog" aria-label="Conversa com o assistente" className={cn(glass, "flex h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] origin-bottom-right animate-rise-in flex-col overflow-hidden rounded-3xl motion-reduce:animate-none")}>
       <header className="flex items-center gap-3 border-b border-foreground/10 px-4 py-3">
         <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"><RiRobot2Line className="size-5" /><span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-card" /></span>
@@ -134,7 +134,7 @@ export function LeadWidget() {
           <div className={cn("max-w-[85%] rounded-2xl px-3.5 py-2 text-sm leading-6 break-words whitespace-pre-wrap", bubble.from === "user" ? "rounded-br-md bg-primary text-primary-foreground" : "rounded-bl-md bg-foreground/[0.06] dark:bg-white/[0.07]")}>{bubble.text}</div>
         </div>)}
         {typing && <div className="flex justify-start" aria-label="digitando"><div className="flex gap-1 rounded-2xl rounded-bl-md bg-foreground/[0.06] px-3.5 py-3 dark:bg-white/[0.07]">{[0, 150, 300].map(delay => <span key={delay} className="size-1.5 animate-bounce rounded-full bg-muted-foreground motion-reduce:animate-none" style={{ animationDelay: `${delay}ms` }} />)}</div></div>}
-        {step === "topic" && !typing && <div className="mt-1 flex flex-wrap justify-end gap-2">{topics.map(topic => <button key={topic} type="button" onClick={() => chooseTopic(topic)} className="rounded-full border border-primary/40 px-3.5 py-1.5 text-sm text-primary outline-none hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-ring dark:text-cyan-300">{topic}</button>)}</div>}
+        {step === "topic" && !typing && <div className="mt-1 flex flex-wrap justify-end gap-2">{topics.map(topic => <button key={topic} type="button" onClick={() => chooseTopic(topic)} className="rounded-full border border-primary/40 px-3.5 py-1.5 text-sm text-primary outline-none hover:bg-primary/10 focus-visible:ring-2 focus-visible:ring-ring">{topic}</button>)}</div>}
         {step === "confirm" && !typing && <div className="mt-1 flex flex-wrap justify-end gap-2">
           <button type="button" onClick={() => { push("user", "Quero corrigir"); restart(); }} className="rounded-full border border-foreground/15 px-3.5 py-1.5 text-sm outline-none hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-ring">Corrigir</button>
           <button type="button" onClick={() => { push("user", "Pode enviar!"); void send(lead); }} className="rounded-full bg-primary px-3.5 py-1.5 text-sm font-medium text-primary-foreground outline-none hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring">Enviar</button>
@@ -159,7 +159,8 @@ export function LeadWidget() {
       </form>
     </section>}
     <button type="button" aria-expanded={open} aria-label={open ? "Fechar conversa" : "Abrir conversa"} onClick={() => setOpen(value => !value)}
-      className="group relative grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg outline-none transition-colors hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none">
+      className="group relative grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_16px_40px_-12px_color-mix(in_srgb,var(--primary)_70%,transparent)] outline-none transition-transform duration-300 hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:transition-none">
+      {!open && <span aria-hidden="true" className="absolute inset-0 animate-ping rounded-full bg-primary/40 [animation-duration:2.5s] motion-reduce:hidden" />}
       {open ? <RiCloseLine className="relative size-6" /> : <RiChat3Line className="relative size-6" />}
     </button>
   </div>;

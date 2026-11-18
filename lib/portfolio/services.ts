@@ -4,21 +4,21 @@
 
 // Situações do dia a dia que o cliente reconhece, com o que dá para fazer em cada uma.
 export const situations = [
-  { problem: "A equipe passa horas copiando dados de uma planilha para outra.", solution: "Os dados entram uma vez só e o resto acontece sozinho." },
-  { problem: "Pedidos e informações se perdem no meio do WhatsApp e do e-mail.", solution: "Tudo num lugar só, com histórico e responsável." },
-  { problem: "Ninguém sabe ao certo em que pé está um pedido, chamado ou entrega.", solution: "Um painel que mostra o andamento de cada um." },
-  { problem: "O relatório do mês leva dias para ficar pronto.", solution: "Relatórios montados automaticamente, quando você precisar." },
-  { problem: "Você usa dois sistemas que não se conversam e alguém digita tudo duas vezes.", solution: "Os sistemas passam a trocar as informações entre si." },
-  { problem: "Existe um sistema antigo que ninguém tem coragem de mexer.", solution: "Ele é organizado, documentado e volta a evoluir." },
+  { problem: "A equipe passa horas copiando dados de uma planilha para outra.", solution: "Os dados entram uma vez só. O resto acontece sozinho." },
+  { problem: "Pedidos e informações se perdem no meio do WhatsApp e do e-mail.", solution: "Tudo num lugar só, com histórico e um responsável para cada coisa." },
+  { problem: "Ninguém sabe ao certo em que pé está um pedido, chamado ou entrega.", solution: "Um painel mostra o andamento de tudo, na hora." },
+  { problem: "O relatório do mês leva dias para ficar pronto.", solution: "O relatório fica pronto sozinho, quando você precisar." },
+  { problem: "Você usa dois sistemas que não se conversam e alguém digita tudo duas vezes.", solution: "Os sistemas passam a conversar, e ninguém digita nada duas vezes." },
+  { problem: "Existe um sistema antigo que ninguém tem coragem de mexer.", solution: "Ele é organizado, documentado e volta a trabalhar a seu favor." },
 ] as const;
 
 export const services = [
-  { id: "sistemas", title: "Sistemas sob medida", description: "Um sistema feito para o jeito que a sua equipe já trabalha, e não o contrário: cadastros, pedidos, aprovações e painéis num lugar só.", items: ["Controle de pedidos", "Cadastro de clientes", "Acesso por perfil"] },
-  { id: "automacao", title: "Automação de tarefas", description: "Aquilo que alguém faz toda semana copiando, colando e conferindo passa a acontecer sozinho, com uma pessoa revisando só o que exige decisão.", items: ["Fim do copia e cola", "Avisos automáticos", "Relatórios prontos"] },
-  { id: "integracoes", title: "Sistemas que conversam", description: "Ligo o seu sistema ao financeiro, à loja virtual, ao WhatsApp ou a outros serviços que você já usa, para ninguém precisar digitar a mesma coisa duas vezes.", items: ["Sistema de gestão", "Pagamentos", "WhatsApp"] },
-  { id: "ia", title: "IA onde faz sentido", description: "Mostro onde a inteligência artificial realmente economiza tempo na sua empresa e onde só traria risco. Custos e limites explicados antes de começar.", items: ["Assistente interno", "Busca em documentos", "Custo explicado antes"] },
-  { id: "mobile", title: "Aplicativos para celular", description: "Para quem trabalha na rua ou em campo: aplicativos que funcionam no celular, mesmo com internet fraca.", items: ["Instala no celular", "Funciona com internet fraca", "Fotos e localização"] },
-  { id: "evolucao", title: "Cuidar do sistema que você já tem", description: "Assumo sistemas existentes: corrijo o que está lento ou quebrando, atualizo o que ficou velho e documento o que ninguém documentou.", items: ["Correção de problemas", "Atualizações", "Documentação"] },
+  { id: "sistemas", title: "Sistemas sob medida", description: "Um sistema que se adapta à sua equipe, e não o contrário: cadastros, pedidos, aprovações e painéis num lugar só.", items: ["Controle de pedidos", "Cadastro de clientes", "Acesso por perfil"] },
+  { id: "automacao", title: "Automação de tarefas", description: "O que alguém faz toda semana copiando, colando e conferindo passa a acontecer sozinho. A sua equipe fica só com o que exige decisão.", items: ["Fim do copia e cola", "Avisos automáticos", "Relatórios prontos"] },
+  { id: "integracoes", title: "Sistemas que conversam", description: "Ligo o seu sistema ao financeiro, à loja virtual, ao WhatsApp e aos serviços que você já usa. Digitou uma vez, chegou em todo lugar.", items: ["Sistema de gestão", "Pagamentos", "WhatsApp"] },
+  { id: "ia", title: "IA onde faz sentido", description: "Mostro onde a inteligência artificial economiza tempo de verdade na sua empresa, e onde só traria risco. Custos e limites claros antes de começar.", items: ["Assistente interno", "Busca em documentos", "Custo explicado antes"] },
+  { id: "mobile", title: "Aplicativos para celular", description: "Para quem trabalha na rua ou em campo: tudo na palma da mão, funcionando mesmo com internet fraca.", items: ["Instala no celular", "Funciona com internet fraca", "Fotos e localização"] },
+  { id: "evolucao", title: "Cuidar do sistema que você já tem", description: "Assumo o sistema que você já tem: corrijo o que está lento ou quebrando, atualizo o que ficou velho e documento o que ninguém documentou.", items: ["Correção de problemas", "Atualizações", "Documentação"] },
 ] as const;
 
 // O que "IA como ferramenta consciente" significa na prática.

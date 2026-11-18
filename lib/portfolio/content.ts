@@ -11,19 +11,21 @@ export const profile = {
 };
 
 export const technologies = [
-  { title: "Interfaces", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"] },
-  { title: "Aplicações e APIs", items: ["Node.js", "PHP / Laravel", "Java / Spring Boot", "C# / ASP.NET Core"] },
-  { title: "Dados e infraestrutura", items: ["PostgreSQL", "MySQL", "MongoDB", "Docker", "Linux", "Git"] },
+  { title: "Interfaces", items: ["React", "Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui", "Figma"] },
+  { title: "Aplicações e APIs", items: ["Node.js / Express", "Bun / Hono", "PHP / Laravel", "Java / Spring Boot", "C# / ASP.NET Core"] },
+  { title: "Dados e infraestrutura", items: ["PostgreSQL", "MySQL", "MongoDB", "Power BI", "Docker", "Vercel", "Magalu Cloud", "Git"] },
 ];
 
 export const projects = [
   {
-    name: "Workspace",
-    category: "Produtividade · Web",
-    description: "Um espaço para organizar ideias e tarefas: anotações e quadros de tarefas com listas, cartões e anexos, que funciona direto no navegador.",
-    tags: ["Next.js", "React", "Tiptap", "IndexedDB"],
-    href: "https://github.com/viniszofx/viniszofx",
-    preview: "workspace",
+    name: "Cartório LCM",
+    category: "Site institucional · Cliente",
+    description: "Site do cartório, do levantamento de requisitos à publicação em nuvem, com análise de viabilidade de um sistema interno.",
+    partner: { name: "Gabriel", href: "https://gabriellucasafb.com.br/", linkedin: "https://www.linkedin.com/in/gabriellucasafb/" },
+    tags: ["Requisitos", "Landing page", "Vercel"],
+    href: "https://cartorioaltolonga.com.br/",
+    link: "site",
+    preview: "site",
   },
   {
     name: "Areco",
@@ -31,6 +33,7 @@ export const projects = [
     description: "Cadastro de produtos com código, categoria, preço e estoque, que confere os dados na hora e não deixa informação errada entrar.",
     tags: ["C#", "ASP.NET Core", "React", "PostgreSQL"],
     href: "https://github.com/viniszofx/areco-service",
+    link: "code",
     preview: "products",
   },
   {
@@ -39,6 +42,7 @@ export const projects = [
     description: "O motor de um sistema de atendimento: registra cada chamado, a prioridade e o andamento, pronto para ser ligado a qualquer tela ou aplicativo.",
     tags: ["Java", "Spring Boot", "PostgreSQL", "Docker"],
     href: "https://github.com/viniszofx/api-spring",
+    link: "code",
     preview: "api",
   },
   {
@@ -47,6 +51,7 @@ export const projects = [
     description: "Sistema de chamados feito em dupla no IFMS. Organiza os pedidos de suporte e mostra quantos estão abertos e quanto tempo cada um levou.",
     tags: ["PHP", "Laravel", "Bootstrap", "Docker"],
     href: "https://github.com/viniszofx/eticket",
+    link: "code",
     preview: "tickets",
   },
 ] as const;
