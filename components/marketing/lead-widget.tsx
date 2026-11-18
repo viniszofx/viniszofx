@@ -120,7 +120,7 @@ export function LeadWidget() {
   }
 
   const inputStep = step === "name" || step === "email" || step === "phone" || step === "message";
-  return <div className="fixed right-4 bottom-4 z-40 [--primary:var(--color-blue-800)] [--primary-foreground:var(--color-white)] [--ring:var(--color-blue-500)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
+  return <div className="fixed right-4 bottom-4 z-40 [--primary:oklch(0.76_0.1_58)] [--primary-foreground:oklch(0.2_0.02_50)] [--ring:oklch(0.76_0.1_58)] flex flex-col items-end gap-3 sm:right-6 sm:bottom-6 print:hidden">
     {open && <section role="dialog" aria-label="Conversa com o assistente" className={cn(glass, "flex h-[min(36rem,calc(100dvh-7rem))] w-[min(24rem,calc(100vw-2rem))] origin-bottom-right animate-rise-in flex-col overflow-hidden rounded-3xl motion-reduce:animate-none")}>
       <header className="flex items-center gap-3 border-b border-foreground/10 px-4 py-3">
         <span className="relative grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"><RiRobot2Line className="size-5" /><span className="absolute right-0 bottom-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-card" /></span>
