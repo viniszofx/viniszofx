@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <!-- Fluxo: o caminho de um pedido em etapas retas, com uma volta de ajuste; grão de impressão. -->
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.8 0 0 0 -1.05"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto"><path d="M0 0L12 6 0 12z" fill="#000"/></marker>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#000"/></pattern>
+  </defs>
+  <rect width="800" height="1000" fill="#d1ddd3"/>
+  <g font-family="Geist Mono, monospace" font-size="20" font-weight="500" fill="#000">
+    <text x="60" y="90">FLUXO · PEDIDO</text>
+  </g>
+  <!-- conectores -->
+  <g fill="none" stroke="#000" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M250 220H520"/>
+    <path d="M620 290V440"/>
+    <path d="M520 520H290"/>
+    <path d="M180 590V740"/>
+    <path d="M280 810H520"/>
+  </g>
+  <!-- volta de ajuste (tracejada) -->
+  <path d="M180 450V330H120" fill="none" stroke="#000" stroke-width="2" stroke-dasharray="10 8"/>
+  <!-- etapas -->
+  <g stroke="#000" stroke-width="3">
+    <rect x="80" y="150" width="170" height="140" fill="#fff"/>
+    <rect x="520" y="150" width="200" height="140" fill="#fff"/>
+    <rect x="520" y="450" width="200" height="140" fill="#000"/>
+    <rect x="80" y="450" width="200" height="140" fill="url(#dots)"/>
+    <rect x="80" y="740" width="200" height="140" fill="#fff"/>
+    <rect x="520" y="740" width="200" height="140" fill="#fe7141"/>
+  </g>
+  <g font-family="Geist Mono, monospace" font-size="18" font-weight="500" fill="#000">
+    <text x="100" y="190">01</text><text x="100" y="270">PEDIDO</text>
+    <text x="540" y="190">02</text><text x="540" y="270">CONFERE</text>
+    <text x="540" y="490" fill="#fff">03</text><text x="540" y="570" fill="#fff">APROVA</text>
+    <text x="100" y="490" fill="#fff">↺</text>
+    <text x="100" y="780">04</text><text x="100" y="860">PRODUZ</text>
+    <text x="540" y="780">05</text><text x="540" y="860">ENTREGUE</text>
+  </g>
+  <rect width="800" height="1000" fill="#d1ddd3" filter="url(#grain)"/>
+</svg>

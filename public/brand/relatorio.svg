@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <!-- Relatório: uma página impressa com indicadores, gráfico e linhas de texto; grão de impressão. -->
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.8 0 0 0 -1.05"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <pattern id="px" width="14" height="14" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#000"/></pattern>
+  </defs>
+  <rect width="800" height="1000" fill="#f0ff1c"/>
+  <!-- página levemente girada, com sombra chapada -->
+  <g transform="rotate(-4 400 520)">
+    <rect x="150" y="130" width="520" height="760" fill="#000"/>
+    <rect x="130" y="110" width="520" height="760" fill="#fff" stroke="#000" stroke-width="3"/>
+    <g font-family="Geist Mono, monospace" font-weight="500" fill="#000">
+      <text x="170" y="170" font-size="18">RELATÓRIO · MAIO</text>
+      <text x="530" y="170" font-size="18">P. 01</text>
+    </g>
+    <path d="M170 190H610" stroke="#000" stroke-width="2"/>
+    <!-- indicadores -->
+    <g font-family="Teachers, sans-serif" font-weight="500" fill="#000">
+      <!-- Rótulos, não números: a arte não pode parecer resultado de cliente (manual, "Prova antes de promessa"). -->
+      <text x="170" y="285" font-size="76" letter-spacing="-4">Prazo</text>
+      <text x="420" y="285" font-size="76" letter-spacing="-4">Custo</text>
+    </g>
+    <g font-family="Geist Mono, monospace" font-size="14" fill="#000">
+      <text x="172" y="320">PEDIDOS NA SEMANA</text><text x="422" y="320">POR ETAPA</text>
+    </g>
+    <!-- gráfico em pixels -->
+    <rect x="170" y="370" width="440" height="230" fill="none" stroke="#000" stroke-width="2"/>
+    <rect x="200" y="510" width="56" height="70" fill="url(#px)"/>
+    <rect x="280" y="470" width="56" height="110" fill="url(#px)"/>
+    <rect x="360" y="440" width="56" height="140" fill="url(#px)"/>
+    <rect x="440" y="420" width="56" height="160" fill="url(#px)"/>
+    <rect x="520" y="390" width="56" height="190" fill="#fe7141" stroke="#000" stroke-width="2"/>
+    <!-- texto -->
+    <g fill="#000">
+      <rect x="170" y="640" width="440" height="10"/><rect x="170" y="668" width="400" height="10"/>
+      <rect x="170" y="696" width="420" height="10"/><rect x="170" y="724" width="260" height="10"/>
+      <rect x="170" y="780" width="200" height="10" opacity=".35"/><rect x="170" y="808" width="160" height="10" opacity=".35"/>
+    </g>
+  </g>
+  <rect width="800" height="1000" fill="#f0ff1c" filter="url(#grain)"/>
+</svg>

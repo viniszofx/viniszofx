@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <!-- Capítulo Dados: gráfico de barras em pixels, crescendo da esquerda para a direita, com grão de impressão. -->
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.8 0 0 0 -1.05"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <pattern id="px" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#000"/></pattern>
+    <pattern id="px-light" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="5" y="5" width="6" height="6" fill="#000"/></pattern>
+  </defs>
+  <rect width="800" height="1000" fill="#cdabfe"/>
+  <!-- grade -->
+  <g stroke="#000" stroke-width="1" opacity=".35"><path d="M60 200H740M60 400H740M60 600H740"/></g>
+  <path d="M60 860H740" stroke="#000" stroke-width="3"/>
+  <!-- barras: a parte de baixo cheia, o topo em meio-tom -->
+  <g>
+    <rect x="80" y="700" width="100" height="160" fill="url(#px)"/><rect x="80" y="640" width="100" height="60" fill="url(#px-light)"/>
+    <rect x="200" y="600" width="100" height="260" fill="url(#px)"/><rect x="200" y="520" width="100" height="80" fill="url(#px-light)"/>
+    <rect x="320" y="520" width="100" height="340" fill="url(#px)"/><rect x="320" y="440" width="100" height="80" fill="url(#px-light)"/>
+    <rect x="440" y="400" width="100" height="460" fill="url(#px)"/><rect x="440" y="320" width="100" height="80" fill="url(#px-light)"/>
+    <rect x="560" y="240" width="160" height="620" fill="#000"/><rect x="560" y="160" width="160" height="80" fill="url(#px-light)"/>
+  </g>
+  <rect x="580" y="260" width="120" height="40" fill="#f0ff1c"/>
+  <g font-family="Geist Mono, monospace" font-size="18" font-weight="500" fill="#000">
+    <text x="60" y="100">PAINEL · ANDAMENTO</text>
+    <text x="588" y="288">HOJE</text>
+    <text x="80" y="900">JAN</text><text x="200" y="900">FEV</text><text x="320" y="900">MAR</text><text x="440" y="900">ABR</text><text x="560" y="900">MAI</text>
+  </g>
+  <rect width="800" height="1000" fill="#cdabfe" filter="url(#grain)"/>
+</svg>

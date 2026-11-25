@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <!-- Conferência: tabela de registros validados linha a linha, com um erro apontado; grão de impressão. -->
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.8 0 0 0 -1.05"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+  <rect width="800" height="1000" fill="#99eeff"/>
+  <g font-family="Geist Mono, monospace" font-size="20" font-weight="500" fill="#000">
+    <text x="60" y="90">CONFERÊNCIA · LOTE 24</text>
+  </g>
+  <!-- tabela -->
+  <rect x="60" y="130" width="680" height="760" fill="#fff" stroke="#000" stroke-width="3"/>
+  <rect x="60" y="130" width="680" height="70" fill="#000"/>
+  <g font-family="Geist Mono, monospace" font-size="16" font-weight="500" fill="#fff">
+    <text x="90" y="174">ID</text><text x="220" y="174">CAMPO</text><text x="470" y="174">VALOR</text><text x="650" y="174">OK</text>
+  </g>
+  <g stroke="#000" stroke-width="1.5"><path d="M60 300H740M60 400H740M60 500H740M60 600H740M60 700H740M60 800H740"/></g>
+  <!-- linha com erro -->
+  <rect x="61.5" y="501" width="677" height="98" fill="#fe7141"/>
+  <g font-family="Geist Mono, monospace" font-size="18" fill="#000">
+    <text x="90" y="257">0418</text><text x="90" y="357">0419</text><text x="90" y="457">0420</text><text x="90" y="557">0421</text><text x="90" y="657">0422</text><text x="90" y="757">0423</text><text x="90" y="857">0424</text>
+  </g>
+  <g fill="#000">
+    <rect x="220" y="244" width="160" height="12"/><rect x="470" y="244" width="110" height="12"/>
+    <rect x="220" y="344" width="130" height="12"/><rect x="470" y="344" width="90" height="12"/>
+    <rect x="220" y="444" width="170" height="12"/><rect x="470" y="444" width="120" height="12"/>
+    <rect x="220" y="544" width="150" height="12"/><rect x="470" y="544" width="70" height="12"/>
+    <rect x="220" y="644" width="120" height="12"/><rect x="470" y="644" width="100" height="12"/>
+    <rect x="220" y="744" width="160" height="12"/><rect x="470" y="744" width="130" height="12"/>
+    <rect x="220" y="844" width="140" height="12"/><rect x="470" y="844" width="80" height="12"/>
+  </g>
+  <!-- marcas: check em quadrado cheio, erro em x -->
+  <g fill="none" stroke="#000" stroke-width="5" stroke-linecap="square">
+    <path d="M648 252l12 12 22-24M648 352l12 12 22-24M648 452l12 12 22-24M648 652l12 12 22-24M648 752l12 12 22-24M648 852l12 12 22-24"/>
+    <path d="M652 536l28 28M680 536l-28 28"/>
+  </g>
+  <rect width="800" height="1000" fill="#99eeff" filter="url(#grain)"/>
+</svg>

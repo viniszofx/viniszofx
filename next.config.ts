@@ -6,6 +6,8 @@ const nodeOnly = { browser: "./lib/browser/empty-module.ts" };
 const nextConfig: NextConfig = {
   // 75 é o padrão; 90 fica para as fotos da página inicial, de fundo preto, onde 75 cria blocos e faixas nas sombras.
   images: { qualities: [75, 90] },
+  // Importa só os ícones usados: sem isto, qualquer componente de cliente com um ícone Remix puxava a biblioteca inteira (~160 KB).
+  experimental: { optimizePackageImports: ["@remixicon/react"] },
   // Keep the dev server's generated manifests and Turbopack state separate from builds.
   distDir: process.env.NEXT_DIST_DIR || (process.env.NODE_ENV === "development" ? ".next-dev" : ".next"),
   // The Docker image sets NEXT_OUTPUT=standalone; Vercel and local builds keep the default output.

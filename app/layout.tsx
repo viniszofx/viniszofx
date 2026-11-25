@@ -1,23 +1,19 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { JetBrains_Mono, Oxanium, Raleway } from "next/font/google";
+import { Geist_Mono, Teachers } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { siteUrl } from "@/lib/seo/site-url";
 
-const oxanium = Oxanium({
+// Identidade editorial (docs/brand/README.md): Teachers em tudo, Geist Mono nos rótulos.
+const teachers = Teachers({
   subsets: ["latin"],
-  variable: "--font-oxanium",
+  variable: "--font-teachers",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-});
-
-const ralewayHeading = Raleway({
-  subsets: ["latin"],
-  variable: "--font-raleway",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -38,9 +34,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         "h-full font-sans antialiased",
         theme === "dark" && "dark",
         theme === "light" && "light",
-        jetbrainsMono.variable,
-        oxanium.variable,
-        ralewayHeading.variable,
+        teachers.variable,
+        geistMono.variable,
       )}
     >
       <body className="flex min-h-full flex-col">

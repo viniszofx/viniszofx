@@ -2,6 +2,24 @@
 // inventados: só o que é oferecido e como o trabalho é feito.
 // Escrito para quem não é da área: o cliente se reconhece pelo problema, não pelo nome da tecnologia.
 
+// Os dois focos do site, como capítulos: processos (o caminho do trabalho) e dados (a informação que ele gera).
+export const pillars = [
+  { id: "processos", title: "Processos", lead: "O trabalho anda sozinho, do pedido à entrega.", description: "Mapeamos como o trabalho é feito hoje, tiramos o copia e cola e o retrabalho, e cada etapa passa a ter um responsável e um prazo à vista.", items: ["Mapa de como o trabalho é feito hoje", "Fim do copia e cola e do retrabalho", "Aprovações com responsável claro", "Avisos automáticos no momento certo", "Sistemas que conversam entre si"] },
+  { id: "dados", title: "Dados", lead: "Números confiáveis, prontos para decidir.", description: "Os dados entram uma vez só, são conferidos no caminho e viram painéis e relatórios que ficam prontos quando você precisa. Tudo em seu nome.", items: ["Dados que entram uma vez só", "Conferência e validação automáticas", "Painel com o andamento de tudo, na hora", "Relatórios prontos, sem esperar o fim do mês", "Dados protegidos e em seu nome"] },
+] as const;
+
+// Faixa da abertura: ferramentas e práticas de dados e análise. Só o que já aparece no currículo, nos casos
+// (Excel, Power BI, exportação em CSV, coleta e validação de dados) e na lista de tecnologias.
+export const dataStack = [
+  { label: "Power BI", icon: "chart" }, { label: "Painéis de acompanhamento", icon: "dashboard" },
+  { label: "PostgreSQL", icon: "database" }, { label: "Consultas SQL", icon: "sql" },
+  { label: "Excel", icon: "sheet" }, { label: "Relatórios automáticos", icon: "report" },
+  { label: "MySQL", icon: "database" }, { label: "Validação de dados", icon: "check" },
+  { label: "MongoDB", icon: "database" }, { label: "Exportação em CSV", icon: "file" },
+  { label: "Coleta em tempo real", icon: "pulse" }, { label: "Integração por API", icon: "plug" },
+  { label: "Modelagem de dados", icon: "tree" }, { label: "Indicadores para decisão", icon: "target" },
+] as const;
+
 // Situações do dia a dia que o cliente reconhece, com o que dá para fazer em cada uma.
 export const situations = [
   { problem: "A equipe passa horas copiando dados de uma planilha para outra.", solution: "Os dados entram uma vez só. O resto acontece sozinho." },

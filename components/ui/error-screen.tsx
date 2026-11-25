@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { RiArrowLeftLine, RiErrorWarningLine, RiHome4Line, RiRefreshLine } from "@remixicon/react";
-import { Button } from "@/components/ui/button";
+import { RiArrowLeftLine, RiErrorWarningLine, RiHome4Line, RiRefreshLine } from "@/components/icons";
+import { buttonVariants } from "@/components/ui/button-variants";
+import { cn } from "@/lib/utils";
 
+// Botões HTML com o visual do Button: esta tela é carregada em toda página (error.tsx), então fica sem a Base UI.
 export function ErrorScreen({
   title = "Algo não saiu como esperado",
   description = "Ocorreu um problema ao abrir esta página. Tente novamente ou volte ao início.",
@@ -27,9 +29,9 @@ export function ErrorScreen({
       <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">{description}</p>
       {reference && <p className="mt-4 text-xs text-muted-foreground">Referência: <code className="font-mono">{reference}</code></p>}
       <div className="mt-6 flex flex-wrap justify-center gap-2">
-        {onRetry && <Button type="button" onClick={onRetry}><RiRefreshLine />Tentar novamente</Button>}
-        <Button type="button" variant="outline" onClick={() => window.history.back()}><RiArrowLeftLine />Voltar</Button>
-        <Button type="button" variant="ghost" nativeButton={false} render={<Link href={homeHref} />}><RiHome4Line />Início</Button>
+        {onRetry && <button type="button" className={cn(buttonVariants())} onClick={onRetry}><RiRefreshLine />Tentar novamente</button>}
+        <button type="button" className={cn(buttonVariants({ variant: "outline" }))} onClick={() => window.history.back()}><RiArrowLeftLine />Voltar</button>
+        <Link href={homeHref} className={cn(buttonVariants({ variant: "ghost" }))}><RiHome4Line />Início</Link>
       </div>
     </section>
   </main>;

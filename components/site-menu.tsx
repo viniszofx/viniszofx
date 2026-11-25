@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { RiMenuLine } from "@remixicon/react";
+import { RiMenuLine } from "@/components/icons";
 
 /** Menu do site em telas menores: fecha ao escolher um link, ao clicar fora ou com Esc. */
 export function SiteMenu({ links }: { links: { href: string; label: string }[] }) {
@@ -16,7 +16,7 @@ export function SiteMenu({ links }: { links: { href: string; label: string }[] }
     document.addEventListener("keydown", close);
     return () => { document.removeEventListener("pointerdown", close); document.removeEventListener("keydown", close); };
   }, []);
-  return <details ref={menu} className="relative lg:hidden">
+  return <details ref={menu} className="relative xl:hidden">
     <summary aria-label="Menu" className="grid size-9 cursor-pointer list-none place-items-center rounded-full outline-none hover:bg-foreground/5 focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
       <RiMenuLine className="size-5" />
     </summary>

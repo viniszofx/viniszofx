@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ForgotPasswordButton } from "@/components/auth/password-reset";
 import { LoginForm } from "@/components/login-form";
 import { buttonVariants } from "@/components/ui/button";
-import { DiamondLines } from "@/components/marketing/art";
+import { PixelField } from "@/components/marketing/art";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { hasAuthUsers } from "@/lib/auth/users";
 import { isLocalAuth } from "@/lib/db";
@@ -18,7 +18,7 @@ export default async function LoginPage() {
     // .home-dark: o login fica sempre escuro, como a página inicial, e o cabeçalho esconde a troca de tema.
     <main className="home-dark relative isolate flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden px-4 py-12 sm:px-6">
       {/* Padrão 01 da marca (losangos concêntricos) em cobre, atrás do cartão. */}
-      <DiamondLines className="absolute inset-0 -z-10 size-full text-primary opacity-60" />
+      <PixelField className="absolute inset-0 -z-10 size-full text-foreground opacity-15" />
       <Card className="w-full max-w-md rounded-none bg-card/80 ring-0 backdrop-blur-md">
         <CardHeader className="gap-3 text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-primary">Viniccius</p>

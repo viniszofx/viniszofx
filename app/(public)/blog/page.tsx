@@ -6,7 +6,7 @@ import Link from "next/link";
 import { RiArrowRightLine as ArrowRight, RiArticleLine as Article } from "@remixicon/react";
 import { listPublishedPosts } from "@/lib/blog/posts";
 import { blogAssetUrl } from "@/lib/blog/types";
-import { DiamondLines } from "@/components/marketing/art";
+import { PixelField } from "@/components/marketing/art";
 
 export const metadata: Metadata = { title: "Blog | Vinicius Souza", description: "Artigos, ideias e experiências sobre desenvolvimento de software.", alternates: { canonical: "/blog" } };
 
@@ -14,7 +14,7 @@ export default async function BlogPage() {
   const posts = await listPublishedPosts();
   return <main className="relative isolate w-full flex-1">
     {/* Padrão 01 da marca no alto da página, atrás do título, sumindo para baixo. */}
-    <DiamondLines className="absolute inset-x-0 top-0 -z-10 h-80 w-full text-primary opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]" />
+    <PixelField className="absolute inset-x-0 top-0 -z-10 h-80 w-full text-foreground opacity-15" fade="down" />
     <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
     <header className="mb-10 border-b pb-8"><p className="mb-3 text-xs font-semibold uppercase tracking-widest text-primary">Publicações</p><h1 className="font-heading text-4xl font-semibold sm:text-5xl">Blog</h1><p className="mt-4 max-w-2xl text-muted-foreground">Notas sobre software, projetos e o trabalho de construir produtos digitais.</p></header>
     {posts.length ? <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{posts.map((post) =>

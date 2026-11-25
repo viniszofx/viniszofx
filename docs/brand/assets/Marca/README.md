@@ -1,3 +1,9 @@
-# Marca
+# Marca · v2 Editorial
 
-O símbolo V: moldura e V em cobre (#d39a6c, #e7b48a) sobre grafite (#1b1e22). `simbolo-v.svg` é o favicon do site (app/icon.svg, copiado sem alteração); `icone-app.svg` é o ícone de tela inicial, redesenhado em SVG a partir de app/apple-icon.tsx com as mesmas medidas e cores. Não recolorir, não distorcer.
+| Arquivo | O que é |
+| --- | --- |
+| `simbolo-v.svg` | Símbolo "Vinicius.": V cheio em branco, quadrado preto, ponto laranja `#FE7141`. Grade de 32, sem raio. |
+| `icone-app.svg` | Ícone de tela inicial, 180×180 (o sistema recorta os cantos). |
+| `assinatura.svg` | Símbolo + "Vinicius Souza" em Teachers Medium. Converta o texto em curvas antes de mandar para gráfica. |
+
+Construção e regras de uso: `docs/brand/README.md`, seção 2.

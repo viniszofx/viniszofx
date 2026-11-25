@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <!-- Capítulo Processos: cartões andando por três colunas (a fazer, fazendo, feito), com grão de impressão. -->
+  <defs>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.8 0 0 0 -1.05"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#000"/></pattern>
+  </defs>
+  <rect width="800" height="1000" fill="#fe7141"/>
+  <!-- colunas -->
+  <g fill="none" stroke="#000" stroke-width="2">
+    <path d="M60 120V900M300 120V900M540 120V900M760 120V900"/>
+  </g>
+  <g font-family="Geist Mono, monospace" font-size="18" font-weight="500" fill="#000">
+    <text x="76" y="104">A FAZER</text><text x="316" y="104">FAZENDO</text><text x="556" y="104">FEITO</text>
+  </g>
+  <!-- cartões -->
+  <g fill="#fff" stroke="#000" stroke-width="2">
+    <rect x="80" y="150" width="200" height="120"/><rect x="80" y="290" width="200" height="120"/><rect x="80" y="430" width="200" height="120"/>
+    <rect x="320" y="150" width="200" height="120"/><rect x="320" y="290" width="200" height="120"/>
+  </g>
+  <rect x="560" y="150" width="180" height="120" fill="#000"/><rect x="560" y="290" width="180" height="120" fill="#000"/>
+  <rect x="560" y="430" width="180" height="120" fill="#000"/><rect x="560" y="570" width="180" height="120" fill="#000"/>
+  <rect x="560" y="710" width="180" height="120" fill="url(#dots)"/>
+  <g fill="#000"><rect x="100" y="175" width="120" height="10"/><rect x="100" y="315" width="90" height="10"/><rect x="100" y="455" width="140" height="10"/><rect x="340" y="175" width="110" height="10"/><rect x="340" y="315" width="140" height="10"/></g>
+  <g fill="#fe7141"><rect x="580" y="175" width="100" height="10"/><rect x="580" y="315" width="130" height="10"/><rect x="580" y="455" width="80" height="10"/><rect x="580" y="595" width="120" height="10"/></g>
+  <!-- seta de fluxo -->
+  <path d="M120 960H700" stroke="#000" stroke-width="4"/><path d="M690 944l24 16-24 16z" fill="#000"/>
+  <rect width="800" height="1000" fill="#fe7141" filter="url(#grain)"/>
+</svg>

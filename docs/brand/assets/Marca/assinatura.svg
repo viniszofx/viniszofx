@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 48">
+  <!-- Assinatura v2: símbolo + nome em Inter Tight Medium, tracking -0,04em. Converter o texto em curvas ao exportar. -->
+  <rect width="48" height="48" fill="#000"/>
+  <g transform="scale(1.5)">
+    <path d="M6 7h5.5L16 19.5 20.5 7H26l-7.5 18h-5z" fill="#fff"/>
+    <rect x="22" y="21" width="4" height="4" fill="#fe7141"/>
+  </g>
+  <text x="62" y="34" font-family="Teachers, sans-serif" font-weight="500" font-size="28" letter-spacing="-1.1" fill="#000">Vinicius Souza</text>
+</svg>

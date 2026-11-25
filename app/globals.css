@@ -12,127 +12,196 @@
   @media (prefers-color-scheme: dark) { &:where(:root:not(.light), :root:not(.light) *) { @slot; } }
 }
 
-/* Paleta grafite e cobre: fundo ardósia frio (levemente azulado), destaque em cobre polido e, no claro,
-   branco-mármore. O cobre fica só onde pede atenção: ação principal, seleção, foco e filetes. */
+/* Paleta editorial (docs/brand/README.md): papel branco, tinta preta e cinco cores de bloco chapadas.
+   A cor vem em blocos inteiros; o resto é tinta. .paper força tinta preta dentro de um bloco claro
+   (cores de bloco) e .ink força o tema escuro dentro de um bloco preto, nos dois temas. */
 :root {
-  --background: oklch(0.968 0.003 250);
-  --foreground: oklch(0.2 0.01 255);
-  --card: oklch(0.995 0.001 250);
-  --card-foreground: oklch(0.2 0.01 255);
-  --popover: oklch(0.995 0.001 250);
-  --popover-foreground: oklch(0.2 0.01 255);
-  --primary: oklch(0.56 0.105 50);
-  --primary-foreground: oklch(0.99 0.004 70);
-  --secondary: oklch(0.94 0.004 250);
-  --secondary-foreground: oklch(0.24 0.01 255);
-  --muted: oklch(0.945 0.004 250);
-  --muted-foreground: oklch(0.5 0.012 255);
-  --accent: oklch(0.94 0.012 60);
-  --accent-foreground: oklch(0.3 0.04 50);
+  --orange: #fe7141;
+  --lavender: #cdabfe;
+  --sage: #d1ddd3;
+  --sky: #99eeff;
+  --lime: #f0ff1c;
+  --chart-1: #fe7141;
+  --chart-2: #000000;
+  --chart-3: #cdabfe;
+  --chart-4: #99eeff;
+  --chart-5: #d1ddd3;
+  --radius: 0rem;
+}
+:root, .paper {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #000000;
+  --muted: #f2f2f2;
+  --muted-foreground: #666666;
+  --accent: #f2f2f2;
+  --accent-foreground: #000000;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.005 250);
-  --input: oklch(0.9 0.005 250);
-  --ring: oklch(0.62 0.1 55);
-  --copper: oklch(0.6 0.11 52);
-  --copper-soft: oklch(0.6 0.11 52 / 0.14);
-  --chart-1: oklch(0.72 0.1 58);
-  --chart-2: oklch(0.56 0.105 50);
-  --chart-3: oklch(0.55 0.03 250);
-  --chart-4: oklch(0.42 0.02 255);
-  --chart-5: oklch(0.78 0.01 250);
-  --radius: 0.875rem;
-  --sidebar: oklch(0.985 0.002 250);
-  --sidebar-foreground: oklch(0.2 0.01 255);
-  --sidebar-primary: oklch(0.56 0.105 50);
-  --sidebar-primary-foreground: oklch(0.99 0.004 70);
-  --sidebar-accent: oklch(0.94 0.012 60);
-  --sidebar-accent-foreground: oklch(0.3 0.04 50);
-  --sidebar-border: oklch(0.9 0.005 250);
-  --sidebar-ring: oklch(0.62 0.1 55);
+  --border: oklch(0 0 0 / 12%);
+  --input: oklch(0 0 0 / 20%);
+  --ring: var(--orange);
+  --copper: #000000;
+  --copper-soft: oklch(0 0 0 / 0.06);
+  --sidebar: #fafafa;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #000000;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2f2f2;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: oklch(0 0 0 / 12%);
+  --sidebar-ring: var(--orange);
 }
 
 /* Controles nativos (barra de rolagem, campos) também escuros na página inicial. */
-:root:has(.home-dark) { color-scheme: dark; }
+:root:has(.home-dark), .ink { color-scheme: dark; }
+.paper { color-scheme: light; }
+.paper, .ink { color: var(--foreground); }
 
 .dark,
-:root:has(.home-dark) {
-  --background: oklch(0.18 0.008 255);
-  --foreground: oklch(0.96 0.004 250);
-  --card: oklch(0.225 0.009 255);
-  --card-foreground: oklch(0.96 0.004 250);
-  --popover: oklch(0.24 0.009 255);
-  --popover-foreground: oklch(0.96 0.004 250);
-  --primary: oklch(0.74 0.1 58);
-  --primary-foreground: oklch(0.2 0.02 50);
-  --secondary: oklch(0.28 0.009 255);
-  --secondary-foreground: oklch(0.96 0.004 250);
-  --muted: oklch(0.27 0.009 255);
-  --muted-foreground: oklch(0.71 0.012 255);
-  --accent: oklch(0.3 0.025 55);
-  --accent-foreground: oklch(0.95 0.02 70);
+:root:has(.home-dark),
+.ink {
+  --background: #111111;
+  --foreground: #f2f2f2;
+  --card: #181818;
+  --card-foreground: #ffffff;
+  --popover: #1c1c1c;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #222222;
+  --secondary-foreground: #ffffff;
+  --muted: #222222;
+  --muted-foreground: #a3a3a3;
+  --accent: #222222;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.66 0.1 55);
-  --copper: oklch(0.72 0.1 58);
-  --copper-soft: oklch(0.72 0.1 58 / 0.16);
-  --chart-1: oklch(0.74 0.1 58);
-  --chart-2: oklch(0.6 0.105 50);
-  --chart-3: oklch(0.7 0.02 250);
-  --chart-4: oklch(0.5 0.02 255);
-  --chart-5: oklch(0.85 0.01 250);
-  --sidebar: oklch(0.2 0.008 255);
-  --sidebar-foreground: oklch(0.96 0.004 250);
-  --sidebar-primary: oklch(0.74 0.1 58);
-  --sidebar-primary-foreground: oklch(0.2 0.02 50);
-  --sidebar-accent: oklch(0.3 0.025 55);
-  --sidebar-accent-foreground: oklch(0.95 0.02 70);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.66 0.1 55);
+  --border: oklch(1 0 0 / 16%);
+  --input: oklch(1 0 0 / 20%);
+  --ring: var(--orange);
+  --copper: #ffffff;
+  --copper-soft: oklch(1 0 0 / 0.08);
+  --sidebar: #141414;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #222222;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: oklch(1 0 0 / 16%);
+  --sidebar-ring: var(--orange);
 }
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: oklch(0.18 0.008 255);
-    --foreground: oklch(0.96 0.004 250);
-    --card: oklch(0.225 0.009 255);
-    --card-foreground: oklch(0.96 0.004 250);
-    --popover: oklch(0.24 0.009 255);
-    --popover-foreground: oklch(0.96 0.004 250);
-    --primary: oklch(0.74 0.1 58);
-    --primary-foreground: oklch(0.2 0.02 50);
-    --secondary: oklch(0.28 0.009 255);
-    --secondary-foreground: oklch(0.96 0.004 250);
-    --muted: oklch(0.27 0.009 255);
-    --muted-foreground: oklch(0.71 0.012 255);
-    --accent: oklch(0.3 0.025 55);
-    --accent-foreground: oklch(0.95 0.02 70);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 9%);
-    --input: oklch(1 0 0 / 14%);
-    --ring: oklch(0.66 0.1 55);
-    --copper: oklch(0.72 0.1 58);
-    --copper-soft: oklch(0.72 0.1 58 / 0.16);
-    --chart-1: oklch(0.74 0.1 58);
-    --chart-2: oklch(0.6 0.105 50);
-    --chart-3: oklch(0.7 0.02 250);
-    --chart-4: oklch(0.5 0.02 255);
-    --chart-5: oklch(0.85 0.01 250);
-    --sidebar: oklch(0.2 0.008 255);
-    --sidebar-foreground: oklch(0.96 0.004 250);
-    --sidebar-primary: oklch(0.74 0.1 58);
-    --sidebar-primary-foreground: oklch(0.2 0.02 50);
-    --sidebar-accent: oklch(0.3 0.025 55);
-    --sidebar-accent-foreground: oklch(0.95 0.02 70);
-    --sidebar-border: oklch(1 0 0 / 9%);
-    --sidebar-ring: oklch(0.66 0.1 55);
+  --background: #111111;
+  --foreground: #f2f2f2;
+  --card: #181818;
+  --card-foreground: #ffffff;
+  --popover: #1c1c1c;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #222222;
+  --secondary-foreground: #ffffff;
+  --muted: #222222;
+  --muted-foreground: #a3a3a3;
+  --accent: #222222;
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 16%);
+  --input: oklch(1 0 0 / 20%);
+  --ring: var(--orange);
+  --copper: #ffffff;
+  --copper-soft: oklch(1 0 0 / 0.08);
+  --sidebar: #141414;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #222222;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: oklch(1 0 0 / 16%);
+  --sidebar-ring: var(--orange);
     color-scheme: dark;
   }
+  :root:not(.light) .paper {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #000000;
+  --muted: #f2f2f2;
+  --muted-foreground: #666666;
+  --accent: #f2f2f2;
+  --accent-foreground: #000000;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0 0 0 / 12%);
+  --input: oklch(0 0 0 / 20%);
+  --ring: var(--orange);
+  --copper: #000000;
+  --copper-soft: oklch(0 0 0 / 0.06);
+  --sidebar: #fafafa;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #000000;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2f2f2;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: oklch(0 0 0 / 12%);
+  --sidebar-ring: var(--orange);
+    color-scheme: light;
+  }
+}
+/* .paper dentro do escuro escolhido (.dark) volta a ser claro. */
+.dark .paper, :root:has(.home-dark) .paper {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --secondary: #f2f2f2;
+  --secondary-foreground: #000000;
+  --muted: #f2f2f2;
+  --muted-foreground: #666666;
+  --accent: #f2f2f2;
+  --accent-foreground: #000000;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0 0 0 / 12%);
+  --input: oklch(0 0 0 / 20%);
+  --ring: var(--orange);
+  --copper: #000000;
+  --copper-soft: oklch(0 0 0 / 0.06);
+  --sidebar: #fafafa;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #000000;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2f2f2;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: oklch(0 0 0 / 12%);
+  --sidebar-ring: var(--orange);
 }
 
 
+
 @theme inline {
-  --font-sans: var(--font-oxanium);
-  --font-heading: var(--font-raleway);
+  --font-sans: var(--font-teachers);
+  --font-heading: var(--font-teachers);
+  --color-orange: var(--orange);
+  --color-lavender: var(--lavender);
+  --color-sage: var(--sage);
+  --color-sky: var(--sky);
+  --color-lime: var(--lime);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -173,7 +242,7 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-mono: var(--font-geist-mono);
 }
 
 @layer base {
@@ -183,37 +252,32 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Luz de estúdio: foco frio vindo de cima, reflexo de cobre bem fraco embaixo e bordas mais escuras. Dá profundidade ao vidro
-     sem chamar atenção. Fica numa camada presa à tela (o Safari do iPhone ignora background-attachment: fixed). */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-      radial-gradient(70rem 32rem at 50% -8rem, oklch(1 0 0 / 0.9), transparent 70%),
-      radial-gradient(60rem 24rem at 50% 115%, oklch(0.72 0.1 58 / 0.08), transparent 70%);
-  }
-  /* Seletores escritos à mão: o @variant dark não funciona em pseudo-elementos (::before). */
-  :root.dark body::before,
-  :root:has(.home-dark) body::before {
-    background-image:
-      radial-gradient(70rem 36rem at 50% -6rem, oklch(0.75 0.02 250 / 0.12), transparent 70%),
-      radial-gradient(60rem 24rem at 50% 115%, oklch(0.72 0.1 58 / 0.07), transparent 70%),
-      radial-gradient(120% 90% at 50% 40%, transparent 55%, oklch(0 0 0 / 0.35));
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not(.light) body::before {
-      background-image:
-        radial-gradient(70rem 36rem at 50% -6rem, oklch(0.75 0.02 250 / 0.12), transparent 70%),
-      radial-gradient(60rem 24rem at 50% 115%, oklch(0.72 0.1 58 / 0.07), transparent 70%),
-      radial-gradient(120% 90% at 50% 40%, transparent 55%, oklch(0 0 0 / 0.35));
-    }
-  }
   html {
     @apply font-sans;
+    letter-spacing: -0.01em;
   }
+}
+
+/* Entrada das seções ao rolar (componente Reveal): só CSS, ligada à rolagem e rodando na placa de vídeo
+   (opacity + translate). Sem suporte a animation-timeline, ou com "reduzir movimento", o conteúdo aparece direto. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+@keyframes reveal-in {
+  from { opacity: 0; translate: 0 24px; }
+}
+
+/* Seções abaixo da dobra: o navegador só calcula e desenha quando chegam perto da tela.
+   O tamanho estimado evita a barra de rolagem pular; "auto" guarda o tamanho real depois da primeira vez. */
+.lazy-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
 }
 
 /* O preflight do Tailwind troca o content-box esperado pelo PDF.js por border-box e
@@ -224,7 +288,7 @@
 
 /* The console is denser than the public portfolio while sharing its theme tokens. */
 .dashboard-shell [data-slot="button"] {
-  font-family: var(--font-oxanium);
+  font-family: var(--font-sans);
   letter-spacing: normal;
   text-transform: none;
   font-weight: 500;
@@ -248,7 +312,59 @@
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: none; }
   }
+  /* Entrada da página inicial (~3,8s), como a referência e sempre em cortes secos, sem esmaecer:
+     1. o fundo da colagem troca de cor em cortes (intro-bg) e as peças surgem em cortina (tile-in);
+     2. uma linha preta cresce no centro, abre na vertical e vira o cartão; o texto entra grande e vai diminuindo
+        (intro-card + intro-text), o cartão encolhe e fecha para cima;
+     3. a colagem encolhe para o topo (intro-collapse), o cabeçalho desce (header-in) e o título sobe (word-in). */
+  --animate-intro-bg: intro-bg 1500ms step-end both;
+  @keyframes intro-bg {
+    0% { background-color: var(--orange); }
+    25% { background-color: #1a1a1a; }
+    50% { background-color: var(--sage); }
+    75%, 100% { background-color: transparent; }
+  }
+  /* Cada peça é revelada de baixo para cima por uma cortina (clip-path). */
+  --animate-tile-in: tile-in 800ms cubic-bezier(.7, 0, .2, 1) both;
+  @keyframes tile-in {
+    from { clip-path: inset(100% 0 0 0); transform: translateY(32px); }
+    to { clip-path: inset(0); transform: none; }
+  }
+  /* Cartão: linha no centro → abre na largura → abre na altura → segura → encolhe → fecha para cima. Sempre opaco.
+     O centro vem do translate nos quadros (o elemento fica em top/left 50%). */
+  --animate-intro-card: intro-card 2700ms cubic-bezier(.7, 0, .2, 1) 300ms both;
+  @keyframes intro-card {
+    0% { clip-path: inset(calc(50% - 1px) 50%); transform: translate(-50%, -50%) scale(1); }
+    14% { clip-path: inset(calc(50% - 1px) 0); transform: translate(-50%, -50%) scale(1); }
+    32%, 56% { clip-path: inset(0); transform: translate(-50%, -50%) scale(1); }
+    82% { clip-path: inset(0); transform: translate(-50%, -50%) scale(.42); }
+    100% { clip-path: inset(0 0 100% 0); transform: translate(-50%, -50%) scale(.42); visibility: hidden; }
+  }
+  /* Texto do cartão: entra 40% maior e vai assentando enquanto o cartão segura (a origem fica no canto de cada bloco). */
+  --animate-intro-text: intro-text 1500ms cubic-bezier(.2, .8, .2, 1) 1100ms both;
+  @keyframes intro-text {
+    from { transform: scale(1.4); }
+  }
+  /* Palavra saindo de baixo de uma máscara (o pai tem overflow: hidden). */
+  --animate-word-in: word-in 800ms cubic-bezier(.2, .8, .2, 1) both;
+  @keyframes word-in {
+    from { transform: translateY(110%); }
+  }
+  /* Cabeçalho da página inicial desce depois da capa. */
+  --animate-header-in: header-in 700ms cubic-bezier(.2, .8, .2, 1) 2900ms both;
+  @keyframes header-in {
+    from { transform: translateY(-100%); }
+  }
+  --animate-intro-collapse: intro-collapse 1100ms cubic-bezier(.7, 0, .2, 1) 2800ms both;
+  @keyframes intro-collapse {
+    from { height: 100svh; }
+  }
   /* Faixa infinita (classe animate-marquee): a lista vem duplicada e anda metade da largura, então emenda sem salto. */
+  /* Deriva lenta das peças da colagem da abertura (classe animate-drift); cada peça usa um atraso diferente. */
+  --animate-drift: drift 14s ease-in-out infinite alternate;
+  @keyframes drift {
+    to { transform: translate3d(var(--drift-x, 24px), var(--drift-y, -16px), 0); }
+  }
   --animate-marquee: marquee 45s linear infinite;
   @keyframes marquee {
     to { transform: translateX(-50%); }
